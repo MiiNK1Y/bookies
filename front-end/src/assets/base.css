@@ -1,0 +1,41 @@
+/* Rose Pine theme from https://rosepinetheme.com/palette/ingredients/ */
+:root {
+  --rp-base:            #191724;
+  --rp-text:            #e0def4;
+  --rp-surface:         #1f1d2e;
+  --rp-overlay:         #26233a;
+  --rp-muted:           #6e6a86;
+  --rp-subtle:          #908caa;
+  --rp-love:            #eb6f92;
+  --rp-gold:            #f6c177;
+  --rp-rose:            #ebbcba;
+  --rp-pine:            #31748f;
+  --rp-foam:            #9ccfd8;
+  --rp-iris:            #c4a7e7;
+  --rp-highlight-low:   #21202e;
+  --rp-highlight-med:   #403d52;
+  --rp-highlight-high:  #524f67;
+}
+
+/* Bookies color palette made from Rose Pine */
+:root {
+  --bks-background: #000000 ;
+  --bks-text: var(--rp-text);
+
+  --bks-big-text: "Varela Round", sans-serif;
+  --bks-regular-text: "Noto Sans", sans-serif;
+}
+
+html {
+  padding: 0;
+  margin: 0;
+}
+
+body {
+  display: flex;
+  min-height: 100vh;
+  margin: 0;
+  place-items: center;
+  background: var(--bks-background);
+  color: var(--bks-text);
+}

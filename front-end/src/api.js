@@ -1,0 +1,15 @@
+const serverHost = import.meta.env.VITE_SERVER_HOST;
+const bookiesEndpoint = serverHost + "bookies";
+
+export async function getBookies() {
+  try {
+    const res = await fetch(bookiesEndpoint);
+    if (!res.ok) {
+      throw new Error(`Response status: ${res.status}`);
+    }
+    return await res.json();
+  } catch (error) {
+    console.log(error.message);
+    return;
+  }
+}
