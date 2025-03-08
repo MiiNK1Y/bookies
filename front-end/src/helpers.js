@@ -26,6 +26,7 @@ export function shrinkWrap(element) {
   console.log(`Shrink-wrapped: ${element.innerHTML}`);
 };
 
+
 /**
  * Shrink-wrap every item in a given object element array.
  *
