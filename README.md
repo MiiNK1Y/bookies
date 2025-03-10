@@ -10,6 +10,8 @@ The way Firefox handles bookmarks is too good to let go...
 
 So, here I am, trying the best to my abilities in replicating their implementation of "Bookmarks Library":
 
+![The General Idea](./img/bookies_browser_dashboard.png)
+
 ![Firefox's Bookmark Library](./img/firefox_bookmark-library.png)
 
 ---
@@ -37,6 +39,15 @@ So, here I am, trying the best to my abilities in replicating their implementati
 
 ---
 # Features -
-*That will be included once the MVP is done.*
+that will be included once the MVP is done.*
 
 - [ ] 1. Create and add multiple users, either for different people, or different collection of bookmarks.
+- [ ] 2. Password-protected bookmarks and folders.
+- [ ] 3. Hidden _and_ Password-protected bookmarks and folders.
+- [ ] 4. Toggle ability to keep folders permanently open, showing internal items. Parents can close, but wont affect toggled folders once reopening the parent.
+
+---
+# Features -
+*for the far future.*
+
+- [ ] 1. Extension for popular browsers to add Bookies as a default bookmarks manager replacement. Simply login to the extension and have access to your bookmarks across all _supported_ browsers.
