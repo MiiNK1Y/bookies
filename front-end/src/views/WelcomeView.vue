@@ -22,28 +22,19 @@ onMounted(async () => {
       <a href="#" target="_blank"><button>Homepage</button></a>
     </div>
     <div class="container">
-      <ContinueSetupCardComponent
-        header="First time setup"
-        subHeader="A new user and vault"
-        body="First time setting up Bookies?"
-      />
-      <ContinueSetupCardComponent
-        header="First time setup"
-        subHeader="Only vault"
-        body="Only you who are going to use Bookies?"
-      />
-      <ContinueSetupCardComponent
-        header="Import a vault"
-        subHeader="Import a vault without creating a user"
-        body="Used Bookies before?"
-      />
+      <ContinueSetupCardComponent header="First time setup" subHeader="A new user and vault"
+        body="First time setting up Bookies?" />
+      <ContinueSetupCardComponent header="First time setup" subHeader="Only vault"
+        body="Only you who are going to use Bookies?" />
+      <ContinueSetupCardComponent header="Import a vault" subHeader="Import a vault without creating a user"
+        body="Used Bookies before?" />
     </div>
   </div>
 </template>
 
 <style scoped>
 h1 {
-  margin: 10px 0;
+  margin: 0 0 10px 0;
   font-family: var(--bks-big-text);
   font-size: 3em;
   text-align: center;

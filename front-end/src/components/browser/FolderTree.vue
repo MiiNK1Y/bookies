@@ -19,20 +19,3 @@ const sample = ref(sampleBookies);
     />
   </div>
 </template>
-
-<style scoped>
-div {
-  height: 100vh;
-  width: 400px;
-  background-color: var(--rp-base);
-}
-</style>
-
-<style>
-/* Overwrite the default app size for full-screen */
-#app {
-  width: 100vw;
-  margin: 0;
-  padding: 0;
-}
-</style>

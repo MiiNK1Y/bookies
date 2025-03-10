@@ -19,6 +19,7 @@
 
 /* Bookies color palette made from Rose Pine */
 :root {
+  /* I prefer the DARKEST of dark tho. */
   --bks-background: #000000 ;
   --bks-text: var(--rp-text);
 
@@ -26,16 +27,18 @@
   --bks-regular-text: "Noto Sans", sans-serif;
 }
 
-html {
+html,
+body {
   padding: 0;
   margin: 0;
 }
 
 body {
-  display: flex;
   min-height: 100vh;
-  margin: 0;
-  place-items: center;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   background: var(--bks-background);
   color: var(--bks-text);
 }

@@ -8,7 +8,7 @@ const props = defineProps({
   },
   spacing: {
     type: Number,
-    default: 0
+    default: 10
   }
 });
 
@@ -24,9 +24,9 @@ const hasChildren = computed(() => {
 });
 
 const toggleChildrenIcon = computed(() => {
-  const pointRight = "/src/assets/icons/point_right.svg";
-  const pointDown = "/src/assets/icons/point_down.svg";
-  return props.showChildren ? pointDown : pointRight;
+  const pointRight = "/src/assets/icons/folder.svg";
+  const pointDown = "/src/assets/icons/folder_open.svg";
+  return showChildren.value ? pointDown : pointRight;
 });
 
 function toggleChildren() {
@@ -37,32 +37,53 @@ function toggleChildren() {
 
 <template>
   <div class="node" :style="nodeMargin">
-    <img
-      :src="toggleChildrenIcon"
-      v-if="hasChildren"
-      @click="toggleChildren"
-      @keypress="toggleChildren"
-    />
-    <span>{{ node.Title }}</span>
-  </div>
-  <div v-if='hasChildren' v-show="showChildren">
-    <TreeNode
-      v-for="child in node.Bookmarks"
-      :key="child.id"
-      :node="child"
-      :spacing="spacing + 20"
-    />
+    <div class="item" @click="toggleChildren">
+      <img :src="toggleChildrenIcon" v-if="hasChildren" />
+      {{ node.Title }}
+    </div>
+    <div v-if='hasChildren' v-show="showChildren">
+      <TreeNode
+        v-for="child in node.Bookmarks"
+        :key="child.id"
+        :node="child"
+        :spacing="spacing"
+      />
+    </div>
   </div>
 </template>
 
 
 <style scoped>
 div.node {
-  height: fit-content;
   width: fit-content;
+  border-radius: 7px;
+  padding: 2px;
+  margin: 5px;
+
+  /* V1
+  background-color: var(--rp-highlight-low);
+  */
+
+  /* V2*/
+  background-color: rgba(80, 80, 80, 0.2);
+
+  font-family: var(--bks-big-text);
+  cursor: default;
+  box-shadow: 0 0 10px -2px black;
+}
+
+div.item {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 5px;
   padding: 5px 9px;
   border-radius: 5px;
-  margin: 5px;
-  background-color: var(--rp-highlight-med);
+  background-color: var(--rp-base);
+}
+
+div.item:hover {
+  background-color: var(--rp-highlight-low);
+  cursor: pointer;
 }
 </style>
