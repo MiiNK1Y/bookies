@@ -57,10 +57,10 @@ that will be included once the MVP is done.*
 ---
 # My Notes During development
 ### 2025.03.10
-[22:28] Make some damn script to populate and randomize the Bookies.json file for demonstration and testing.
-[22.47] Was thinking "The Bookies.json file does not need ID's to identify bookmarks and folders, so maybe apply the ID's when parsing the file, then remove them again when the user exports the file.", but then considered that ID's can be used to identify the order of which the bookmark / folder was added to the collection. Great for "sort by last added" feature.
-[22.51] Some way to go about "selected folder showing the bookmarks in main browser view" and "selected bookmark showing the editing window for that bookmark": \
-- When clicking on a folder, place the ID and meta-data in localstorage for a component watcher to update the main browser view. \
-- Same for bookmarks, but with the editing window.
-**OR**
-- Similar technique, but instead of localstorage, use a Vue databank for global data storage (Pinia or some other tech?).
+- [22:28] Make some damn script to populate and randomize the Bookies.json file for demonstration and testing.
+- [22.47] Was thinking "The Bookies.json file does not need ID's to identify bookmarks and folders, so maybe apply the ID's when parsing the file, then remove them again when the user exports the file.", but then considered that ID's can be used to identify the order of which the bookmark / folder was added to the collection. Great for "sort by last added" feature.
+- [22.51] Some way to go about "selected folder showing the bookmarks in main browser view" and "selected bookmark showing the editing window for that bookmark": \
+> - When clicking on a folder, place the ID and meta-data in localstorage for a component watcher to update the main browser view. \
+> - Same for bookmarks, but with the editing window.
+> **OR**
+> - Similar technique, but instead of localstorage, use a Vue databank for global data storage (Pinia or some other tech?).
