@@ -19,10 +19,10 @@ So, here I am, trying the best to my abilities in replicating their implementati
 *that are currently being worked on.*
 
 - [ ] 0. **SELF HOSTED WITH DOCKER CONTAINER.**
-- [ ] 1. Bookmarks and folders, implemented as individual *items*.
-- [ ] 2. Tree-structure for folders and bookmarks hierarchy, like a file-browser.
-  - [ ] 2.1 Ability to click a folder, showing the nested folders and bookmarks.
-    - [ ] 2.1.1 Arrow / icon to represent if the folder is closed or open.
+- [x] 1. Bookmarks and folders, implemented as individual *items*.
+- [x] 2. Tree-structure for folders and bookmarks hierarchy, like a file-browser.
+  - [x] 2.1 Ability to click a folder, showing the nested folders and bookmarks.
+    - [x] 2.1.1 Arrow / icon to represent if the folder is closed or open.
 
 - [ ] 3. Drag-and drop to sort each item in the tree. This will update in the Bookies (4) file.
 - [ ] 4. The "Bookies.json" file, formatted for the entire tree-structure.
@@ -45,9 +45,22 @@ that will be included once the MVP is done.*
 - [ ] 2. Password-protected bookmarks and folders.
 - [ ] 3. Hidden _and_ Password-protected bookmarks and folders.
 - [ ] 4. Toggle ability to keep folders permanently open, showing internal items. Parents can close, but wont affect toggled folders once reopening the parent.
+- [ ] 5. Bookmarks-tree "grabbable" sliding width-adjustment.
+- [ ] 6. Selection of color themes.
 
 ---
 # Features -
 *for the far future.*
 
 - [ ] 1. Extension for popular browsers to add Bookies as a default bookmarks manager replacement. Simply login to the extension and have access to your bookmarks across all _supported_ browsers.
+
+---
+# My Notes During development
+### 2025.03.10
+[22:28] Make some damn script to populate and randomize the Bookies.json file for demonstration and testing.
+[22.47] Was thinking "The Bookies.json file does not need ID's to identify bookmarks and folders, so maybe apply the ID's when parsing the file, then remove them again when the user exports the file.", but then considered that ID's can be used to identify the order of which the bookmark / folder was added to the collection. Great for "sort by last added" feature.
+[22.51] Some way to go about "selected folder showing the bookmarks in main browser view" and "selected bookmark showing the editing window for that bookmark": \
+- When clicking on a folder, place the ID and meta-data in localstorage for a component watcher to update the main browser view. \
+- Same for bookmarks, but with the editing window.
+**OR**
+- Similar technique, but instead of localstorage, use a Vue databank for global data storage (Pinia or some other tech?).
