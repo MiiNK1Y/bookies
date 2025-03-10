@@ -7,6 +7,7 @@ and was looking for a new browser (as of 10.03.2024, I have still _NOT_ found a 
 The way Firefox handles bookmarks is too good to let go...
 
 **I simply _prefer_ the way Firefox handles bookmarks different from other browsers.**
+**Except for the mobile version, that implementation _sucks_.**
 
 So, here I am, trying the best to my abilities in replicating their implementation of "Bookmarks Library":
 
@@ -39,7 +40,7 @@ So, here I am, trying the best to my abilities in replicating their implementati
 
 ---
 # Features -
-that will be included once the MVP is done.*
+*that will be included once the MVP is done.*
 
 - [ ] 1. Create and add multiple users, either for different people, or different collection of bookmarks.
 - [ ] 2. Password-protected bookmarks and folders.
@@ -47,6 +48,8 @@ that will be included once the MVP is done.*
 - [ ] 4. Toggle ability to keep folders permanently open, showing internal items. Parents can close, but wont affect toggled folders once reopening the parent.
 - [ ] 5. Bookmarks-tree "grabbable" sliding width-adjustment.
 - [ ] 6. Selection of color themes.
+- [ ] 7. Keyboard navigation for both file-tree and main browser view.
+- [ ] 8. Search function (with keyboard shortcut as well).
 
 ---
 # Features -
