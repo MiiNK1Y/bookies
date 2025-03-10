@@ -1,6 +1,6 @@
 <script setup>
-import TreeNode from './TreeNode.vue';
 import { getBookies } from '@/controllers/api.js';
+import TreeNode from './TreeNode.vue';
 import { ref } from 'vue';
 
 // const bookies = getBookies();

@@ -7,5 +7,3 @@ import FolderTree from '@/components/browser/FolderTree.vue';
     <FolderTree />
   </div>
 </template>
-
-<style scoped></style>

@@ -5,7 +5,7 @@ import { onMounted, nextTick } from 'vue';
 
 /*
  * Shrink-wrap the contents of each subHeader
- * after the parent component is mounted.
+ * after the parent component is mounted and rendered.
  */
 onMounted(async () => {
   await nextTick();
