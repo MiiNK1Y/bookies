@@ -1,42 +1,36 @@
-<script>
-export default {
-  name: 'TreeNode',
-  props: {
-    node: {
-      type: Object,
-      required: true
-    },
-    spacing: {
-      type: Number,
-      default: 0
-    }
+<script setup>
+import { ref, computed } from 'vue';
+
+const props = defineProps({
+  node: {
+    type: Object,
+    required: true
   },
-  data() {
-    return {
-      showChildren: false
-    }
-  },
-  computed: {
-    nodeMargin() {
-      return {
-        'margin-left': `${this.spacing}px`
-      }
-    },
-    hasChildren() {
-      const { Bookmarks } = this.node;
-      return Bookmarks && Bookmarks.length > 0;
-    },
-    toggleChildrenIcon() {
-      return this.showChildren ?
-        '/src/assets/icons/point_down.svg' :
-        '/src/assets/icons/point_right.svg'
-    }
-  },
-  methods: {
-    toggleChildren() {
-      this.showChildren = !this.showChildren
-    }
-  },
+  spacing: {
+    type: Number,
+    default: 0
+  }
+});
+
+const showChildren = ref(false);
+
+const nodeMargin = computed(() => {
+  return { 'margin-left': `${props.spacing}px` }
+});
+
+const hasChildren = computed(() => {
+  const { Bookmarks } = props.node;
+  return Bookmarks && Bookmarks.length > 0;
+});
+
+const toggleChildrenIcon = computed(() => {
+  const pointRight = "/src/assets/icons/point_right.svg";
+  const pointDown = "/src/assets/icons/point_down.svg";
+  return props.showChildren ? pointDown : pointRight;
+});
+
+function toggleChildren() {
+  showChildren.value = !showChildren.value;
 }
 </script>
 
