@@ -36,18 +36,17 @@ function toggleChildren() {
 
 
 <template>
-  <div class="node" :style="nodeMargin">
+  <div class="node" draggable="true" :style="nodeMargin">
     <div class="item" @click="toggleChildren">
       <img :src="toggleChildrenIcon" v-if="hasChildren" />
-      {{ node.Title }}
+
+      <!-- DEBUG -->
+      <span>[ID: {{ node.Id }}]</span>
+
+      <span>{{ node.Title.toLowerCase() }}</span>
     </div>
     <div v-if='hasChildren' v-show="showChildren">
-      <TreeNode
-        v-for="child in node.Bookmarks"
-        :key="child.id"
-        :node="child"
-        :spacing="spacing"
-      />
+      <TreeNode v-for="child in node.Bookmarks" :key="child.id" :node="child" :spacing="spacing" />
     </div>
   </div>
 </template>

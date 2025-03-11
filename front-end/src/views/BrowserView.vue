@@ -29,6 +29,7 @@ div.folder-tree {
   position: relative;
   grid-row: span 2 / span 2;
   background-color: var(--rp-base);
+  overflow: scroll;
 }
 
 div.navbar,

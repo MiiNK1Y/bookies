@@ -4,27 +4,27 @@
     [
       {
         "Type": "Bookmark",
-        "BookmarksId": 0,
+        "Id": 0,
         "Title": "Title of the Bookmark, has ID 0",
         "URL": "https://vg.no",
         "Tags": ["News", "Norwegian News", "Demo Website"]
       },
       {
         "Type": "Folder",
-        "FolderId": 0,
+        "Id": 1,
         "Title": "Some Folder Name Here",
         "Bookmarks":
           [
             {
               "Type": "Bookmark",
-              "BookmarksId": 1,
+              "Id": 2,
               "Title": "Has Id 1, bit short",
               "URL": "https://wikipedia.com",
               "Tags": ["Information", "Info"]
             },
             {
               "Type": "Bookmark",
-              "BookmarksId": 2,
+              "Id": 3,
               "Title": "Has Id 2",
               "URL": "https://alnyk.pages.dev",
               "Tags": ["Personal", "Portfolio", "Personal Project"]
@@ -33,80 +33,80 @@
       },
       {
         "Type": "Bookmark",
-        "BookmarksId": 3,
+        "Id": 4,
         "Title": "Title of the second Bookmark, very very very long, maybe fit an URL here?",
         "URL": "https://vg.no",
         "Tags": ["News", "Norwegian News", "Demo Website"]
       },
       {
         "Type": "Folder",
-        "FolderId": 1,
+        "Id": 5,
         "Title": "Some New Folder Name Here, has ID 1",
         "Bookmarks":
           [
             {
               "Type": "Bookmark",
-              "BookmarksId": 4,
+              "Id": 6,
               "Title": "fdjskal;fgjkdsal;,, Has Id 4",
               "URL": "https://wikipedia.com",
               "Tags": ["Information", "Info"]
             },
             {
               "Type": "Folder",
-              "FolderId": 2,
+              "Id": 7,
               "Title": "Folder, has ID 2",
               "Bookmarks":
                 [
                   {
                     "Type": "Bookmark",
-                    "BookmarksId": 5,
+                    "Id": 8,
                     "Title": "Has Id 5...",
                     "URL": "https://wikipedia.com",
                     "Tags": ["Information", "Info"]
                   },
                   {
                     "Type": "Bookmark",
-                    "BookmarksId": 6,
+                    "Id": 9,
                     "Title": "Has Id 6, some more nesting inside here...",
                     "URL": "https://alnyk.pages.dev",
                     "Tags": ["Personal", "Portfolio", "Personal Project"]
                   },
                   {
                     "Type": "Folder",
-                    "FolderId": 3,
+                    "Id": 10,
                     "Title": "Some Folder with ID 3",
                     "Bookmarks":
                       [
                         {
                           "Type": "Bookmark",
-                          "BookmarksId": 7,
+                          "Id": 11,
                           "Title": "Title of the second Bookmark, very very very long, maybe fit an URL here?",
                           "URL": "https://wikipedia.com",
                           "Tags": ["Information", "Info"]
                         },
                         {
                           "Type": "Bookmark",
-                          "BookmarksId": 8,
+                          "Id": 12,
                           "Title": "Has Id 8",
                           "URL": "https://alnyk.pages.dev",
                           "Tags": ["Personal", "Portfolio", "Personal Project"]
                         },
                         {
                           "Type": "Folder",
-                          "FolderId": 4,
+                          "Id": 13,
                           "Title": "Folder with ID 4",
                           "Bookmarks":
                             [
                               {
                                 "Type": "Bookmark",
-                                "BookmarksId": 10,
+                                "Id": 14,
                                 "Title": "Has Id 10",
                                 "URL": "https://wikipedia.com",
                                 "Tags": ["Information", "Info"]
                               },
                               {
                                 "Type": "Bookmark",
-                                "BookmarksId": 11,
+                                "Id": 15,
                                 "Title": "Has Id 11, and some long title for some article perhaps.",
                                 "URL": "https://alnyk.pages.dev",
                                 "Tags": ["Personal", "Portfolio", "Personal Project"]
@@ -119,7 +119,7 @@
             },
             {
               "Type": "Bookmark",
-              "BookmarksId": 9,
+              "Id": 16,
               "Title": "Has Id 9, and is medium long",
               "URL": "https://alnyk.pages.dev",
               "Tags": ["Personal", "Portfolio", "Personal Project"]
@@ -128,27 +128,27 @@
       },
       {
         "Type": "Bookmark",
-        "BookmarksId": 0,
+        "Id": 17,
         "Title": "Title of the Bookmark, has ID 0",
         "URL": "https://vg.no",
         "Tags": ["News", "Norwegian News", "Demo Website"]
       },
       {
         "Type": "Folder",
-        "FolderId": 0,
+        "Id": 18,
         "Title": "Some Folder Name Here",
         "Bookmarks":
           [
             {
               "Type": "Bookmark",
-              "BookmarksId": 1,
+              "Id": 19,
               "Title": "Has Id 1, bit short",
               "URL": "https://wikipedia.com",
               "Tags": ["Information", "Info"]
             },
             {
               "Type": "Bookmark",
-              "BookmarksId": 2,
+              "Id": 20,
               "Title": "Has Id 2",
               "URL": "https://alnyk.pages.dev",
               "Tags": ["Personal", "Portfolio", "Personal Project"]
@@ -157,80 +157,80 @@
       },
       {
         "Type": "Bookmark",
-        "BookmarksId": 3,
+        "Id": 21,
         "Title": "Title of the second Bookmark, very very very long, maybe fit an URL here?",
         "URL": "https://vg.no",
         "Tags": ["News", "Norwegian News", "Demo Website"]
       },
       {
         "Type": "Folder",
-        "FolderId": 1,
+        "Id": 22,
         "Title": "Some New Folder Name Here, has ID 1",
         "Bookmarks":
           [
             {
               "Type": "Bookmark",
-              "BookmarksId": 4,
+              "Id": 23,
               "Title": "fdjskal;fgjkdsal;,, Has Id 4",
               "URL": "https://wikipedia.com",
               "Tags": ["Information", "Info"]
             },
             {
               "Type": "Folder",
-              "FolderId": 2,
+              "Id": 24,
               "Title": "Folder, has ID 2",
               "Bookmarks":
                 [
                   {
                     "Type": "Bookmark",
-                    "BookmarksId": 5,
+                    "Id": 25,
                     "Title": "Has Id 5...",
                     "URL": "https://wikipedia.com",
                     "Tags": ["Information", "Info"]
                   },
                   {
                     "Type": "Bookmark",
-                    "BookmarksId": 6,
+                    "Id": 26,
                     "Title": "Has Id 6, some more nesting inside here...",
                     "URL": "https://alnyk.pages.dev",
                     "Tags": ["Personal", "Portfolio", "Personal Project"]
                   },
                   {
                     "Type": "Folder",
-                    "FolderId": 3,
+                    "Id": 27,
                     "Title": "Some Folder with ID 3",
                     "Bookmarks":
                       [
                         {
                           "Type": "Bookmark",
-                          "BookmarksId": 7,
+                          "Id": 28,
                           "Title": "Title of the second Bookmark, very very very long, maybe fit an URL here?",
                           "URL": "https://wikipedia.com",
                           "Tags": ["Information", "Info"]
                         },
                         {
                           "Type": "Bookmark",
-                          "BookmarksId": 8,
+                          "Id": 29,
                           "Title": "Has Id 8",
                           "URL": "https://alnyk.pages.dev",
                           "Tags": ["Personal", "Portfolio", "Personal Project"]
                         },
                         {
                           "Type": "Folder",
-                          "FolderId": 4,
+                          "Id": 30,
                           "Title": "Folder with ID 4",
                           "Bookmarks":
                             [
                               {
                                 "Type": "Bookmark",
-                                "BookmarksId": 10,
+                                "Id": 31,
                                 "Title": "Has Id 10",
                                 "URL": "https://wikipedia.com",
                                 "Tags": ["Information", "Info"]
                               },
                               {
                                 "Type": "Bookmark",
-                                "BookmarksId": 11,
+                                "Id": 32,
                                 "Title": "Has Id 11, and some long title for some article perhaps.",
                                 "URL": "https://alnyk.pages.dev",
                                 "Tags": ["Personal", "Portfolio", "Personal Project"]
@@ -243,7 +243,7 @@
             },
             {
               "Type": "Bookmark",
-              "BookmarksId": 9,
+              "Id": 33,
               "Title": "Has Id 9, and is medium long",
               "URL": "https://alnyk.pages.dev",
               "Tags": ["Personal", "Portfolio", "Personal Project"]
