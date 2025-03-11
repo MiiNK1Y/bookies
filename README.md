@@ -67,3 +67,22 @@ So, here I am, trying the best to my abilities in replicating their implementati
 > - Same for bookmarks, but with the editing window.
 > **OR**
 > - Similar technique, but instead of localstorage, use a Vue databank for global data storage (Pinia or some other tech?).
+
+### 2025.03.11
+*Going about drag-and-drop.*
+Things to keep in mind:
+- Indication to show where the dragged element will be dropped.
+- Handling adjusting elements after the drop is done (mostly automatic DOM features?).
+- Writing that change to the new Bookies JSON data (both in memory and for the Bookies.json file).
+
+- [22:05] Keep looking for a native Vue implementation, which seems troublesome.
+  - I have looked into the following methods:
+    - Native Vue implementation that works when moving from one _static_ folder to another, and sorting inside those. That case did _not_ cover the case of nested folders with objects, but might be the right track.
+    - "vuedraggable", a 5 year old library for Vue 3 that is now broken and throws error during a _simple_ implementation.
+
+  - I'm considering looking into:
+    - Creating a class for getting and setting data for an instance of bookies.
+      - Getting the nested dot-path for the wanted item during dragging, to work with the object directly, and removing it from said spot when dropped.
+      - Getting the position and path of the folder when hovering and dropping the item, placing the object into that nested folder (needs better planning here...).
+
+    - An implementation with vanilla HTML, but only looked at the surface here, might be a better implementation.
