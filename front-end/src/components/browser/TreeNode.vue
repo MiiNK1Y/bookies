@@ -36,13 +36,10 @@ function toggleChildren() {
 
 
 <template>
-  <div class="node" draggable="true" :style="nodeMargin">
+  <div class="node drop-zone" draggable="true" :style="nodeMargin">
     <div class="item" @click="toggleChildren">
       <img :src="toggleChildrenIcon" v-if="hasChildren" />
-
-      <!-- DEBUG -->
-      <span>[ID: {{ node.Id }}]</span>
-
+      <span>[ID: {{ node.Id }}]</span> <!-- DEBUG -->
       <span>{{ node.Title.toLowerCase() }}</span>
     </div>
     <div v-if='hasChildren' v-show="showChildren">
@@ -57,14 +54,18 @@ div.node {
   width: fit-content;
   border-radius: 7px;
   padding: 2px;
-  margin: 5px;
+  margin: 10px;
 
   /* V1
   background-color: var(--rp-highlight-low);
   */
 
-  /* V2*/
+  /* V2
   background-color: rgba(80, 80, 80, 0.2);
+  */
+
+  /* V3 */
+  background-color: rgba(235, 188, 186, 0.3);
 
   font-family: var(--bks-big-text);
   cursor: default;
@@ -78,11 +79,12 @@ div.item {
   gap: 5px;
   padding: 5px 9px;
   border-radius: 5px;
-  background-color: var(--rp-base);
+  background-color: var(--rp-highlight-low);
 }
 
 div.item:hover {
-  background-color: var(--rp-highlight-low);
+  background-color: var(--rp-highlight-high);
+  color: black;
   cursor: pointer;
 }
 </style>

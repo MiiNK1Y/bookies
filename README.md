@@ -86,3 +86,13 @@ Things to keep in mind:
       - Getting the position and path of the folder when hovering and dropping the item, placing the object into that nested folder (needs better planning here...).
 
     - An implementation with vanilla HTML, but only looked at the surface here, might be a better implementation.
+
+### 2025.03.12
+- [14:33] It looks like I might be able to follow the standard Vue way for drop-down functionality.
+  - By traversing the Bookies.json file and flattening it into a simple object-array, where each folder-item has a nested array with ID's of the children belonging to it.
+    - This way, generating DOM elements for the folders and dropping the items into it should be trivial, as well as making the Vue tamplate.
+  - I'll start by making a class to parse the Bookies.json file and flatten it.
+  - Then I'll add some rules to verify that all the items conforms to the Bookies rules and throw an error if it doesn't (adding it for client-safety).
+  - [18:02] How to go about the positions? How to know one should go before another in a folder? A 'position' id?
+    - Maybe, when flattening the Bookies.json file, assign a 'postion' ID, and using it when unflattening the object to determine position?
+      - This will then have to be modified during the "drop" operation of drag-and-drop.

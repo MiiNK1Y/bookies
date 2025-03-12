@@ -1,8 +1,6 @@
 <script setup>
-import { getBookies, sample } from '@/controllers/api.js';
+import { sample } from '@/controllers/api.js';
 import TreeNode from './TreeNode.vue';
-
-// const bookies = getBookies();
 </script>
 
 <template>
