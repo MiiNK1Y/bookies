@@ -1,107 +1,93 @@
-class validBookies {
+/*
+* This is where modifictaions to the Bookies structure \
+* takes place.
+*
+* e.g:
+* Flatten: for easier manipulation of the order / sorting \
+* and nesting of children bookmarks.
+*
+* Unflatten: for when the manipulations are done and the changes \
+* are overwriting the original structure.
+*/
 
-  // Private properites.
-  #validBookmarkProps;
-  #validFolderProps;
-
-  constructor(bookies) {
-    this.bookies = this.validateBookies(bookies) ? bookies : null;
-
-    this.#validBookmarkProps = {
-      Type: "string",
-      Id: "number",
-      Title: "string",
-      URL: "string",
-      Tags: "object" // array
-    }
-
-    this.#validFolderProps = {
-      Type: "string",
-      Id: "number",
-      Title: "string",
-      Bookmarks: "object" // array
-    }
-  }
-
-  // Check that the Bookies file conforms to the format.
-  validateBookies(bookies) {
-    bookies.every(item => {
-
-      // If the item is a folder, it should contain bookmarks, \
-      // iterate over those if the array is not empty.
-      if (item.Bookmarks && item.Bookmarks.length > 0) {
-        return this.validateBookies(item.Bookmarks);
-      }
-
-      // If the item is a bookmark, \
-      // or a folder without bookmark, check if either is valid.
-      else return this.#validateFolder(item) || this.#validateBookmark(item)
-    });
-  }
-
-  #validateBookmark(bookmark) {
-    for (const property in bookmark) {
-      if (
-        !this.#validBookmarkProps.keys().includes(property) ||
-        typeof bookmark[property] != this.#validBookmarkProps[property]
-      ) return false;
-    }
-    return true;
-  }
-
-
-  #validateFolder(folder) {
-    for (const property in folder) {
-      if (
-        !this.#validFolderProps.keys().includes(property) ||
-        typeof folder[property] != this.#validFolderProps[property]
-      ) return false;
-    }
-    return true;
-  }
-
-}
+import { validBookies } from "./validateBookies.js";
 
 export class Bookies {
   #bookies;
+  #flatBookies;
   constructor(bookies) {
-    this.#bookies = bookies;
+    this.#bookies = new validBookies(bookies).bookiesAreValid ? bookies : null;
+    this.#flatBookies = [];
+    this.#flatten(bookies.Bookmarks);
+  }
+
+  // Modifying a bookmark parent to prepare for flattening.
+  #preparedParent = (item) => {
+
+    // Clone the object before modifying.
+    const modified = { ...item };
+    if (modified.Bookmarks) delete modified.Bookmarks;
+    modified.Children = [];
+    return modified;
+  }
+
+  /*
+  * Since the structure is flattened to a single array, \
+  * each parent need to know the ID of their child.
+  */
+  #appendChild(item, parentId) {
+    if (parentId) {
+
+      // Find the index of the already added parent folder.
+      const parentIndex = this.#flatBookies.findIndex((i) => i.Id === parentId);
+
+      // Push the child ID to the parent's children array.
+      this.#flatBookies[parentIndex].Children.push(item.Id);
+    }
+    // Then last, push the child itself into the flattened array.
+    this.#flatBookies.push(item);
+  }
+
+  /*
+  * Flatten the nested objects into a single object-array.
+  * Each folder will have a nested array for the children ID's belonging to it.
+  */
+  #flatten(bookies, parentId = null) {
+    bookies.forEach((item) => {
+      if (item.Type === "Folder") {
+
+        // Add the modified parent to the flattened array before continuing.
+        this.#appendChild(this.#preparedParent(item), parentId);
+
+        // Check if there are children belonging to the parent, \
+        // if so, iterate over them aswell before continuing to the next item.
+        if (item.Bookmarks.length > 0) this.#flatten(item.Bookmarks, item.Id);
+      }
+      else if (item.Type === "Bookmark") this.#appendChild(item, parentId);
+    });
+  }
+
+  /*
+  * Unflatten the array into what the file originaly was, \
+  * but with the new changes made by client.
+  */
+  #unflatten() {
+    //
   }
 
   get bookies() {
     return this.#bookies;
   }
 
-  set bookies(bookies) {
-    this.#bookies = bookies;
-  }
-
-  // Flatten the nested objects into a single object-array.
-  // Each folder will have a nested array for the ID's belonging to it.
-  flatten() {
-    const flat = [];
-
-    // Recursive function to deep-dive into nested objects.
-    function walk(bookmarks, id) {
-      for (var item of bookmarks) {
-
-        // - If the item does NOT have a 'children' property, the item is a bookmark.
-        // - If the item DOES have the 'children' property, but it's empty, \
-        // there is no data that needs processing.
-        if (!item.children || item.children === 0) {
-          flat.push(item);
-        };
-
-        if (item.children.length === 0) {
-          //
-        }
-      }
-    }
-  }
-
-  // Unflatten the array into what the file originaly was, \
-  // but with the new changes made by client.
-  unflatten() {
-    //
+  get flatBookies() {
+    return this.#flatBookies;
   }
 }
+
+// Sample data for testing purposes.
+import { readFileSync } from 'node:fs';
+const data = readFileSync("./assets/samples/Bookies.json");
+const sample = JSON.parse(data);
+
+const d = new Bookies(sample);
+console.log(d.flatBookies);
