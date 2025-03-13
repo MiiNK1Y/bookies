@@ -90,9 +90,12 @@ Things to keep in mind:
 ### 2025.03.12
 - [14:33] It looks like I might be able to follow the standard Vue way for drop-down functionality.
   - By traversing the Bookies.json file and flattening it into a simple object-array, where each folder-item has a nested array with ID's of the children belonging to it.
-    - This way, generating DOM elements for the folders and dropping the items into it should be trivial, as well as making the Vue tamplate.
+    - This way, generating DOM elements for the folders and dropping the items into it should be trivial, as well as making the Vue template.
   - I'll start by making a class to parse the Bookies.json file and flatten it.
   - Then I'll add some rules to verify that all the items conforms to the Bookies rules and throw an error if it doesn't (adding it for client-safety).
   - [18:02] How to go about the positions? How to know one should go before another in a folder? A 'position' id?
-    - Maybe, when flattening the Bookies.json file, assign a 'postion' ID, and using it when unflattening the object to determine position?
+    - Maybe, when flattening the Bookies.json file, assign a 'position' ID, and using it when unflattening the object to determine position?
       - This will then have to be modified during the "drop" operation of drag-and-drop.
+
+### 2025.03.13
+- [20:23] Damn, managed to actually create a flattening algo in less than a day, and even managed to implement some okayish error-handeling in the Bookies format validation. Good for my standards, kinda hyped.
