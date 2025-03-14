@@ -57,6 +57,9 @@ So, here I am, trying the best to my abilities in replicating their implementati
 
 - [ ] 1. Extension for popular browsers to add Bookies as a default bookmarks manager replacement. Simply login to the extension and have access to your bookmarks across all _supported_ browsers.
 
+- [ ] 2. Sharing hub to share your Bookies collection with others ("sources for my artice", "my favorite websites", "favorite receipes" etc...)
+  - [ ] 2.1 "TOP BOOKIES" e.g.
+
 ---
 # My Notes During development
 ### 2025.03.10
@@ -99,3 +102,16 @@ Things to keep in mind:
 
 ### 2025.03.13
 - [20:23] Damn, managed to actually create a flattening algo in less than a day, and even managed to implement some okayish error-handeling in the Bookies format validation. Good for my standards, kinda hyped.
+
+### 2025.03.14
+- [12:08] Going about inflating a flattened nested object array:
+  - Keep in mind:
+    - Per item:
+      - Figure out if it has a parent.
+      - Figure out if it has a child.
+      - Seek for that child and append it to itself.
+        - Remember to modify the object accordingly (add 'Bookmarks', remove 'Children').
+      - Appending the deepest nested children to its parent before working itself outwards.
+
+      - Perhaps add a "Folder: ID" property to each item when flattening?
+        - This allows for checking it we have to iterate further over the array to find out if the ID is related to a bookmark or folder.

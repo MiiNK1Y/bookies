@@ -116,9 +116,9 @@ export class validBookies {
 }
 
 // Sample data for testing purposes.
-import { readFileSync } from 'node:fs';
-const data = readFileSync("./assets/samples/Bookies.json");
-const sample = JSON.parse(data);
-
-const d = new validBookies(sample);
-console.log(d.bookiesAreValid);
+//import { readFileSync } from 'node:fs';
+//const data = readFileSync("./assets/samples/Bookies.json");
+//const sample = JSON.parse(data);
+//
+//const d = new validBookies(sample);
+//console.log(d.bookiesAreValid);
