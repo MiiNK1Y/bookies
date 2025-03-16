@@ -15,11 +15,12 @@ import { validBookies } from "./validateBookies.js";
 export class Bookies {
   #bookies;
   #flatBookies;
-  #reInflated;
+  #inflatedBookies;
   constructor(bookies) {
     this.#bookies = new validBookies(bookies).bookiesAreValid ? bookies : null;
+
     this.#flatBookies = [];
-    this.#reInflated = [];
+    this.#inflatedBookies = [];
 
     this.#flatten(bookies.Bookmarks);
   }
@@ -129,7 +130,7 @@ export class Bookies {
       }
     });
 
-    this.#reInflated.push(inflate);
+    this.#inflatedBookies.push(inflate);
   }
 
   get bookies() {
@@ -140,9 +141,9 @@ export class Bookies {
     return this.#flatBookies;
   }
 
-  get reInflated() {
+  get inflatedBookies() {
     this.#inflate();
-    return this.#reInflated;
+    return this.#inflatedBookies;
   }
 }
 
@@ -154,4 +155,5 @@ const sample = JSON.parse(data);
 const d = new Bookies(sample);
 
 console.log(d.bookies);
-console.log(d.reInflated);
+console.log(d.flatBookies);
+console.log(d.inflatedBookies);
