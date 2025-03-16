@@ -19,12 +19,9 @@ export class Bookies {
   constructor(bookies) {
     this.#bookies = new validBookies(bookies).bookiesAreValid ? bookies : null;
     this.#flatBookies = [];
-    this.#reInflated = []
+    this.#reInflated = [];
 
-    // TODO: Consider making this an inline expression to store the value.
-    // like: this.#flatBookies = this.#flatten(bookies.Bookmarks).#sortFlatFolderFirst();
-    this.#flatten(bookies.Bookmarks)
-    this.#sortFlat();
+    this.#flatten(bookies.Bookmarks);
   }
 
   // Modifying a bookmark parent to prepare for flattening.
@@ -84,51 +81,56 @@ export class Bookies {
     }
   }
 
+  #inflate() {
+    let flat = [...this.#flatBookies];
+    let inflate = [];
+    let tempInflated = [];
 
-
-  // fill the lower folders first and validate if all the children \
-  // are collected before moving on to a higher level \
-  // check that that the folder does NOT contain any other folders \
-  // those need to be filled first!
-
-  // Check if the item is filled.
-  itemIsFilled = (item) => {
-    return item.Bookmarks.every((i) => item.Children.includes(i.Id));
-  }
-
-  // Collect all the bookmarks from an item by id.
-  bookmarks = (flat, folder) => {
-    return flat.filter((b) => { b.Type === "Bookmark" && folder.Children.includes(b.Id) });
-  }
-
-  // Collect all children.
-  folders = (flat, folder) => {
-    return flat.filter((b) => { b.Type === "Folder" && folder.Children.includes(b.Id) });
-  }
-
-  // Collect all children.
-  children = (flat, folder) => {
-    return flat.filter((b) => { folder.Children.includes(b.Id) });
-  }
-
-  // re-inflate the object.
-  inflate() {
-    const flat = this.#flatBookies;
-
-    const recur = (items, collection = []) => {
-      items.forEach((item) => {
-        if (item.Children) {
-          if (!item.Bookmarks) item.Bookmarks = [];
-          //
-        }
-      });
-      return collection;
+    const folderIsFilled = (folder) => {
+      return folder.Bookmarks.every((i) => folder.Children.includes(i.Id));
     }
 
-    return recur(flat);
+    const walk = (folder) => {
+      if (!folder.Bookmarks) folder.Bookmarks = [];
+      folder.Children.forEach((i) => {
+        const flatItem = flat.find((j) => j.Id === i);
+        if (flatItem) {
+          flat = flat.filter((j) => j.Id != flatItem.Id);
+          if (flatItem.Type === "Bookmark") {
+            folder.Bookmarks.push(flatItem);
+          } else if (flatItem.Type === "Folder") {
+            folder.Bookmarks.push(walk(flatItem));
+          }
+        }
+        else {
+          const inflated = tempInflated.find((j) => j.Id === i);
+          if (inflated) {
+            folder.Bookmarks.push(inflated);
+          }
+        }
+      })
+      if (folderIsFilled(folder)) {
+        delete folder.Children;
+        return folder;
+      }
+      else throw Error("Error when checking if the folder is filled");
+    };
+
+    flat.forEach((item) => {
+      const notFiltered = flat.find((i) => i.Id == item.Id);
+      if (notFiltered) {
+        flat = flat.filter((i) => i.Id != item.Id);
+        if (item.Type === "Folder") {
+          inflate.push(walk(item));
+        }
+        if (item.Type === "Bookmark") {
+          inflate.push(item);
+        }
+      }
+    });
+
+    this.#reInflated.push(inflate);
   }
-
-
 
   get bookies() {
     return this.#bookies;
@@ -139,6 +141,7 @@ export class Bookies {
   }
 
   get reInflated() {
+    this.#inflate();
     return this.#reInflated;
   }
 }
@@ -149,5 +152,6 @@ const data = readFileSync("./assets/samples/Bookies.json");
 const sample = JSON.parse(data);
 
 const d = new Bookies(sample);
-d.inflate();
-//console.log("\n\nreinflated Bookies:\n", d.reInflated);
+
+console.log(d.bookies);
+console.log(d.reInflated);
