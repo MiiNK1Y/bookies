@@ -10,20 +10,27 @@
 * are overwriting the original structure.
 */
 
-import { validBookies } from "./validateBookies.js";
+
+import { valid } from "./validate.js";
+
 
 export class Bookies {
+
   #bookies;
   #flatBookies;
   #inflatedBookies;
+
   constructor(bookies) {
-    this.#bookies = new validBookies(bookies).bookiesAreValid ? bookies : null;
+    this.#bookies = new valid(bookies).valid ? bookies : null;
 
     this.#flatBookies = [];
     this.#inflatedBookies = [];
 
-    this.#flatten(bookies.Bookmarks);
+    if (this.#bookies) {
+      this.#flatten(bookies.Bookmarks);
+    } else console.log("\nError: Failed to validate Bookies file.\n");
   }
+
 
   // Modifying a bookmark parent to prepare for flattening.
   #flatPrepareParent = (item) => {
@@ -35,22 +42,21 @@ export class Bookies {
     return modified;
   }
 
+
   /*
   * Since the structure is flattened to a single array, \
-  * each parent need to know the ID of their child.
+  * each parent need to know the IDs of their children.
+  * Append the 'Children' property and add the children IDs.
   */
+  // TODO: Can be written more prettier...
   #flatAppendItem(item, parentId) {
     if (parentId) {
-
-      // Find the index of the already added parent folder.
       const parentIndex = this.#flatBookies.findIndex((i) => i.Id === parentId);
-
-      // Push the child ID to the parent's children array.
       this.#flatBookies[parentIndex].Children.push(item.Id);
     }
-    // Then last, push the child itself into the flattened array.
     this.#flatBookies.push(item);
   }
+
 
   /*
   * Flatten the nested objects into a single object-array.
@@ -71,16 +77,6 @@ export class Bookies {
     });
   }
 
-  // Sort the flat array based if the object has the 'Children' prop.
-  #sortFlat() {
-    if (this.#flatBookies.length > 0) {
-      this.#flatBookies.sort((a, b) => {
-        if (a.Children && b.Children) return 0;
-        if (a.Children) return -1;
-        if (b.Children) return 1;
-      })
-    }
-  }
 
   #inflate() {
     let flat = [...this.#flatBookies];
@@ -133,13 +129,16 @@ export class Bookies {
     this.#inflatedBookies.push(inflate);
   }
 
+
   get bookies() {
     return this.#bookies;
   }
 
+
   get flatBookies() {
     return this.#flatBookies;
   }
+
 
   get inflatedBookies() {
     this.#inflate();
@@ -147,9 +146,10 @@ export class Bookies {
   }
 }
 
+
 // Sample data for testing purposes.
 import { readFileSync } from 'node:fs';
-const data = readFileSync("./assets/samples/Bookies.json");
+const data = readFileSync("../assets/samples/Bookies.json");
 const sample = JSON.parse(data);
 
 const d = new Bookies(sample);
