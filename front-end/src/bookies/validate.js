@@ -110,8 +110,7 @@ export class valid {
   * Validate the ID and the porperties of an item.
   * Catching an error if either of them fails.
   */
-  #validateItem = (item) => {
-    try {
+  #validateItem = (item) => { try {
       var validId = this.#validateItemId(item.Id);
       var validProps = this.#validateItemProps(item);
     } catch (error) {

@@ -161,15 +161,3 @@ export class Bookies {
     return this.#rebuiltBookies;
   }
 }
-
-
-// Sample data for testing purposes.
-import { readFileSync } from 'node:fs';
-const data = readFileSync("../assets/samples/Bookies.json");
-const sample = JSON.parse(data);
-
-const d = new Bookies(sample);
-
-console.log(d.bookies);
-console.log(d.flatBookies);
-console.log(d.rebuiltBookies);
