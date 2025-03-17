@@ -2,7 +2,7 @@
 import { ref, computed } from 'vue';
 import { bookies } from '@/bookies/load.js';
 
-const BookiesFlat = [...bookies.flatBookies];
+const BookiesFlat = bookies.flatBookies;
 
 const props = defineProps({
   node: {
@@ -14,6 +14,8 @@ const props = defineProps({
     default: 10
   }
 });
+
+const emit = defineEmits(['movedItem']);
 
 const showChildren = ref(false);
 
@@ -36,46 +38,56 @@ function toggleChildren() {
   showChildren.value = !showChildren.value;
 }
 
-// drag-and-drop
 const startDrag = (event, item) => {
-  console.log(item.Id);
   event.dataTransfer.dropEffect = "move";
   event.dataTransfer.effectAllowed = "move";
   event.dataTransfer.setData("itemID", item.Id);
 }
 
 const onDrop = (event, parent) => {
-  console.log("All flat bookies: ", BookiesFlat);
   const itemID = event.dataTransfer.getData("itemID");
-  console.log("itemID: ", itemID);
   const item = BookiesFlat.find((i) => i.Id == itemID);
-  console.log("item: ", item);
 
-  // here we need a way to switch the parent of the item,
-  // also; think about if the item is moved to the root...
-  // how does that go about?
-  // Then, push the new flat item to Bookies to be restored, then re-render.
-
-  // In order to seek through folders based on children, \
-  // create an array with only folders.
-  const folders = BookiesFlat.filter((i) => i.Type === "Folder");
+  const folders = BookiesFlat.filter((i) => i.Type == "Folder");
   const oldParent = folders.find((i) => i.Children.includes(item.Id));
   const oldParentIndex = BookiesFlat.findIndex((p) => p.Id == oldParent.Id);
-  console.log("oldParentIndex: ", oldParentIndex);
-
   const childIndex = BookiesFlat[oldParentIndex].Children.indexOf(item.Id);
-  console.log("childIndex: ", childIndex);
-
-  // Remove that itemID from the parent's children-list.
   BookiesFlat[oldParentIndex].Children.splice(childIndex, 1);
 
-  // Append the item to its new parent.
   const newParentIndex = BookiesFlat.findIndex((p) => p.Id == parent);
-  console.log("newParentIndex: ", newParentIndex);
-
   BookiesFlat[newParentIndex].Children.push(item.Id);
 
-  console.log(BookiesFlat);
+  // try to 'refresh bookies after dropping the item (?)'
+  console.log("updating structure...");
+
+  console.log("Moved item ID:", itemID, " from: ", oldParent.Id, " to: ", parent);
+  console.log("updated structure: ", BookiesFlat);
+
+  // emit the change.
+  emit('movedItem', BookiesFlat);
+
+  /*
+  * NOTE:
+  * Now that the FlatArray has been updated, \
+  * we now need to figure out how to push those changes \
+  * to the Bookies instance and redraw the tree to visualize \
+  * those changes.
+  *
+  * NOTE:
+  * WHERE TO STORE REACTIVE COMPONENTS TO RESPOND TO CHANGING VALUE OF GETTER?
+  *
+  * TODO:
+  * - Need to figure out reactivity of flat-bookies. How to update this ref() \
+  *   after modifying Bookies? Where should the instance live?
+  *     - Perhaps let the instance live in the parent component (BrowserView)?
+  *       - Would that create issues for nested components that maybe wont emit \
+  *         to this parent component because of the deep nesting?
+  *
+  * WARNING: CURRENT BUGS
+  * - Can't move item from root to new parent (root has no identifier).
+  * - When moving item to nested folder, it waterfalls down to the top-most \
+  *   folder, since that is *technically* hovered over aswell.
+  */
 }
 </script>
 

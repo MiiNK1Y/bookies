@@ -18,12 +18,10 @@ export class Bookies {
 
   #bookies;
   #flatBookies;
-  #rebuiltBookies;
 
   constructor(bookies) {
     this.#bookies = new valid(bookies).valid ? bookies : null;
     this.#flatBookies = [];
-    this.#rebuiltBookies = [];
 
     if (!this.#bookies) {
       console.log("\nError: Failed to validate Bookies file.\n");
@@ -142,7 +140,15 @@ export class Bookies {
       }
     });
 
-    this.#rebuiltBookies.push(inflate);
+    // Use the meta information from previous Bookies.
+    const modifiedBookies = {...this.#bookies};
+    modifiedBookies.Bookmarks = inflate;
+
+    // Validate the rebuild Bookies, then update the Bookies.
+    this.#bookies = new valid(modifiedBookies).valid ? inflate : null;
+    if (!this.#bookies) {
+      console.log("\nError: Failed to validate Bookies file.\n");
+    }
   }
 
 
@@ -161,8 +167,10 @@ export class Bookies {
   }
 
 
-  get rebuiltBookies() {
+  set flatBookies(flatBookies) {
+    // Update the flat bookies
+    this.#flatBookies = flatBookies;
+    // Rebuild (and update) the Bookies to follow changes.
     this.#rebuildBookies();
-    return this.#rebuiltBookies;
   }
 }
