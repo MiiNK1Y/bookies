@@ -151,6 +151,11 @@ export class Bookies {
   }
 
 
+  set bookies(bookies) {
+    this.#bookies = new valid(bookies).valid ? bookies : null;
+  }
+
+
   get flatBookies() {
     return this.#flatBookies;
   }

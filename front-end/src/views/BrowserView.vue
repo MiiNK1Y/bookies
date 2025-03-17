@@ -1,5 +1,6 @@
 <script setup>
 import FolderTree from '@/components/browser/FolderTree.vue';
+//import FolderTree from '@/components/browser/FolderTreeFlat.vue';
 </script>
 
 <template>
