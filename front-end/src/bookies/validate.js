@@ -13,11 +13,11 @@
 export class valid {
 
   #valid;
-  #IDs;
+  #usedIDs;
 
   constructor(bookies) {
     // Keep track of all the exsisting IDs, looking for duplcates.
-    this.#IDs = [];
+    this.#usedIDs = [];
 
     /*
     * Fallback to 'false' if the validation fails of-the-bat \
@@ -55,12 +55,11 @@ export class valid {
 
   /*
   * Check for duplacate (thus invalid) IDs.
-  * Throwing an error and returning false, \
-  * making the Bookies invalid.
+  * Throwing an error if a duplacate is found making the Bookies invalid.
   */
   #validateItemId = (id) => {
-    if (!this.#IDs.includes(id)) {
-      this.#IDs.push(id);
+    if (!this.#usedIDs.includes(id)) {
+      this.#usedIDs.push(id);
       return true;
     }
     else throw new Error(`There are two or more instances of ID: ${id}.\n`);
@@ -72,7 +71,15 @@ export class valid {
   */
   #validateItemProps = (item) => {
     let props;
+
+    /*
+    * Validate if folder or bookmark conform to the format.
+    *
+    * If more item types are to be added, they need to be added here \
+    * as well to be validated for conformity.
+    */
     switch (item.Type) {
+
       case "Folder":
         props = Object.entries(this.#validFolderProps);
         break;
@@ -99,7 +106,10 @@ export class valid {
   }
 
 
-  // Validate if folder or bookmark conform to the format.
+  /*
+  * Validate the ID and the porperties of an item.
+  * Catching an error if either of them fails.
+  */
   #validateItem = (item) => {
     try {
       var validId = this.#validateItemId(item.Id);
@@ -112,6 +122,10 @@ export class valid {
   };
 
 
+  /*
+  * Iterate over every object item in the Bookies array \
+  * Returning a bool if the entirity of the array conforms or not.
+  */
   #validate = (bookies) => {
     return bookies.every((item) => {
       const itemValid = this.#validateItem(item);
@@ -145,7 +159,7 @@ export class valid {
   }
 
 
-  get IDs() {
-    return this.#IDs;
+  get usedIDs() {
+    return this.#usedIDs;
   }
 }

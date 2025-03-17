@@ -18,29 +18,28 @@ export class Bookies {
 
   #bookies;
   #flatBookies;
-  #inflatedBookies;
+  #rebuiltBookies;
 
   constructor(bookies) {
     this.#bookies = new valid(bookies).valid ? bookies : null;
-
     this.#flatBookies = [];
-    this.#inflatedBookies = [];
+    this.#rebuiltBookies = [];
 
-    if (this.#bookies) {
+    if (!this.#bookies) {
+      console.log("\nError: Failed to validate Bookies file.\n");
+    } else {
       this.#flatten(bookies.Bookmarks);
-    } else console.log("\nError: Failed to validate Bookies file.\n");
+    }
   }
 
 
   // Modifying a bookmark parent to prepare for flattening.
-  #flatPrepareParent = (item) => {
-
-    // Clone the object before modifying.
+  #prepareFlatParent = (item) => {
     const modified = { ...item };
     if (modified.Bookmarks) delete modified.Bookmarks;
     modified.Children = [];
     return modified;
-  }
+  };
 
 
   /*
@@ -48,8 +47,7 @@ export class Bookies {
   * each parent need to know the IDs of their children.
   * Append the 'Children' property and add the children IDs.
   */
-  // TODO: Can be written more prettier...
-  #flatAppendItem(item, parentId) {
+  #appendFlatItem(item, parentId) {
     if (parentId) {
       const parentIndex = this.#flatBookies.findIndex((i) => i.Id === parentId);
       this.#flatBookies[parentIndex].Children.push(item.Id);
@@ -64,69 +62,87 @@ export class Bookies {
   */
   #flatten(bookies, parentId = null) {
     bookies.forEach((item) => {
-      if (item.Type === "Folder") {
+      switch (item.Type) {
 
-        // Add the modified parent to the flattened array before continuing.
-        this.#flatAppendItem(this.#flatPrepareParent(item), parentId);
+        case "Folder":
+          // Add the modified parent to the flattened array before continuing.
+          this.#appendFlatItem(this.#prepareFlatParent(item), parentId);
 
-        // Check if there are children belonging to the parent, \
-        // if so, iterate over them aswell before continuing to the next item.
-        if (item.Bookmarks.length > 0) this.#flatten(item.Bookmarks, item.Id);
+          /*
+          * Check if there are children belonging to the parent, \
+          * if so, iterate over them aswell before continuing to the next item.
+          */
+          if (item.Bookmarks.length > 0) this.#flatten(item.Bookmarks, item.Id);
+          break;
+
+        case "Bookmark":
+          this.#appendFlatItem(item, parentId);
+          break;
       }
-      else if (item.Type === "Bookmark") this.#flatAppendItem(item, parentId);
     });
   }
 
 
-  #inflate() {
+  #folderIsFilled = (folder) => {
+    return folder.Bookmarks.every((i) => folder.Children.includes(i.Id));
+  };
+
+
+  #rebuildBookies() {
     let flat = [...this.#flatBookies];
     let inflate = [];
     let tempInflated = [];
 
-    const folderIsFilled = (folder) => {
-      return folder.Bookmarks.every((i) => folder.Children.includes(i.Id));
-    }
-
     const walk = (folder) => {
+
       if (!folder.Bookmarks) folder.Bookmarks = [];
+
       folder.Children.forEach((i) => {
         const flatItem = flat.find((j) => j.Id === i);
         if (flatItem) {
           flat = flat.filter((j) => j.Id != flatItem.Id);
-          if (flatItem.Type === "Bookmark") {
-            folder.Bookmarks.push(flatItem);
-          } else if (flatItem.Type === "Folder") {
-            folder.Bookmarks.push(walk(flatItem));
+          switch (flatItem.Type) {
+
+            case "Folder":
+              folder.Bookmarks.push(walk(flatItem));
+              break;
+
+            case "Bookmark":
+              folder.Bookmarks.push(flatItem);
+              break;
           }
-        }
-        else {
+        } else {
           const inflated = tempInflated.find((j) => j.Id === i);
-          if (inflated) {
-            folder.Bookmarks.push(inflated);
-          }
+          if (inflated) folder.Bookmarks.push(inflated);
         }
-      })
-      if (folderIsFilled(folder)) {
+      });
+
+      if (this.#folderIsFilled(folder)) {
         delete folder.Children;
         return folder;
-      }
-      else throw Error("Error when checking if the folder is filled");
+      } else throw Error(
+        `\nError: failed to check if folder with ID: ${folder.Id} is filled.\n`
+      );
     };
 
     flat.forEach((item) => {
       const notFiltered = flat.find((i) => i.Id == item.Id);
       if (notFiltered) {
         flat = flat.filter((i) => i.Id != item.Id);
-        if (item.Type === "Folder") {
+        switch(item.Type) {
+
+          case "Folder":
           inflate.push(walk(item));
-        }
-        if (item.Type === "Bookmark") {
+          break;
+
+          case "Bookmark":
           inflate.push(item);
+          break;
         }
       }
     });
 
-    this.#inflatedBookies.push(inflate);
+    this.#rebuiltBookies.push(inflate);
   }
 
 
@@ -140,9 +156,9 @@ export class Bookies {
   }
 
 
-  get inflatedBookies() {
-    this.#inflate();
-    return this.#inflatedBookies;
+  get rebuiltBookies() {
+    this.#rebuildBookies();
+    return this.#rebuiltBookies;
   }
 }
 
@@ -156,4 +172,4 @@ const d = new Bookies(sample);
 
 console.log(d.bookies);
 console.log(d.flatBookies);
-console.log(d.inflatedBookies);
+console.log(d.rebuiltBookies);
