@@ -1,25 +1,14 @@
 <script setup>
-// import { sample } from '@/controllers/api.js';
-// import TreeNode from './TreeNode.vue';
-//
-import data from '@/assets/samples/Bookies.json';
-import { Bookies } from '@/bookies/bookies.js';
 import TreeNodeFlat from './TreeNodeFlat.vue';
-import { ref } from 'vue';
+import { b, bookies } from '@/bookies/load.js';
 
-const bookies = new Bookies(data);
-
-// The original Bookies.json data, unmodified.
-const Bookie = ref(bookies.bookies);
-
-function updateBookies(flatBookies) {
-  bookies.flatBookies = flatBookies;
-  Bookie.value = bookies.bookies;
-  console.log("Did that work?"); // it did not...
+function movedItem(updatedFlat) {
+  b.flatBookies = updatedFlat;
+  console.log("updated flat bookies: ", updatedFlat);
 }
 </script>
 
-
 <template>
-  <TreeNodeFlat v-for="node in Bookie.Bookmarks" :key="node" :node="node" @movedItem="updateBookies" />
+  {{ console.log("original flatBookies: ", b.flatBookies) }}
+  <TreeNodeFlat v-for="node in bookies.Bookmarks" :key="node" :node="node" @updatedBookies="movedItem" />
 </template>

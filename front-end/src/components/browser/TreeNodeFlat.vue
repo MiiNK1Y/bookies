@@ -1,8 +1,6 @@
 <script setup>
 import { ref, computed } from 'vue';
-import { bookies } from '@/bookies/load.js';
-
-const BookiesFlat = bookies.flatBookies;
+import { flat } from '@/bookies/load.js';
 
 const props = defineProps({
   node: {
@@ -15,7 +13,7 @@ const props = defineProps({
   }
 });
 
-const emit = defineEmits(['movedItem']);
+const emit = defineEmits(["updatedBookies"]);
 
 const showChildren = ref(false);
 
@@ -45,6 +43,7 @@ const startDrag = (event, item) => {
 }
 
 const onDrop = (event, parent) => {
+  const BookiesFlat = [...flat.value];
   const itemID = event.dataTransfer.getData("itemID");
   const item = BookiesFlat.find((i) => i.Id == itemID);
 
@@ -57,14 +56,25 @@ const onDrop = (event, parent) => {
   const newParentIndex = BookiesFlat.findIndex((p) => p.Id == parent);
   BookiesFlat[newParentIndex].Children.push(item.Id);
 
-  // try to 'refresh bookies after dropping the item (?)'
-  console.log("updating structure...");
-
+  console.log("modified flat array: ", BookiesFlat);
   console.log("Moved item ID:", itemID, " from: ", oldParent.Id, " to: ", parent);
-  console.log("updated structure: ", BookiesFlat);
 
-  // emit the change.
-  emit('movedItem', BookiesFlat);
+  // WARNING: emit() breaks the cloned array (BookiesFlat),
+  // making it carry the original data, but flat.
+  // The modifications (adding "Children", removing "Bookmarks") are not \
+  // applied to the array!
+
+  // emit("updatedBookies", BookiesFlat);
+
+  //emit("updatedBookies", [
+  //  {
+  //    "Type": "Bookmark",
+  //    "Id": 0,
+  //    "Title": "Title of the Bookmark, has ID 0",
+  //    "URL": "https://vg.no",
+  //    "Tags": ["News", "Norwegian News", "Demo Website"]
+  //  }
+  //]);
 
   /*
   * NOTE:
@@ -93,30 +103,14 @@ const onDrop = (event, parent) => {
 
 
 <template>
-  <div
-    class="node drop-zone"
-    @drop="onDrop($event, node.Id)"
-    @dragenter.prevent
-    @dragover.prevent
-    :style="nodeMargin"
-  >
-    <div
-      class="item drag-el"
-      @click="toggleChildren"
-      draggable="true"
-      @dragstart="startDrag($event, node)"
-    >
+  <div class="node drop-zone" @drop="onDrop($event, node.Id)" @dragenter.prevent @dragover.prevent :style="nodeMargin">
+    <div class="item drag-el" @click="toggleChildren" draggable="true" @dragstart="startDrag($event, node)">
       <img :src="toggleChildrenIcon" v-if="hasChildren" />
       <span>[ID: {{ node.Id }}]</span> <!-- DEBUG -->
       <span>{{ node.Title.toLowerCase() }}</span>
     </div>
     <div v-if='hasChildren' v-show="showChildren">
-      <TreeNodeFlat
-        v-for="child in node.Bookmarks"
-        :key="child.id"
-        :node="child"
-        :spacing="spacing"
-      />
+      <TreeNodeFlat v-for="child in node.Bookmarks" :key="child.Id" :node="child" :spacing="spacing" />
     </div>
   </div>
 </template>
