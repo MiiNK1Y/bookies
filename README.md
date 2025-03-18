@@ -115,3 +115,12 @@ Things to keep in mind:
 
       - Perhaps add a "Folder: ID" property to each item when flattening?
         - This allows for checking it we have to iterate further over the array to find out if the ID is related to a bookmark or folder.
+
+### 18.03.18
+- [14:01] Since the "inflate" functionality is now complete, and I now can rebuild a modified flat array, I need to figure out how to actually update the folder tree to show those change.
+  - I have tried:
+    - Emitting the entire modified flat array, only for emit() to do something funky and not actually emit the created modified array, but some other version of it i cant figure out how...
+    - Move the instance to its own file and then import ref()'s into the folderTree and the nodes, only to have issues actually setting the new data.
+
+  - I'm now going to try and implement Pinia for state management. Where methods can be implemented to modify the data, and then the changes should be applied automatically by Vue.
+    - Wait, maybe Pinia is not needed after all? Checking the Vue documentation; entire arrays may be replaced, and Vue will only re-render items that actually changed.

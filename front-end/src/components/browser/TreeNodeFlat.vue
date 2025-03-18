@@ -1,6 +1,7 @@
 <script setup>
 import { ref, computed } from 'vue';
-import { flat } from '@/bookies/load.js';
+
+const emit = defineEmits(["dragAndDrop"]);
 
 const props = defineProps({
   node: {
@@ -12,8 +13,6 @@ const props = defineProps({
     default: 10
   }
 });
-
-const emit = defineEmits(["updatedBookies"]);
 
 const showChildren = ref(false);
 
@@ -36,68 +35,17 @@ function toggleChildren() {
   showChildren.value = !showChildren.value;
 }
 
-const startDrag = (event, item) => {
+// Drag and drop functionality.
+function startDrag(event, item) {
   event.dataTransfer.dropEffect = "move";
   event.dataTransfer.effectAllowed = "move";
   event.dataTransfer.setData("itemID", item.Id);
 }
 
-const onDrop = (event, parent) => {
-  const BookiesFlat = [...flat.value];
+// Gather and emit the ID of the new parent and the child.
+function onDrop(event, parent) {
   const itemID = event.dataTransfer.getData("itemID");
-  const item = BookiesFlat.find((i) => i.Id == itemID);
-
-  const folders = BookiesFlat.filter((i) => i.Type == "Folder");
-  const oldParent = folders.find((i) => i.Children.includes(item.Id));
-  const oldParentIndex = BookiesFlat.findIndex((p) => p.Id == oldParent.Id);
-  const childIndex = BookiesFlat[oldParentIndex].Children.indexOf(item.Id);
-  BookiesFlat[oldParentIndex].Children.splice(childIndex, 1);
-
-  const newParentIndex = BookiesFlat.findIndex((p) => p.Id == parent);
-  BookiesFlat[newParentIndex].Children.push(item.Id);
-
-  console.log("modified flat array: ", BookiesFlat);
-  console.log("Moved item ID:", itemID, " from: ", oldParent.Id, " to: ", parent);
-
-  // WARNING: emit() breaks the cloned array (BookiesFlat),
-  // making it carry the original data, but flat.
-  // The modifications (adding "Children", removing "Bookmarks") are not \
-  // applied to the array!
-
-  // emit("updatedBookies", BookiesFlat);
-
-  //emit("updatedBookies", [
-  //  {
-  //    "Type": "Bookmark",
-  //    "Id": 0,
-  //    "Title": "Title of the Bookmark, has ID 0",
-  //    "URL": "https://vg.no",
-  //    "Tags": ["News", "Norwegian News", "Demo Website"]
-  //  }
-  //]);
-
-  /*
-  * NOTE:
-  * Now that the FlatArray has been updated, \
-  * we now need to figure out how to push those changes \
-  * to the Bookies instance and redraw the tree to visualize \
-  * those changes.
-  *
-  * NOTE:
-  * WHERE TO STORE REACTIVE COMPONENTS TO RESPOND TO CHANGING VALUE OF GETTER?
-  *
-  * TODO:
-  * - Need to figure out reactivity of flat-bookies. How to update this ref() \
-  *   after modifying Bookies? Where should the instance live?
-  *     - Perhaps let the instance live in the parent component (BrowserView)?
-  *       - Would that create issues for nested components that maybe wont emit \
-  *         to this parent component because of the deep nesting?
-  *
-  * WARNING: CURRENT BUGS
-  * - Can't move item from root to new parent (root has no identifier).
-  * - When moving item to nested folder, it waterfalls down to the top-most \
-  *   folder, since that is *technically* hovered over aswell.
-  */
+  emit("dragAndDrop", [Number(itemID), parent])
 }
 </script>
 
