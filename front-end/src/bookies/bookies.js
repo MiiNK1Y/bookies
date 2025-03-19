@@ -14,169 +14,142 @@
 import { valid } from "./validate.js";
 
 
-export class Bookies {
+// Check if a parent has their assigned children.
+const parentIsFilled = (folder) => {
+  const bookmarkChildrenIDs = folder.Bookmarks.map(a => a.Id);
+  return folder.Children.every((a) => bookmarkChildrenIDs.includes(a));
+};
 
-  #bookies;
-  #flatBookies;
 
-  constructor(bookies) {
-    this.#bookies = new valid(bookies).valid ? bookies : null;
-    this.#flatBookies = [];
+// Modify parent in order to prapare it for the flat array.
+const preparedFlatParent = (parent) => {
+  let modified = { ...parent };
+  if (modified.Bookmarks) delete modified.Bookmarks;
+  modified.Children = [];
+  return modified;
+};
 
-    if (!this.#bookies) {
-      console.log("\nError: Failed to validate Bookies file.\n");
-    } else {
-      this.#flatten(bookies.Bookmarks);
-      console.log("\n[BOOKIES] New flat bookies generated!:\n", this.#flatBookies);
-    }
+
+// Modify parent in order to prapare it for the rebuilt array.
+const preparedInflatedParent = (parent) => {
+  if (parentIsFilled(parent)) {
+    delete parent.Children;
+    return parent;
   }
+  else throw Error(
+    `\nError: failed to check if folder with ID: ${parent.Id} is filled.\n`
+  );
+}
 
 
-  // Modifying a bookmark parent to prepare for flattening.
-  #prepareFlatParent = (item) => {
-    const modified = { ...item };
-    if (modified.Bookmarks) delete modified.Bookmarks;
-    modified.Children = [];
-    return modified;
+// Rebuild / inflate the flat bookies to the format the client sees.
+const rebuildFromFlat = (flatBookies) => {
+  let flat = [...flatBookies];
+  let inflate = [];
+  let temp = [];
+
+  // walk() modifies 'flat', and needs to be nested here.
+  const walk = (folder) => {
+    if (!folder.Bookmarks) folder.Bookmarks = [];
+    folder.Children.forEach((i) => {
+      const flatItem = flat.find((j) => j.Id === i);
+      if (flatItem) {
+
+        flat = flat.filter((j) => j.Id != flatItem.Id);
+
+        switch (flatItem.Type) {
+          case "Folder":
+            folder.Bookmarks.push(walk(flatItem));
+            break;
+
+          case "Bookmark":
+            folder.Bookmarks.push(flatItem);
+            break;
+        }
+      } else {
+        const setAside = temp.find((j) => j.Id == i);
+        if (setAside) folder.Bookmarks.push(setAside);
+      }
+    });
+    return preparedInflatedParent(folder);
   };
 
+  flat.forEach((item) => {
+    const notFiltered = flat.find((i) => i.Id == item.Id);
 
-  /*
-  * Since the structure is flattened to a single array, \
-  * each parent need to know the IDs of their children.
-  * Append the 'Children' property and add the children IDs.
-  */
-  #appendFlatItem(item, parentId) {
-    if (parentId) {
-      const parentIndex = this.#flatBookies.findIndex((i) => i.Id === parentId);
-      this.#flatBookies[parentIndex].Children.push(item.Id);
+    const parentStillInFlat = flat.some((i) => {
+      if (i.Children) {
+        return i.Children.includes(item.Id)
+      } else return false;
+    });
+
+    if (parentStillInFlat) temp.push(item)
+
+    else if (notFiltered) {
+
+      flat = flat.filter((i) => i.Id != item.Id);
+
+      switch(item.Type) {
+        case "Folder":
+        inflate.push(walk(item));
+        break;
+
+        case "Bookmark":
+        inflate.push(item);
+        break;
+      }
     }
-    this.#flatBookies.push(item);
+  });
+
+  return inflate;
+};
+
+
+export const flatten = (bookies) => {
+  let flat = [];
+
+  const appendFlatItem = (item, parentId) => {
+    if (parentId) {
+      const parentIndex = flat.findIndex((i) => i.Id === parentId);
+      flat[parentIndex].Children.push(item.Id);
+    }
+    flat.push(item);
   }
 
-
-  /*
-  * Flatten the nested objects into a single object-array.
-  * Each folder will have a nested array for the children ID's belonging to it.
-  */
-  #flatten(bookies, parentId = null) {
+  function iter(bookies, parentId = null) {
     bookies.forEach((item) => {
       switch (item.Type) {
 
         case "Folder":
-          // Add the modified parent to the flattened array before continuing.
-          this.#appendFlatItem(this.#prepareFlatParent(item), parentId);
-
-          /*
-          * Check if there are children belonging to the parent, \
-          * if so, iterate over them aswell before continuing to the next item.
-          */
-          if (item.Bookmarks.length > 0) this.#flatten(item.Bookmarks, item.Id);
+          appendFlatItem(preparedFlatParent(item), parentId);
+          if (item.Bookmarks.length > 0) iter(item.Bookmarks, item.Id);
           break;
 
         case "Bookmark":
-          this.#appendFlatItem(item, parentId);
+          appendFlatItem(item, parentId);
           break;
       }
     });
   }
+  iter(bookies.Bookmarks);
+
+  console.log("[BOOKIES] Flattened Bookies:\n", flat);
+  return flat;
+};
 
 
-  #folderIsFilled = (folder) => {
-    return folder.Bookmarks.every((i) => folder.Children.includes(i.Id));
+export const rebuild = (flatBookies) => {
+  let modifiedBookies = {
+    "Bookies version": "0.0.1",
   };
+  modifiedBookies.Bookmarks = rebuildFromFlat(flatBookies);
 
+  const bookies = new valid(modifiedBookies).valid ? modifiedBookies : null;
 
-  #rebuildBookies() {
-    let flat = [...this.#flatBookies];
-    let inflate = [];
-
-    const walk = (folder) => {
-
-      if (!folder.Bookmarks) folder.Bookmarks = [];
-
-      folder.Children.forEach((i) => {
-        const flatItem = flat.find((j) => j.Id === i);
-        if (flatItem) {
-          flat = flat.filter((j) => j.Id != flatItem.Id);
-          switch (flatItem.Type) {
-
-            case "Folder":
-              folder.Bookmarks.push(walk(flatItem));
-              break;
-
-            case "Bookmark":
-              folder.Bookmarks.push(flatItem);
-              break;
-          }
-        }
-      });
-
-      if (this.#folderIsFilled(folder)) {
-        delete folder.Children;
-        return folder;
-      } else throw Error(
-        `\nError: failed to check if folder with ID: ${folder.Id} is filled.\n`
-      );
-    };
-
-    flat.forEach((item) => {
-      const notFiltered = flat.find((i) => i.Id == item.Id);
-      if (notFiltered) {
-        flat = flat.filter((i) => i.Id != item.Id);
-        switch(item.Type) {
-
-          case "Folder":
-          inflate.push(walk(item));
-          break;
-
-          case "Bookmark":
-          inflate.push(item);
-          break;
-        }
-      }
-    });
-
-    // Use the meta information from previous Bookies.
-    const modifiedBookies = {...this.#bookies};
-    modifiedBookies.Bookmarks = inflate;
-
-    // Validate the rebuild Bookies, then update the Bookies.
-    this.#bookies = new valid(modifiedBookies).valid ? modifiedBookies : null;
-    if (!this.#bookies) {
-      console.log("\nError: Failed to validate Bookies file.\n");
-    }
-
-    console.log("\n[BOOKIES] Rebuilt bookies from flat!:\n", this.#bookies);
+  if (!bookies) {
+    console.log("\nError: Failed to validate Bookies file.\n");
   }
+  console.log("\n[BOOKIES] Rebuilt bookies from flat!:\n", bookies);
 
-
-  get bookies() {
-    return this.#bookies;
-  }
-
-
-  set bookies(bookies) {
-    console.log("\n[BOOKIES] Setting new bookies:\n", bookies);
-    this.#bookies = new valid(bookies).valid ? bookies : null;
-
-    if (!this.#bookies) {
-      console.log("\nError: Failed to validate Bookies file.\n");
-    } else {
-      this.#flatten(bookies.Bookmarks);
-      console.log("\n[BOOKIES] New flat bookies generated!:\n", this.#flatBookies);
-    }
-  }
-
-
-  get flatBookies() {
-    return this.#flatBookies;
-  }
-
-
-  set flatBookies(flatBookies) {
-    console.log("\n[BOOKIES] Setting new flat bookies:\n", flatBookies);
-    this.#flatBookies = flatBookies;
-    this.#rebuildBookies();
-  }
-}
+  return bookies;
+};
