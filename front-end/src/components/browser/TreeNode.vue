@@ -1,6 +1,8 @@
 <script setup>
 import { ref, computed } from 'vue';
 
+const emit = defineEmits(["dragAndDrop"]);
+
 const props = defineProps({
   node: {
     type: Object,
@@ -32,18 +34,31 @@ const toggleChildrenIcon = computed(() => {
 function toggleChildren() {
   showChildren.value = !showChildren.value;
 }
+
+// Drag and drop functionality.
+function startDrag(event, item) {
+  event.dataTransfer.dropEffect = "move";
+  event.dataTransfer.effectAllowed = "move";
+  event.dataTransfer.setData("itemID", item.Id);
+}
+
+// Gather and emit the ID of the new parent and the child.
+function onDrop(event, parent) {
+  const itemID = event.dataTransfer.getData("itemID");
+  emit("dragAndDrop", [Number(itemID), parent])
+}
 </script>
 
 
 <template>
-  <div class="node drop-zone" draggable="true" :style="nodeMargin">
-    <div class="item" @click="toggleChildren">
+  <div class="node drop-zone" @drop="onDrop($event, node.Id)" @dragenter.prevent @dragover.prevent :style="nodeMargin">
+    <div class="item drag-el" @click="toggleChildren" draggable="true" @dragstart="startDrag($event, node)">
       <img :src="toggleChildrenIcon" v-if="hasChildren" />
       <span>[ID: {{ node.Id }}]</span> <!-- DEBUG -->
       <span>{{ node.Title.toLowerCase() }}</span>
     </div>
     <div v-if='hasChildren' v-show="showChildren">
-      <TreeNode v-for="child in node.Bookmarks" :key="child.id" :node="child" :spacing="spacing" />
+      <TreeNodeFlat v-for="child in node.Bookmarks" :key="child.Id" :node="child" :spacing="spacing" />
     </div>
   </div>
 </template>

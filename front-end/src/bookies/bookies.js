@@ -23,10 +23,9 @@ const parentIsFilled = (folder) => {
 
 // Modify parent in order to prapare it for the flat array.
 const preparedFlatParent = (parent) => {
-  let modified = { ...parent };
-  if (modified.Bookmarks) delete modified.Bookmarks;
-  modified.Children = [];
-  return modified;
+  if (parent.Bookmarks) delete parent.Bookmarks;
+  parent.Children = [];
+  return parent;
 };
 
 
@@ -42,13 +41,20 @@ const preparedInflatedParent = (parent) => {
 }
 
 
+// Check if a parent is still in the flat array.
+const parentStillInFlat = (flat, parent) => {
+ flat.some((i) => {
+  if (i.Children) return i.Children.includes(parent.Id);
+  else return false;
+})};
+
+
 // Rebuild / inflate the flat bookies to the format the client sees.
 const rebuildFromFlat = (flatBookies) => {
   let flat = [...flatBookies];
   let inflate = [];
   let temp = [];
 
-  // walk() modifies 'flat', and needs to be nested here.
   const walk = (folder) => {
     if (!folder.Bookmarks) folder.Bookmarks = [];
     folder.Children.forEach((i) => {
@@ -77,14 +83,7 @@ const rebuildFromFlat = (flatBookies) => {
   flat.forEach((item) => {
     const notFiltered = flat.find((i) => i.Id == item.Id);
 
-    const parentStillInFlat = flat.some((i) => {
-      if (i.Children) {
-        return i.Children.includes(item.Id)
-      } else return false;
-    });
-
-    if (parentStillInFlat) temp.push(item)
-
+    if (parentStillInFlat(flat, item)) temp.push(item)
     else if (notFiltered) {
 
       flat = flat.filter((i) => i.Id != item.Id);
