@@ -23,17 +23,19 @@ const parentIsFilled = (folder) => {
 
 // Modify parent in order to prapare it for the flat array.
 const preparedFlatParent = (parent) => {
-  if (parent.Bookmarks) delete parent.Bookmarks;
-  parent.Children = [];
-  return parent;
+  var cParent = {...parent};
+  delete cParent.Bookmarks;
+  cParent.Children = [];
+  return cParent;
 };
 
 
 // Modify parent in order to prapare it for the rebuilt array.
 const preparedInflatedParent = (parent) => {
-  if (parentIsFilled(parent)) {
-    delete parent.Children;
-    return parent;
+  var cParent = {...parent};
+  if (parentIsFilled(cParent)) {
+    delete cParent.Children;
+    return cParent;
   }
   else throw Error(
     `\nError: failed to check if folder with ID: ${parent.Id} is filled.\n`
@@ -56,10 +58,20 @@ const rebuildFromFlat = (flatBookies) => {
   let temp = [];
 
   const walk = (folder) => {
-    if (!folder.Bookmarks) folder.Bookmarks = [];
+    folder.Bookmarks = [];
     folder.Children.forEach((i) => {
-      const flatItem = flat.find((j) => j.Id === i);
-      if (flatItem) {
+      const flatItem = flat.find((j) => j.Id == i);
+      if (!flatItem) {
+        const tempFlatItem = temp.find((j) => j.Id == i)
+      };
+
+      if (parentStillInFlat(flat, flatItem)) {
+        console.log(`parent of [${flatItem.Id}] is stil in flat!`);
+        temp.push(flatItem);
+        flat = flat.filter((j) => j.Id != flatItem.Id);
+      }
+
+      else if (flatItem) {
 
         flat = flat.filter((j) => j.Id != flatItem.Id);
 
@@ -73,8 +85,14 @@ const rebuildFromFlat = (flatBookies) => {
             break;
         }
       } else {
+        console.log(`ID [${i}] was not found in "flat" array.`);
         const setAside = temp.find((j) => j.Id == i);
-        if (setAside) folder.Bookmarks.push(setAside);
+        console.log("contents of 'temp'", temp);
+        if (setAside) {
+          console.log(`ID [${i} was set aside, appending...]`);
+          folder.Bookmarks.push(setAside)
+        }
+        ;
       }
     });
     return preparedInflatedParent(folder);
@@ -83,8 +101,12 @@ const rebuildFromFlat = (flatBookies) => {
   flat.forEach((item) => {
     const notFiltered = flat.find((i) => i.Id == item.Id);
 
-    if (parentStillInFlat(flat, item)) temp.push(item)
+    if (parentStillInFlat(flat, item)) {
+      console.log(`parent of [${item.Id}] is stil in flat!`);
+      temp.push(item);
+    }
     else if (notFiltered) {
+      console.log(`item [${item.Id}] is not filtered, pushing...`);
 
       flat = flat.filter((i) => i.Id != item.Id);
 
@@ -117,10 +139,12 @@ export const flatten = (bookies) => {
 
   function iter(bookies, parentId = null) {
     bookies.forEach((item) => {
+      let flatParent;
       switch (item.Type) {
 
         case "Folder":
-          appendFlatItem(preparedFlatParent(item), parentId);
+          flatParent = preparedFlatParent(item)
+          appendFlatItem(flatParent, parentId);
           if (item.Bookmarks.length > 0) iter(item.Bookmarks, item.Id);
           break;
 
@@ -132,7 +156,7 @@ export const flatten = (bookies) => {
   }
   iter(bookies.Bookmarks);
 
-  console.log("[BOOKIES] Flattened Bookies:\n", flat);
+  console.log("[BOOKIES] Flattened Bookies:\n", JSON.parse(JSON.stringify(flat)));
   return flat;
 };
 
@@ -148,7 +172,7 @@ export const rebuild = (flatBookies) => {
   if (!bookies) {
     console.log("\nError: Failed to validate Bookies file.\n");
   }
-  console.log("\n[BOOKIES] Rebuilt bookies from flat!:\n", bookies);
+  console.log("\n[BOOKIES] Rebuilt bookies from flat!:\n", JSON.parse(JSON.stringify(bookies)));
 
   return bookies;
 };

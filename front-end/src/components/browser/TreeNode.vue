@@ -51,14 +51,33 @@ function onDrop(event, parent) {
 
 
 <template>
-  <div class="node drop-zone" @drop="onDrop($event, node.Id)" @dragenter.prevent @dragover.prevent :style="nodeMargin">
-    <div class="item drag-el" @click="toggleChildren" draggable="true" @dragstart="startDrag($event, node)">
+  <div
+    class="node drop-zone"
+    @dragenter.prevent
+    @dragover.prevent
+    @drop="onDrop($event, node.Id)"
+    :style="nodeMargin">
+
+    <div
+      class="item drag-el"
+      draggable="true"
+      @click="toggleChildren"
+      @dragstart="startDrag($event, node)">
+
       <img :src="toggleChildrenIcon" v-if="hasChildren" />
       <span>[ID: {{ node.Id }}]</span> <!-- DEBUG -->
       <span>{{ node.Title.toLowerCase() }}</span>
+
     </div>
+
     <div v-if='hasChildren' v-show="showChildren">
-      <TreeNodeFlat v-for="child in node.Bookmarks" :key="child.Id" :node="child" :spacing="spacing" />
+
+      <TreeNode
+        v-for="child in node.Bookmarks"
+        :key="child.Id"
+        :node="child"
+        :spacing="spacing"/>
+
     </div>
   </div>
 </template>

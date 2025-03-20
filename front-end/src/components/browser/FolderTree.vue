@@ -1,12 +1,14 @@
 <script setup>
-import TreeNodeFlat from './TreeNodeFlat.vue';
+import TreeNode from './TreeNode.vue';
 import { flatten, rebuild } from '@/bookies/bookies.js';
 import data from '@/assets/samples/Bookies.json';
 import { ref } from 'vue';
 
 let bookies = data;
-let bookiesFlat = flatten(data);
-console.log("original flat:\n", bookiesFlat);
+let bookiesFlat = flatten(bookies);
+//console.log("data", data);
+//console.log("original flat:\n", bookiesFlat);
+
 const bookiesRef = ref(bookies);
 
 function movedItem(updatedFlat) {
@@ -14,8 +16,7 @@ function movedItem(updatedFlat) {
   const newParentId = updatedFlat[1];
 
   const flat = [...bookiesFlat];
-  console.log("cloned flat:\n", bookiesFlat);
-  console.log("cloned flat child of 1:\n", bookiesFlat[1].Children);
+  //console.log("cloned flat:\n", JSON.parse(JSON.stringify(flat)));
 
   const folders = flat.filter((i) => i.Type == "Folder");
   const oldParent = folders.find((i) => i.Children.includes(itemId));
@@ -26,14 +27,14 @@ function movedItem(updatedFlat) {
 
   const newParentIndex = flat.findIndex((p) => p.Id == newParentId);
   flat[newParentIndex].Children.push(itemId);
-  console.log("modified flat:\n", flat);
+  //console.log("modified flat:\n", JSON.parse(JSON.stringify(flat)));
 
-  bookiesRef.value = rebuild(flat);
   bookiesFlat = flat;
+  bookiesRef.value = rebuild(flat);
 }
 </script>
 
 
 <template>
-  <TreeNodeFlat v-for="node in bookiesRef.Bookmarks" :key="node.Id" :node="node" @dragAndDrop="movedItem" />
+  <TreeNode v-for="node in bookiesRef.Bookmarks" :key="node.Id" :node="node" @dragAndDrop="movedItem" />
 </template>
