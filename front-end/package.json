@@ -1,6 +1,6 @@
 {
   "name": "bookies",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "private": true,
   "type": "module",
   "scripts": {
@@ -9,7 +9,7 @@
     "preview": "vite preview",
     "lint": "eslint . --fix",
     "format": "prettier --write src/",
-    "test": "jest"
+    "test": "node --experimental-vm-modules node_modules/jest-cli/bin/jest.js"
   },
   "dependencies": {
     "jest-cli": "^29.7.0",

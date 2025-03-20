@@ -1,10 +1,13 @@
-//import { describe, expect, test } from '@jest/globals';
+import { describe, expect, test, afterEach, beforeEach, jest } from '@jest/globals';
+
+//import { longFlatParent } from './Bookies.flat..json';
+//import { longBookies } from './Bookies.json';
 
 const flatParent = {
   Type: 'Folder',
   Id: 1,
   Title: 'Some Folder Name Here',
-  Children: [ 2, 3, 4]
+  Children: [ 2, 3, 4, 6]
 };
 
 const flatChildren = [
@@ -34,10 +37,24 @@ const flatChildren = [
     Title: 'Has Id 2',
     URL: 'https://alnyk.pages.dev',
     Tags: [ 'Personal', 'Portfolio', 'Personal Project' ]
-  }
+  },
+  {
+    Type: 'Bookmark',
+    Id: 6,
+    Title: 'Has Id 1, bit short',
+    URL: 'https://wikipedia.com',
+    Tags: [ 'Information', 'Info' ]
+  },
 ];
 
 const flatChildrenScrambled = [
+  {
+    Type: 'Bookmark',
+    Id: 5,
+    Title: 'Has Id 2',
+    URL: 'https://alnyk.pages.dev',
+    Tags: [ 'Personal', 'Portfolio', 'Personal Project' ]
+  },
   {
     Type: 'Folder',
     Id: 4,
@@ -46,14 +63,14 @@ const flatChildrenScrambled = [
   },
   {
     Type: 'Bookmark',
-    Id: 3,
-    Title: 'Has Id 2',
-    URL: 'https://alnyk.pages.dev',
-    Tags: [ 'Personal', 'Portfolio', 'Personal Project' ]
+    Id: 6,
+    Title: 'Has Id 1, bit short',
+    URL: 'https://wikipedia.com',
+    Tags: [ 'Information', 'Info' ]
   },
   {
     Type: 'Bookmark',
-    Id: 5,
+    Id: 3,
     Title: 'Has Id 2',
     URL: 'https://alnyk.pages.dev',
     Tags: [ 'Personal', 'Portfolio', 'Personal Project' ]
@@ -101,20 +118,75 @@ const flatParentTestInflated = {
               "Tags": [ 'Personal', 'Portfolio', 'Personal Project' ]
             },
           ]
+      },
+      {
+        "Type": 'Bookmark',
+        "Id": 6,
+        "Title": 'Has Id 1, bit short',
+        "URL": 'https://wikipedia.com',
+        "Tags": [ 'Information', 'Info' ]
       }
     ]
 };
 
-//import { FlatParent } from '../../modules/bookies/bookies.fix';
+const flatChildrenMissingItem = [
+  {
+    Type: 'Bookmark',
+    Id: 2,
+    Title: 'Has Id 1, bit short',
+    URL: 'https://wikipedia.com',
+    Tags: [ 'Information', 'Info' ]
+  },
+  {
+    Type: 'Bookmark',
+    Id: 3,
+    Title: 'Has Id 2',
+    URL: 'https://alnyk.pages.dev',
+    Tags: [ 'Personal', 'Portfolio', 'Personal Project' ]
+  },
+  {
+    Type: 'Folder',
+    Id: 4,
+    Title: 'Some Folder Name Here',
+    Children: [ 5 ]
+  },
+  {
+    Type: 'Bookmark',
+    Id: 5,
+    Title: 'Has Id 2',
+    URL: 'https://alnyk.pages.dev',
+    Tags: [ 'Personal', 'Portfolio', 'Personal Project' ]
+  },
+];
 
-const FlatParent = require("../../modules/bookies/bookies.fix");
 
-//const FlatParentData = new FlatParent.FlatParent(flatParent, flatChildren, [], []).parent;
-//test("Testing FlatParent tree building (in order)", () => {
-//  expect(FlatParentData).toEqual(flatParentTestInflated);
-//});
 
-const FlatParentDataScrambled = new FlatParent.FlatParent(flatParent, flatChildrenScrambled, [], []).parent;
-test("Testing FlatParent tree building (scrambled order)", () => {
-  expect(FlatParentDataScrambled).toEqual(flatParentTestInflated);
+import { FlatParent } from '../../modules/bookies/bookies.fix';
+
+describe("FlatParent rebuilds a folder-item into its original shape.", () => {
+
+  let cFlatParent;
+
+  beforeEach(() => {
+    cFlatParent = {...flatParent};
+  })
+
+  test("Rebuilding from regular flat.", () => {
+    const cFlatChildren = [...flatChildren];
+    const rebuilt = new FlatParent(cFlatParent, cFlatChildren, [], []).parent;
+    expect(rebuilt).toEqual(flatParentTestInflated);
+  });
+
+  test("Rebuilding from scrambled flat.", () => {
+    const cFlatChildrenScrambled = [...flatChildrenScrambled];
+    const rebuilt = new FlatParent(cFlatParent, cFlatChildrenScrambled, [], []).parent;
+    expect(rebuilt).toEqual(flatParentTestInflated);
+  });
+
+  test("Rebuilding from scrambled flat, one missing nested bookmark.", () => {
+    const cFlatChildrenMissingItem = [...flatChildrenMissingItem];
+    expect(() => {
+      new FlatParent(cFlatParent, cFlatChildrenMissingItem, [], []).parent;
+    }).toThrow();
+  });
 });

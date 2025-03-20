@@ -3,7 +3,7 @@
 */
 
 
-class FlatParent {
+export class FlatParent {
   #parent;
   #flatArray;
   #tempArray;
@@ -18,18 +18,20 @@ class FlatParent {
     this.#error = null;
 
     this.#prepareForWalk();
-    if (this.#parent.Children.length > 0) this.#walk();
+    if (this.#parent.Children.length > 0) {
+      this.#walk();
+      this.#checkComplete();
+    }
     this.#prepareInflated();
   }
 
-  #isComplete() {
-    const childrenIDs = parent.Bookmarks.map(a => a.Id);
-    const isComplete = parent.Children.every(a => childrenIDs.includes(a));
+  #checkComplete(){
+    const childrenIDs = this.#parent.Bookmarks.map(a => a.Id);
+    const isComplete = this.#parent.Children.every(a => childrenIDs.includes(a));
     if (isComplete) {
       return true;
     } else {
-      this.#error = new Error(`Error: ${this.#parent.Id} is NOT complete!`);
-      return false;
+      throw new Error(`Error: ${this.#parent.Id} is NOT complete!`);
     }
   };
 
@@ -51,15 +53,25 @@ class FlatParent {
     this.#resolved.push(item);
   }
 
+  #flatChildItem = (childId) => {
+    const flatItem = this.#flatArray.find(b => b.Id == childId);
+    const tempItem = this.#tempArray.find(b => b.Id == childId);
+    const item = flatItem ?? tempItem;
+
+    if (!item) {
+      throw new Error(`Error: Flat child with ID [${childId}] \
+        was not found in any flat array!`);
+    };
+
+    if (flatItem) this.#removeItemFromFlatArray(item);
+    else if (tempItem) this.#removeItemFromTempArray(item);
+
+    return item;
+  };
+
   #walk() {
     this.#parent.Children.forEach(a => {
-      const flatItem = this.#flatArray.find(b => b.Id == a);
-      const tempItem = this.#tempArray.find(b => b.Id == a);
-      const item = flatItem ?? tempItem;
-
-      if (flatItem) this.#removeItemFromFlatArray(item);
-      else if (tempItem) this.#removeItemFromTempArray(item);
-
+      const item = this.#flatChildItem(a);
       switch (item.Type) {
         case "Folder":
           this.#parent.Bookmarks.push(new FlatParent(item, this.#flatArray,
@@ -116,6 +128,3 @@ class FlatParent {
 //    return this.#inflated;
 //  }
 //}
-
-
-module.exports = { FlatParent };
