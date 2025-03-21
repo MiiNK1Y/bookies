@@ -7,15 +7,11 @@ export class FlatParent {
   #parent;
   #flatArray;
   #tempArray;
-  #resolved;
-  #error;
 
-  constructor(parent, flatArray, tempArray, resolved) {
+  constructor(parent, flatArray, tempArray) {
     this.#parent = parent;
     this.#flatArray = flatArray;
     this.#tempArray = tempArray;
-    this.#resolved = resolved;
-    this.#error = null;
 
     this.#prepareForWalk();
     if (this.#parent.Children.length > 0) {
@@ -28,11 +24,8 @@ export class FlatParent {
   #checkComplete(){
     const childrenIDs = this.#parent.Bookmarks.map(a => a.Id);
     const isComplete = this.#parent.Children.every(a => childrenIDs.includes(a));
-    if (isComplete) {
-      return true;
-    } else {
-      throw new Error(`Error: ${this.#parent.Id} is NOT complete!`);
-    }
+    if (isComplete) return true;
+    throw new Error(`Error: ${this.#parent.Id} is NOT complete!`);
   };
 
   #prepareForWalk() {
@@ -45,12 +38,10 @@ export class FlatParent {
 
   #removeItemFromFlatArray(item) {
     this.#flatArray = this.#flatArray.filter((a) => a.Id != item.Id);
-    this.#resolved.push(item);
   }
 
   #removeItemFromTempArray(item) {
     this.#tempArray = this.#tempArray.filter((a) => a.Id != item.Id);
-    this.#resolved.push(item);
   }
 
   #flatChildItem = (childId) => {
@@ -58,13 +49,8 @@ export class FlatParent {
     const tempItem = this.#tempArray.find(b => b.Id == childId);
     const item = flatItem ?? tempItem;
 
-    if (!item) {
-      throw new Error(`Error: Flat child with ID [${childId}] \
-        was not found in any flat array!`);
-    };
-
-    if (flatItem) this.#removeItemFromFlatArray(item);
-    else if (tempItem) this.#removeItemFromTempArray(item);
+    if (!item) throw new Error(`Error: Flat child with ID [${childId}] ` +
+      `was not found in any flat array!`);
 
     return item;
   };
@@ -72,10 +58,16 @@ export class FlatParent {
   #walk() {
     this.#parent.Children.forEach(a => {
       const item = this.#flatChildItem(a);
+      this.#removeItemFromFlatArray(item);
+      this.#removeItemFromTempArray(item);
+
+      let parent;
       switch (item.Type) {
         case "Folder":
-          this.#parent.Bookmarks.push(new FlatParent(item, this.#flatArray,
-            this.#tempArray, this.#resolved).parent);
+          parent = new FlatParent(item, this.#flatArray, this.#tempArray);
+          this.#flatArray = parent.flatArray;
+          this.#tempArray = parent.tempArray;
+          this.#parent.Bookmarks.push(parent.parent);
           break;
 
         case "Bookmark":
@@ -86,11 +78,7 @@ export class FlatParent {
   };
 
   get parent() {
-    if (this.#error) {
-      return this.#error;
-    } else {
-      return this.#parent;
-    };
+    return this.#parent;
   }
 
   get flatArray() {
@@ -103,28 +91,64 @@ export class FlatParent {
 }
 
 
-//export class Rebuild {
-//
-//  #flatBookies;
-//  #tempItems;
-//  #inflated;
-//  //#error;
-//
-//  constructor(flatBookies) {
-//    this.#flatBookies = flatBookies;
-//    this.#tempItems = [];
-//    this.#inflated = []; // NOTE:: Only bookies (tree), no meta props.
-//  }
-//
-//  #removeItemFromFlatBookies(item) {
-//    this.#flatBookies = this.#flatBookies.filter((a) => a.Id != item.Id);
-//  }
-//
-//  #rebuildFromFlat = () => {
-//    //
-//  };
-//
-//  get bookies() {
-//    return this.#inflated;
-//  }
-//}
+export class Rebuild {
+  #flatArray;
+  #tempArray;
+  #inflated;
+
+  constructor(flatBookies) {
+    this.#flatArray = flatBookies;
+    this.#tempArray = [];
+    this.#inflated = [];
+
+    this.#rebuildFromFlat();
+  }
+
+  #removeItemFromFlatArray(item) {
+    this.#flatArray = this.#flatArray.filter((a) => a.Id != item.Id);
+  }
+
+  #removeItemFromTempArray(item) {
+    this.#tempArray = this.#tempArray.filter((a) => a.Id != item.Id);
+  }
+
+  #parentStillInFlatArray = (item) => {
+    console.log("checking for parent of: ", item.Id);
+    const parents = this.#flatArray.filter(a => a.Type == "Folder");
+    const parent = parents.find(a => a.Children.includes(item.Id));
+    if (parent) return true;
+    else return false;
+  }
+
+  #rebuildFromFlat = () => {
+    this.#flatArray.forEach(item => {
+      if (!this.#flatArray.includes(item)) return;
+
+      if (this.#parentStillInFlatArray(item)) {
+        this.#tempArray.push(item);
+        return;
+      }
+
+      this.#removeItemFromFlatArray(item);
+      this.#removeItemFromTempArray(item);
+
+      let parent;
+      switch (item.Type) {
+        case "Folder":
+          parent = new FlatParent(item, this.#flatArray, this.#tempArray);
+          this.#flatArray = parent.flatArray;
+          this.#tempArray = parent.tempArray;
+          this.#inflated.push(parent.parent);
+          break;
+
+        case "Bookmark":
+          this.#inflated.push(item);
+          break;
+      }
+    })
+  };
+
+  get inflated() {
+    return this.#inflated;
+  }
+}
