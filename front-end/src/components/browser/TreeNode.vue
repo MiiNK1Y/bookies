@@ -1,7 +1,6 @@
 <script setup>
 import { ref, computed } from 'vue';
-
-const emit = defineEmits(["dragAndDrop"]);
+import { movedItem } from '@/stores/folderTree.js'
 
 const props = defineProps({
   node: {
@@ -11,10 +10,6 @@ const props = defineProps({
 });
 
 const showChildren = ref(false);
-
-const itemStyle = computed(() => {
-  return { 'z-index': `${props.zIndex}` };
-});
 
 const hasChildren = computed(() => {
   const { Bookmarks } = props.node;
@@ -40,12 +35,8 @@ function startDrag(event, item) {
 
 // Gather and emit the ID of the new parent and the child.
 function onDrop(event, parent) {
-  console.log("event happened!");
-  console.log("parent: ", parent);
   const itemID = event.dataTransfer.getData("itemID");
-  console.log(`dropped data ItemID = [${itemID}], parent = [${parent}]`);
-  console.log("emitting...");
-  emit("dragAndDrop", [Number(itemID), parent]);
+  movedItem([Number(itemID), parent]);
 }
 
 function setBackgroundColor(event) {
@@ -66,6 +57,7 @@ function rmBackgroundColor(event) {
   <div v-if="node.Type == 'Bookmark'"
     class="item node drag-el"
     draggable="true"
+    @dragover.stop
     @dragstart="startDrag($event, node)">
 
     <span style="color: orange">{{ node.Id }}</span>
@@ -74,11 +66,10 @@ function rmBackgroundColor(event) {
 
   <div v-else-if="node.Type == 'Folder'"
     class="node drop-zone"
-    :style="itemStyle"
     @dragover.prevent
     @dragenter.prevent="setBackgroundColor"
     @dragleave="rmBackgroundColor"
-    @drop.stop.prevent="onDrop($event, node.Id); rmBackgroundColor($event)">
+    @drop.prevent.stop="onDrop($event, node.Id); rmBackgroundColor($event)">
 
     <div
       class="item drag-el"
@@ -111,18 +102,7 @@ div.node {
   border-radius: 7px;
   padding: 2px;
   margin: 10px;
-
-  /* V1
-  background-color: var(--rp-highlight-low);
-  */
-
-  /* V2
-  background-color: rgba(80, 80, 80, 0.2);
-  */
-
-  /* V3 */
   background-color: rgba(235, 188, 186, 0.3);
-
   font-family: var(--bks-big-text);
   cursor: default;
   box-shadow: 0 0 10px -2px black;

@@ -124,3 +124,8 @@ Things to keep in mind:
 
   - I'm now going to try and implement Pinia for state management. Where methods can be implemented to modify the data, and then the changes should be applied automatically by Vue.
     - Wait, maybe Pinia is not needed after all? Checking the Vue documentation; entire arrays may be replaced, and Vue will only re-render items that actually changed.
+
+### 21.03.18
+- [21:21] Damn I've been productive.
+  - The tree is now applying changes when they happen, but the reason it worked was because of the shallow nature of emit(). There is a bug that passes an item when drag-and-droped into a nested folder, through all the parents and end up in the root folder. This is because the event listeners for each item assumes the drop was meant for them and takes it from their child folder until it reaches the root parent. To avoid this, i need to disable event propagation, but that makes emits not work, since emits used their parent to pass the data.
+  - So I'll be checking out Pinia to handle that action. I was looking at "Provide / Inject", but it appears that is meant for parent-to-child communication, and not vice-versa.
