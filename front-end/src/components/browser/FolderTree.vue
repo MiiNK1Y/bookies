@@ -1,11 +1,11 @@
 <script setup>
 import TreeNode from './TreeNode.vue';
-import { flatten, rebuild } from '@/bookies/bookies.js';
+import { Flatten, Rebuild } from '@/modules/bookies/bookies.js';
 import data from '@/assets/samples/Bookies.json';
 import { ref } from 'vue';
 
 let bookies = data;
-let bookiesFlat = flatten(bookies);
+//let bookiesFlat = new Flatten(bookies);
 //console.log("data", data);
 //console.log("original flat:\n", bookiesFlat);
 

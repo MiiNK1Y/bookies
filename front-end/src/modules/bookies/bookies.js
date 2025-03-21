@@ -50,6 +50,15 @@ export class Rebuild {
       }
     })
   };
+
+  get bookies() {
+    const meta = {
+      "Bookies Version": "0.0.1",
+      "Bookmarks": []
+    };
+    meta.Bookmarks = this.inflated;
+    return meta;
+  }
 }
 
 
@@ -113,4 +122,48 @@ export class FlatParent extends Rebuild {
     if (isComplete) return true;
     throw new Error(`Error: ${this.parent.Id} is NOT complete!`);
   };
+}
+
+
+export class Flatten {
+  constructor(bookies) {
+    this.bookies = bookies.Bookmarks;
+    this.flat = [];
+
+    console.log(this.bookies);
+
+    this.flatten(this.bookies);
+  }
+
+  indexOfParent = (child) => {
+    return this.flat.findIndex((i) => i.Id === child.Id);
+  };
+
+  appendFlatItem(item, parentId) {
+    if (parentId) this.flat[this.indexOfParent(item)].Children.push(item.Id);
+    else this.flat.push(item);
+  }
+
+  flatParent = (parent) => {
+    var cParent = {...parent};
+    delete cParent.Bookmarks;
+    cParent.Children = [];
+    return cParent;
+  };
+
+  flatten(parent, parentId = null) {
+    parent.forEach((item) => {
+
+      switch (item.Type) {
+        case "Folder":
+          this.appendFlatItem(this.flatParent(item), parentId);
+          if (item.Bookmarks.length > 0) this.flatten(item.Bookmarks, item.Id);
+          break;
+
+        case "Bookmarks":
+          this.appendFlatItem(item, parentId);
+          break;
+      }
+    })
+  }
 }
