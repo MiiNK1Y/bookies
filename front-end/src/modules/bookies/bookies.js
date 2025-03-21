@@ -130,18 +130,16 @@ export class Flatten {
     this.bookies = bookies.Bookmarks;
     this.flat = [];
 
-    console.log(this.bookies);
-
     this.flatten(this.bookies);
   }
 
-  indexOfParent = (child) => {
-    return this.flat.findIndex((i) => i.Id === child.Id);
+  indexOfParent = (parent) => {
+    return this.flat.findIndex((i) => i.Id === parent);
   };
 
   appendFlatItem(item, parentId) {
-    if (parentId) this.flat[this.indexOfParent(item)].Children.push(item.Id);
-    else this.flat.push(item);
+    if (parentId) this.flat[this.indexOfParent(parentId)].Children.push(item.Id);
+    this.flat.push(item);
   }
 
   flatParent = (parent) => {
@@ -151,8 +149,8 @@ export class Flatten {
     return cParent;
   };
 
-  flatten(parent, parentId = null) {
-    parent.forEach((item) => {
+  flatten(items, parentId = null) {
+    items.forEach((item) => {
 
       switch (item.Type) {
         case "Folder":
@@ -160,7 +158,7 @@ export class Flatten {
           if (item.Bookmarks.length > 0) this.flatten(item.Bookmarks, item.Id);
           break;
 
-        case "Bookmarks":
+        case "Bookmark":
           this.appendFlatItem(item, parentId);
           break;
       }

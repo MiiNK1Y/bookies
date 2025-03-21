@@ -7,22 +7,18 @@ const props = defineProps({
   node: {
     type: Object,
     required: true
-  },
-  spacing: {
-    type: Number,
-    default: 10
   }
 });
 
 const showChildren = ref(false);
 
-const nodeMargin = computed(() => {
-  return { 'margin-left': `${props.spacing}px` }
+const itemStyle = computed(() => {
+  return { 'z-index': `${props.zIndex}` };
 });
 
 const hasChildren = computed(() => {
   const { Bookmarks } = props.node;
-  return Bookmarks && Bookmarks.length > 0;
+  return Bookmarks;
 });
 
 const toggleChildrenIcon = computed(() => {
@@ -44,19 +40,45 @@ function startDrag(event, item) {
 
 // Gather and emit the ID of the new parent and the child.
 function onDrop(event, parent) {
+  console.log("event happened!");
+  console.log("parent: ", parent);
   const itemID = event.dataTransfer.getData("itemID");
-  emit("dragAndDrop", [Number(itemID), parent])
+  console.log(`dropped data ItemID = [${itemID}], parent = [${parent}]`);
+  console.log("emitting...");
+  emit("dragAndDrop", [Number(itemID), parent]);
+}
+
+function setBackgroundColor(event) {
+  if (event.target.classList.contains("drop-zone")) {
+    event.target.classList.add("dragover");
+  }
+}
+
+function rmBackgroundColor(event) {
+  if (event.target.classList.contains("drop-zone")) {
+    event.target.classList.remove("dragover");
+  }
 }
 </script>
 
 
 <template>
-  <div
+  <div v-if="node.Type == 'Bookmark'"
+    class="item node drag-el"
+    draggable="true"
+    @dragstart="startDrag($event, node)">
+
+    <span style="color: orange">{{ node.Id }}</span>
+    <span>{{ node.Title.toLowerCase() }}</span>
+  </div>
+
+  <div v-else-if="node.Type == 'Folder'"
     class="node drop-zone"
-    @dragenter.prevent
+    :style="itemStyle"
     @dragover.prevent
-    @drop="onDrop($event, node.Id)"
-    :style="nodeMargin">
+    @dragenter.prevent="setBackgroundColor"
+    @dragleave="rmBackgroundColor"
+    @drop.stop.prevent="onDrop($event, node.Id); rmBackgroundColor($event)">
 
     <div
       class="item drag-el"
@@ -65,25 +87,25 @@ function onDrop(event, parent) {
       @dragstart="startDrag($event, node)">
 
       <img :src="toggleChildrenIcon" v-if="hasChildren" />
-      <span>[ID: {{ node.Id }}]</span> <!-- DEBUG -->
+      <span style="color: orange">{{ node.Id }}</span>
       <span>{{ node.Title.toLowerCase() }}</span>
-
     </div>
 
-    <div v-if='hasChildren' v-show="showChildren">
-
-      <TreeNode
-        v-for="child in node.Bookmarks"
-        :key="child.Id"
-        :node="child"
-        :spacing="spacing"/>
-
-    </div>
+    <TreeNode
+      v-show="showChildren"
+      v-for="child in node.Bookmarks"
+      :key="child.Id"
+      :node="child"
+      />
   </div>
 </template>
 
 
 <style scoped>
+div.drop-zone.dragover {
+  background-color: rgb(49, 48, 92);
+}
+
 div.node {
   width: fit-content;
   border-radius: 7px;
