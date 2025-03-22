@@ -7,10 +7,8 @@
 
 export class Valid {
   constructor(bookies) {
-    this.isValid = false;
     this.usedIDs = [];
-
-    this.valid(bookies.Bookmarks);
+    this.isValid = this.valid(bookies);
   }
 
   props = {
@@ -31,23 +29,31 @@ export class Valid {
   };
 
   itemIdIsValid = (id) => {
-    if (
-      !this.usedIDs.includes(id) || // Check for duplicate ID.
-      !Number(id).isNaN() ||        // Check if ID is a number.
-      !id.startsWith("-")           // Check if ID is not negative.
-    ) {
-      return true;
+    const ex = /^(0|[1-9]\d*)$/;
+    //if (Number(id).isNaN) {
+    //  throw Error(`Error: [ID: ${id}] ID value needs to be a number.`);
+    //}
+    //else if (String(id).startsWith("-")) {
+    //  throw Error(`Error: [ID: ${id}] ID value needs to be a positive number.`);
+    //}
+    //else if (String(id).includes(".") || String(id).includes(",")) {
+    //  throw Error(`Error: [ID: ${id}] ID value needs to be a positive number.`);
+    //}
+    if (this.usedIDs.includes(id)) {
+      throw Error(`Error: [ID: ${id}] There are two or more items with this ID.`);
     }
-    else throw new Error(`There are two or more instances of ID: ${id}.\n`);
+    else if (!ex.test(String(id))) {
+      throw Error(`Error: [ID: ${id}] ID value needs to be a positive integer.`);
+    }
+    else return true;
   };
 
   itemPropsAreValid = (item, props) => {
     for (const [property, type] of props) {
-      if (
-        !Object.keys(item).includes(property) ||
-        typeof item[property] != type
-      ) {
-        throw new Error(`Item wth type: "${item.Type}" is missing property: "${property}".\n`);
+      if (!Object.keys(item).includes(property)) {
+        throw Error(`Error: [ID: ${item.Id}] Missing property: [${property}]`);
+      } else if (typeof item[property] != type) {
+        throw Error(`Error: [ID: ${item.Id}] Unacceptable value in property: [${property}]`);
       }
     }
     return true;
@@ -65,7 +71,7 @@ export class Valid {
         break;
 
       default:
-        throw new Error("There is no written validation for item with type: ", item.Type);
+        throw Error(`Error: [ID: ${item.Id}] There is no written validation for item type: [${item.Type}]`);
     }
     return this.itemPropsAreValid(item, props);
   }
@@ -75,24 +81,23 @@ export class Valid {
       var validId = this.itemIdIsValid(item.Id);
       var validProps = this.checkItemProps(item);
     } catch (error) {
-      console.log(error);
+      console.log(error.message);
       return false;
     }
     return validId && validProps;
   };
 
-  valid(bookies) {
-    this.isValid = bookies.every((item) => {
-
+  valid = (folder) => {
+    return folder.Bookmarks.every(item => {
       const itemValid = this.validateItem(item);
       if (!itemValid) return false;
 
+      const hasChildren = item.Type === "Folder" && item.Bookmarks.length > 0;
+
       this.usedIDs.push(item.Id);
 
-      if (item.Type === "Folder" && item.Bookmarks.length > 0) {
-        return itemValid && this.valid(item.Bookmarks);
-      }
-      else return itemValid;
+      if (hasChildren) return this.valid(item);
+      else return true;
     });
   };
 }

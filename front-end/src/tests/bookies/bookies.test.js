@@ -1,6 +1,6 @@
 import { describe, expect, test, beforeEach } from '@jest/globals';
-import { Constants } from './constants';
-import { Rebuild, FlatParent } from '../../modules/bookies/bookies';
+import { Constants } from './samples/constants';
+import { Rebuild, FlatParent } from '../../modules/bookies/bookies.js';
 
 let c;
 beforeEach(() => {
