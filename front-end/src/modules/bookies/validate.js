@@ -5,6 +5,7 @@
 * for comments and other sorts of data.
 */
 
+
 export class Valid {
   constructor(bookies) {
     this.usedIDs = [];
@@ -30,20 +31,11 @@ export class Valid {
 
   itemIdIsValid = (id) => {
     const ex = /^(0|[1-9]\d*)$/;
-    //if (Number(id).isNaN) {
-    //  throw Error(`Error: [ID: ${id}] ID value needs to be a number.`);
-    //}
-    //else if (String(id).startsWith("-")) {
-    //  throw Error(`Error: [ID: ${id}] ID value needs to be a positive number.`);
-    //}
-    //else if (String(id).includes(".") || String(id).includes(",")) {
-    //  throw Error(`Error: [ID: ${id}] ID value needs to be a positive number.`);
-    //}
-    if (this.usedIDs.includes(id)) {
-      throw Error(`Error: [ID: ${id}] There are two or more items with this ID.`);
-    }
-    else if (!ex.test(String(id))) {
+    if (!ex.test(String(id))) {
       throw Error(`Error: [ID: ${id}] ID value needs to be a positive integer.`);
+    }
+    else if (this.usedIDs.includes(id)) {
+      throw Error(`Error: [ID: ${id}] There are two or more items with this ID.`);
     }
     else return true;
   };

@@ -1,6 +1,6 @@
 <script setup>
 import { ref, computed } from 'vue';
-import { movedItem } from '@/stores/folderTree.js'
+import { MoveTreeItem } from '@/stores/folderTree.js'
 
 const props = defineProps({
   node: {
@@ -35,8 +35,8 @@ function startDrag(event, item) {
 
 // Gather and emit the ID of the new parent and the child.
 function onDrop(event, parent) {
-  const itemID = event.dataTransfer.getData("itemID");
-  movedItem([Number(itemID), parent]);
+  const itemID = Number(event.dataTransfer.getData("itemID"));
+  const temp = new MoveTreeItem(parent, itemID);
 }
 
 function setBackgroundColor(event) {
@@ -54,39 +54,24 @@ function rmBackgroundColor(event) {
 
 
 <template>
-  <div v-if="node.Type == 'Bookmark'"
-    class="item node drag-el"
-    draggable="true"
-    @dragstart="startDrag($event, node)">
+  <div v-if="node.Type == 'Bookmark'" class="item node drag-el" draggable="true" @dragstart="startDrag($event, node)">
 
     <span style="color: orange">{{ node.Id }}</span>
     <span>{{ node.Title.toLowerCase() }}</span>
   </div>
 
-  <div v-else-if="node.Type == 'Folder'"
-    class="node drop-zone"
-    @dragover.prevent
-    @dragenter.prevent="setBackgroundColor"
-    @dragleave="rmBackgroundColor"
+  <div v-else-if="node.Type == 'Folder'" class="node drop-zone" @dragover.prevent
+    @dragenter.prevent="setBackgroundColor" @dragleave="rmBackgroundColor"
     @drop.prevent.stop="onDrop($event, node.Id); rmBackgroundColor($event)">
 
-    <div
-      class="item drag-el"
-      draggable="true"
-      @click="toggleChildren"
-      @dragstart="startDrag($event, node)">
+    <div class="item drag-el" draggable="true" @click="toggleChildren" @dragstart="startDrag($event, node)">
 
       <img :src="toggleChildrenIcon" v-if="hasChildren" />
       <span style="color: orange">{{ node.Id }}</span>
       <span>{{ node.Title.toLowerCase() }}</span>
     </div>
 
-    <TreeNode
-      v-show="showChildren"
-      v-for="child in node.Bookmarks"
-      :key="child.Id"
-      :node="child"
-      />
+    <TreeNode v-show="showChildren" v-for="child in node.Bookmarks" :key="child.Id" :node="child" />
   </div>
 </template>
 

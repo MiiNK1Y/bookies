@@ -1,7 +1,6 @@
 import { describe, expect, test, beforeEach } from '@jest/globals';
 import { Constants } from './samples/constants';
 import { Valid } from '../../modules/bookies/validate.js';
-  import data from './samples/Bookies.json';
 
 let c;
 beforeEach(() => {
@@ -20,6 +19,7 @@ describe("[Validate] Validate formatting of VALID Bookies object.", () => {
     expect(valid).toBe(true);
   });
 });
+
 
 describe("[Validate] Check faulty formatting of Bookies object.", () => {
   test("Check missing 'Type' property.", () => {

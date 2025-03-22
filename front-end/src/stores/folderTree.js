@@ -1,41 +1,57 @@
-/*
-* TODO:
-* - Rewrite scrappy function to a class for better maintenance.
-*/
-
 import data from '../tests/bookies/samples/Bookies.json';
 import { Flatten, Rebuild } from '@/modules/bookies/bookies.js';
 import { ref } from 'vue';
 
 let bookies = data;
-let bookiesFlat = new Flatten(bookies).flat;
 
-export const bookiesRef = ref(bookies);
+export const bookiesTreeRef = ref(bookies);
 
-export function movedItem(updatedFlat) {
-  const itemId = updatedFlat[0];
-  const newParentId = updatedFlat[1];
+let flatBookies = new Flatten(bookies).flat;
 
-  if (itemId == newParentId) return;
+export class MoveTreeItem {
+  constructor(newParent, child) {
+    this.flat = [...flatBookies];
+    this.newParentId = newParent;
+    this.childId = child;
+    this.oldParentId = this.oldParent();
 
-  console.log(`\nmoved item [${itemId}] to [${newParentId}]`);
+    if (this.oldParentId) this.removeFromParent();
+    if (this.newParentId) this.appendToParent();
 
-  const flat = [...bookiesFlat];
-
-  const folders = flat.filter((i) => i.Type == "Folder");
-  const oldParent = folders.find((i) => i.Children.includes(itemId));
-  if (oldParent) {
-    const oldParentIndex = flat.findIndex((p) => p.Id == oldParent.Id);
-    const childIndex = flat[oldParentIndex].Children.indexOf(itemId);
-    flat[oldParentIndex].Children.splice(childIndex, 1);
+    this.update();
   }
 
-  const newParentIndex = flat.findIndex((p) => p.Id == newParentId);
-  if (newParentIndex) {
-    flat[newParentIndex].Children.push(itemId);
+  oldParent = () => {
+    const folders = this.flat.filter(a => a.Type == "Folder");
+    const oldParent = folders.find(a => a.Children.includes(this.childId));
+    if (oldParent) return oldParent.Id;
+    else return null;
+  };
+
+  newParentIsOwnChild = () => {
+    const child = this.flat.find(a => a.Id == this.childId);
+    if (
+      child.Type != "Folder" ||
+      !child.Children.includes(this.newParentId)
+    ) return false;
+    else return true;
   }
 
-  bookies = new Rebuild(flat).bookies;
-  bookiesFlat = new Flatten(bookies).flat;
-  bookiesRef.value = bookies;
+  removeFromParent() {
+    const oldParentIndex = this.flat.findIndex(a => a.Id == this.oldParentId);
+    const childIndex = this.flat[oldParentIndex].Children.indexOf(this.childId);
+    this.flat[oldParentIndex].Children.splice(childIndex, 1);
+  }
+
+  appendToParent() {
+    const newParentIndex = this.flat.findIndex(a => a.Id == this.newParentId);
+    this.flat[newParentIndex].Children.push(this.childId);
+  }
+
+  update() {
+    if (this.newParentId == this.childId || this.newParentIsOwnChild()) return;
+    bookies = new Rebuild(this.flat).bookies;
+    flatBookies = new Flatten(bookies).flat;
+    bookiesTreeRef.value = bookies;
+  }
 }
