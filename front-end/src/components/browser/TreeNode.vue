@@ -57,7 +57,6 @@ function rmBackgroundColor(event) {
   <div v-if="node.Type == 'Bookmark'"
     class="item node drag-el"
     draggable="true"
-    @dragover.stop
     @dragstart="startDrag($event, node)">
 
     <span style="color: orange">{{ node.Id }}</span>
