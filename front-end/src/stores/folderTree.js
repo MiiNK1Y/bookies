@@ -1,4 +1,4 @@
-import data from '../tests/bookies/samples/Bookies.json';
+import data from '@/tests/bookies/samples/Bookies.json';
 import { Flatten, Rebuild } from '@/modules/bookies/bookies.js';
 import { ref } from 'vue';
 
@@ -34,7 +34,7 @@ export class MoveTreeItem {
     else return null;
   };
 
-  itemType(id) {
+  itemType = (id) => {
     const item = this.flat.find(a => a.Id === id);
     return item.Type;
   }

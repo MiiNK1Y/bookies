@@ -1,5 +1,5 @@
 import { describe, expect, test, beforeEach } from '@jest/globals';
-import { Constants } from './samples/constants';
+import { Constants } from './constants';
 import { Valid } from '@/modules/bookies/validate.js';
 
 let c;
