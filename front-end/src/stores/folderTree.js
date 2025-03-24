@@ -14,11 +14,17 @@ export class MoveTreeItem {
     this.newParentId = newParent;
     this.childId = child;
     this.oldParentId = this.oldParent();
+    this.childType = this.itemType(this.childId);
 
-    if (this.oldParentId) this.removeFromParent();
-    if (this.newParentId) this.appendToParent();
-
-    this.update();
+    if (
+      this.childType === "Bookmark" ||
+        (
+          this.newParentId != this.childId &&
+          !this.newParentIsOwnChild(this.childId)
+        )
+    ) {
+      this.update();
+    }
   }
 
   oldParent = () => {
@@ -28,14 +34,23 @@ export class MoveTreeItem {
     else return null;
   };
 
-  newParentIsOwnChild = () => {
-    const child = this.flat.find(a => a.Id == this.childId);
-    if (
-      child.Type != "Folder" ||
-      !child.Children.includes(this.newParentId)
-    ) return false;
-    else return true;
+  itemType(id) {
+    const item = this.flat.find(a => a.Id === id);
+    return item.Type;
   }
+
+  /*
+  * Search the entire branch of the moved parent's children to see if \
+  * its new parent is there, cancelling the operation if true.
+  */
+  newParentIsOwnChild = (id) => {
+    const cur = this.flat.find(a => a.Id == id);
+    if (cur.Children.includes(this.newParentId)) return true;
+    cur.Children.forEach(a => {
+      if (this.itemType(a) === "Folder") return this.newParentIsOwnChild(a);
+    });
+    return false;
+  };
 
   removeFromParent() {
     const oldParentIndex = this.flat.findIndex(a => a.Id == this.oldParentId);
@@ -49,7 +64,8 @@ export class MoveTreeItem {
   }
 
   update() {
-    if (this.newParentId == this.childId || this.newParentIsOwnChild()) return;
+    if (this.oldParentId) this.removeFromParent();
+    if (this.newParentId) this.appendToParent();
     bookies = new Rebuild(this.flat).bookies;
     flatBookies = new Flatten(bookies).flat;
     bookiesTreeRef.value = bookies;

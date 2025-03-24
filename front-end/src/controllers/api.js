@@ -1,6 +1,6 @@
 // NOTE: Sample data.
 import { ref } from 'vue';
-import sampleBookies from '@/assets/samples/Bookies.json';
+import sampleBookies from '@/tests/bookies/samples/Bookies.json';
 export const sample = ref(sampleBookies);
 
 const serverHost = import.meta.env.VITE_SERVER_HOST;

@@ -36,7 +36,7 @@ function startDrag(event, item) {
 // Gather and emit the ID of the new parent and the child.
 function onDrop(event, parent) {
   const itemID = Number(event.dataTransfer.getData("itemID"));
-  const temp = new MoveTreeItem(parent, itemID);
+  new MoveTreeItem(parent, itemID);
 }
 
 function setBackgroundColor(event) {
