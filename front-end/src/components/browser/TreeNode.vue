@@ -54,24 +54,39 @@ function rmBackgroundColor(event) {
 
 
 <template>
-  <div v-if="node.Type == 'Bookmark'" class="item node drag-el" draggable="true" @dragstart="startDrag($event, node)">
+  <div
+    v-if="node.Type == 'Bookmark'"
+    class="item node drag-el"
+    draggable="true"
+    @dragstart="startDrag($event, node)">
 
     <span style="color: orange">{{ node.Id }}</span>
     <span>{{ node.Title.toLowerCase() }}</span>
   </div>
 
-  <div v-else-if="node.Type == 'Folder'" class="node drop-zone" @dragover.prevent
-    @dragenter.prevent="setBackgroundColor" @dragleave="rmBackgroundColor"
+  <div
+    v-else-if="node.Type == 'Folder'"
+    class="node drop-zone" @dragover.prevent
+    @dragenter.prevent="setBackgroundColor"
+    @dragleave="rmBackgroundColor"
     @drop.prevent.stop="onDrop($event, node.Id); rmBackgroundColor($event)">
 
-    <div class="item drag-el" draggable="true" @click="toggleChildren" @dragstart="startDrag($event, node)">
+    <div
+      class="item drag-el"
+      draggable="true"
+      @click="toggleChildren"
+      @dragstart="startDrag($event, node)">
 
       <img :src="toggleChildrenIcon" v-if="hasChildren" />
       <span style="color: orange">{{ node.Id }}</span>
       <span>{{ node.Title.toLowerCase() }}</span>
     </div>
 
-    <TreeNode v-show="showChildren" v-for="child in node.Bookmarks" :key="child.Id" :node="child" />
+    <TreeNode
+      v-show="showChildren"
+      v-for="child in node.Bookmarks"
+      :key="child.Id"
+      :node="child" />
   </div>
 </template>
 
@@ -85,11 +100,12 @@ div.node {
   width: fit-content;
   border-radius: 7px;
   padding: 2px;
-  margin: 10px;
+  margin: 7px;
   background-color: rgba(235, 188, 186, 0.3);
   font-family: var(--bks-big-text);
   cursor: default;
   box-shadow: 0 0 10px -2px black;
+  transition: background-color 0.1s ease;
 }
 
 div.item {
@@ -100,6 +116,7 @@ div.item {
   padding: 5px 9px;
   border-radius: 5px;
   background-color: var(--rp-highlight-low);
+  transition: background-color 0.2s ease;
 }
 
 div.item:hover {

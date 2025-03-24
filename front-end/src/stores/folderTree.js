@@ -8,10 +8,14 @@ export const state = {
 };
 state.flatBookies = new Flatten(state.bookies).flat;
 
-export const bookiesTreeRef = ref(state.bookies);
+// State refs for visual representation of JSON
+export const stateRefs = ref({
+  bookies: data,
+  flatBookies: null
+});
+stateRefs.value.flatBookies = state.flatBookies
 
-//export var bookies = data;
-//export var flatBookies = new Flatten(bookies).flat;
+export const bookiesTreeRef = ref(state.bookies);
 
 export class MoveTreeItem {
   constructor(newParent, child) {
@@ -53,15 +57,11 @@ export class MoveTreeItem {
 
     if (cur.Children.includes(this.newParentId)) return true;
 
-    const isOwnChild = cur.Children.some(a => {
+    return cur.Children.some(a => {
       if (this.itemType(a) === "Folder") {
-        console.log(`item [${a}] is a folder.`);
         return this.newParentIsOwnChild(a);
       }
     });
-
-    if (isOwnChild) return true;
-    else return false;
   };
 
   removeFromParent() {
@@ -82,6 +82,8 @@ export class MoveTreeItem {
     state.flatBookies = new Flatten(state.bookies).flat;
     bookiesTreeRef.value = state.bookies;
 
-    console.log("updated tree.");
+    // State refs.
+    stateRefs.value.bookies = state.bookies;
+    stateRefs.value.flatBookies = state.flatBookies;
   }
 }

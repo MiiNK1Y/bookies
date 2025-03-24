@@ -1,5 +1,6 @@
 <script setup>
 import FolderTree from '@/components/browser/FolderTree.vue';
+import MainView from '@/components/browser/MainView.vue';
 </script>
 
 <template>
@@ -11,7 +12,7 @@ import FolderTree from '@/components/browser/FolderTree.vue';
       some text
     </div>
     <div class="browser-view">
-      some text
+      <MainView />
     </div>
   </div>
 </template>
@@ -32,17 +33,23 @@ div.folder-tree {
   overflow: scroll;
 }
 
+div.folder-tree,
+div.browser-view {
+  position: relative;
+  max-height: 100%;
+}
+
 div.navbar,
 div.browser-view {
   display: flex;
-  justify-content: center;
-  align-items: center;
   background-color: var(--rp-highlight-low);
   font-family: var(--bks-regular-text);
 }
 
 div.navbar {
   background-color: var(--rp-highlight-med);
+  justify-content: center;
+  align-items: center;
 }
 </style>
 

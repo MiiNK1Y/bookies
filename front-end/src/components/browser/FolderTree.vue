@@ -38,7 +38,10 @@ function rmBackgroundColor(event) {
 
 <style scoped>
 div.root {
-  padding: 10px;
+  box-sizing: border-box;
+  border: 7px solid var(--rp-base);
+  background-color: var(--rp-base);
+  height: 100%;
 }
 
 div.drop-zone.dragover {
