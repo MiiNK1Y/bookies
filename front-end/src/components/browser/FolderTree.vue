@@ -1,7 +1,6 @@
 <script setup>
 import TreeNode from './TreeNode.vue';
-import { bookiesTreeRef } from '@/stores/folderTree.js';
-import { MoveTreeItem } from '@/stores/folderTree.js';
+import { MoveTreeItem, bookiesTreeRef } from '@/stores/folderTree.js';
 
 function onDrop(event, parent) {
   const itemID = Number(event.dataTransfer.getData("itemID"));

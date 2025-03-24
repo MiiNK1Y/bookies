@@ -1,16 +1,21 @@
-import data from '@/tests/bookies/samples/Bookies.json';
-import { Flatten, Rebuild } from '@/modules/bookies/bookies.js';
+import data from '../tests/shared-samples/Bookies.json';
+import { Flatten, Rebuild } from '../modules/bookies/bookies.js';
 import { ref } from 'vue';
 
-let bookies = data;
+export const state = {
+  bookies: data,
+  flatBookies: null
+};
+state.flatBookies = new Flatten(state.bookies).flat;
 
-export const bookiesTreeRef = ref(bookies);
+export const bookiesTreeRef = ref(state.bookies);
 
-let flatBookies = new Flatten(bookies).flat;
+//export var bookies = data;
+//export var flatBookies = new Flatten(bookies).flat;
 
 export class MoveTreeItem {
   constructor(newParent, child) {
-    this.flat = [...flatBookies];
+    this.flat = [...state.flatBookies];
     this.newParentId = newParent;
     this.childId = child;
     this.oldParentId = this.oldParent();
@@ -45,11 +50,18 @@ export class MoveTreeItem {
   */
   newParentIsOwnChild = (id) => {
     const cur = this.flat.find(a => a.Id == id);
+
     if (cur.Children.includes(this.newParentId)) return true;
-    cur.Children.forEach(a => {
-      if (this.itemType(a) === "Folder") return this.newParentIsOwnChild(a);
+
+    const isOwnChild = cur.Children.some(a => {
+      if (this.itemType(a) === "Folder") {
+        console.log(`item [${a}] is a folder.`);
+        return this.newParentIsOwnChild(a);
+      }
     });
-    return false;
+
+    if (isOwnChild) return true;
+    else return false;
   };
 
   removeFromParent() {
@@ -66,8 +78,10 @@ export class MoveTreeItem {
   update() {
     if (this.oldParentId) this.removeFromParent();
     if (this.newParentId) this.appendToParent();
-    bookies = new Rebuild(this.flat).bookies;
-    flatBookies = new Flatten(bookies).flat;
-    bookiesTreeRef.value = bookies;
+    state.bookies = new Rebuild(this.flat).bookies;
+    state.flatBookies = new Flatten(state.bookies).flat;
+    bookiesTreeRef.value = state.bookies;
+
+    console.log("updated tree.");
   }
 }
