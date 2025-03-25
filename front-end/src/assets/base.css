@@ -17,6 +17,36 @@
   --rp-highlight-high:  #524f67;
 }
 
+/* Catppuccin theme from https://catppuccin.com/palette/ */
+:root {
+  --ct-rosewater: #f5e0dc;
+  --ct-flamingo: #f2cdcd;
+  --ct-pink: #f5c2e7;
+  --ct-mauve: #cba6f7;
+  --ct-red: #f38ba8;
+  --ct-maroon: #eba0ac;
+  --ct-peach: #fab387;
+  --ct-yellow: #f9e2af;
+  --ct-green: #a6e3a1;
+  --ct-teal: #94e2d5;
+  --ct-sky: #89dceb;
+  --ct-sapphire: #74c7ec;
+  --ct-blue: #89b4fa;
+  --ct-lavender: #b4befe;
+  --ct-text: #cdd6f4;
+  --ct-subtext_1: #bac2de;
+  --ct-subtext_0: #a6adc8;
+  --ct-overlay_2: #9399b2;
+  --ct-overlay_1: #7f849c;
+  --ct-overlay_0: #6c7086;
+  --ct-surface_2: #585b70;
+  --ct-surface_1: #45475a;
+  --ct-surface_0: #313244;
+  --ct-base: #1e1e2e;
+  --ct-mantle: #181825;
+  --ct-crust: #11111b;
+}
+
 /* Bookies color palette made from Rose Pine */
 :root {
   /* I prefer the DARKEST of dark tho. */

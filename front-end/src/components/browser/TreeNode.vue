@@ -41,6 +41,7 @@ function toggleChildrenOn(event, item) {
     draggable="true"
     @dragstart="startDrag($event, node)">
 
+    <span><div class="favicon-fill"></div></span>
     <span style="color: orange">{{ node.Id }}</span>
     <span>{{ node.Title.toLowerCase() }}</span>
   </div>
@@ -77,6 +78,11 @@ function toggleChildrenOn(event, item) {
 
 
 <style scoped>
+div.favicon-fill {
+  width: 18px;
+  height: 18px;
+}
+
 div.drop-zone.dragover {
   background-color: var(--rp-highlight-high);
 }
