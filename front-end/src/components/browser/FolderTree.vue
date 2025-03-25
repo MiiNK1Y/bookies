@@ -1,23 +1,7 @@
 <script setup>
 import TreeNode from './TreeNode.vue';
-import { MoveTreeItem, bookiesTreeRef } from '@/stores/folderTree.js';
-
-function onDrop(event, parent) {
-  const itemID = Number(event.dataTransfer.getData("itemID"));
-  new MoveTreeItem(parent, itemID);
-}
-
-function setBackgroundColor(event) {
-  if (event.target.classList.contains("drop-zone")) {
-    event.target.classList.add("dragover");
-  }
-}
-
-function rmBackgroundColor(event) {
-  if (event.target.classList.contains("drop-zone")) {
-    event.target.classList.remove("dragover");
-  }
-}
+import { bookiesTreeRef } from '@/stores/folderTree.js';
+import { startDrag, onDrop, setBackgroundColor, rmBackgroundColor } from './MoveTreeItem.js';
 </script>
 
 <template>
@@ -40,11 +24,12 @@ function rmBackgroundColor(event) {
 div.root {
   box-sizing: border-box;
   border: 7px solid var(--rp-base);
+  border-radius: 1em;
   background-color: var(--rp-base);
   height: 100%;
 }
 
 div.drop-zone.dragover {
-  background-color: rgb(49, 48, 92);
+  background-color: var(--rp-highlight-high);
 }
 </style>

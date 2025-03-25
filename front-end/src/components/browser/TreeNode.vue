@@ -1,6 +1,6 @@
 <script setup>
 import { ref, computed } from 'vue';
-import { MoveTreeItem } from '@/stores/folderTree.js'
+import { startDrag, onDrop, setBackgroundColor, rmBackgroundColor } from './MoveTreeItem.js';
 
 const props = defineProps({
   node: {
@@ -17,38 +17,19 @@ const hasChildren = computed(() => {
 });
 
 const toggleChildrenIcon = computed(() => {
-  const pointRight = "/src/assets/icons/folder.svg";
-  const pointDown = "/src/assets/icons/folder_open.svg";
-  return showChildren.value ? pointDown : pointRight;
+  const folderClosed = "/src/assets/icons/folder-solid.svg";
+  const folderOpen = "/src/assets/icons/folder-open-solid.svg";
+  return showChildren.value ? folderOpen : folderClosed;
 });
 
 function toggleChildren() {
   showChildren.value = !showChildren.value;
 }
 
-// Drag and drop functionality.
-function startDrag(event, item) {
-  event.dataTransfer.dropEffect = "move";
-  event.dataTransfer.effectAllowed = "move";
-  event.dataTransfer.setData("itemID", item.Id);
-}
-
-// Gather and emit the ID of the new parent and the child.
-function onDrop(event, parent) {
+function toggleChildrenOn(event, item) {
   const itemID = Number(event.dataTransfer.getData("itemID"));
-  new MoveTreeItem(parent, itemID);
-}
-
-function setBackgroundColor(event) {
-  if (event.target.classList.contains("drop-zone")) {
-    event.target.classList.add("dragover");
-  }
-}
-
-function rmBackgroundColor(event) {
-  if (event.target.classList.contains("drop-zone")) {
-    event.target.classList.remove("dragover");
-  }
+  if (itemID == item.Id) return;
+  showChildren.value = true;
 }
 </script>
 
@@ -56,7 +37,7 @@ function rmBackgroundColor(event) {
 <template>
   <div
     v-if="node.Type == 'Bookmark'"
-    class="item node drag-el"
+    class="node item itemPadding"
     draggable="true"
     @dragstart="startDrag($event, node)">
 
@@ -66,15 +47,19 @@ function rmBackgroundColor(event) {
 
   <div
     v-else-if="node.Type == 'Folder'"
-    class="node drop-zone" @dragover.prevent
+    class="folder drop-zone"
+    :class="{ folderPadding: showChildren }"
+    @dragover.prevent
     @dragenter.prevent="setBackgroundColor"
     @dragleave="rmBackgroundColor"
     @drop.prevent.stop="onDrop($event, node.Id); rmBackgroundColor($event)">
 
     <div
-      class="item drag-el"
+      class="item"
+      :class="showChildren ? 'resized' : 'itemPadding'"
       draggable="true"
       @click="toggleChildren"
+      @dragenter="toggleChildrenOn($event, node)"
       @dragstart="startDrag($event, node)">
 
       <img :src="toggleChildrenIcon" v-if="hasChildren" />
@@ -93,35 +78,56 @@ function rmBackgroundColor(event) {
 
 <style scoped>
 div.drop-zone.dragover {
-  background-color: rgb(49, 48, 92);
+  background-color: var(--rp-highlight-high);
 }
 
+div.folderPadding {
+  padding: 2px;
+}
+
+div.folder {
+  /*
+  background-color: rgba(235, 188, 186, 0.3);
+  */
+  background-color: hsla(248deg, 13%, 36%, 0.3);
+}
+
+div.folder,
 div.node {
   width: fit-content;
   border-radius: 7px;
-  padding: 2px;
   margin: 7px;
-  background-color: rgba(235, 188, 186, 0.3);
   font-family: var(--bks-big-text);
   cursor: default;
   box-shadow: 0 0 10px -2px black;
   transition: background-color 0.1s ease;
 }
 
+div.resized {
+  padding: 3px 7px;
+}
+
+div.itemPadding {
+  padding: 5px 9px;
+}
+
+div.resizable,
 div.item {
   display: flex;
   flex-direction: row;
   align-items: center;
   gap: 5px;
-  padding: 5px 9px;
   border-radius: 5px;
   background-color: var(--rp-highlight-low);
-  transition: background-color 0.2s ease;
 }
 
+*
 div.item:hover {
-  background-color: var(--rp-highlight-high);
+  /*
+  background-color: var(--rp-muted);
   color: black;
+  */
+  color: var(--rp-iris);
   cursor: pointer;
 }
 </style>

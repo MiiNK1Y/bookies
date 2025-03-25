@@ -1,6 +1,7 @@
 <script setup>
 import FolderTree from '@/components/browser/FolderTree.vue';
 import MainView from '@/components/browser/MainView.vue';
+import Navbar from '@/components/browser/Navbar.vue';
 </script>
 
 <template>
@@ -9,7 +10,7 @@ import MainView from '@/components/browser/MainView.vue';
       <FolderTree />
     </div>
     <div class="navbar">
-      some text
+      <Navbar />
     </div>
     <div class="browser-view">
       <MainView />
@@ -23,33 +24,48 @@ div.parent {
   grid-template-columns: auto 1fr;
   grid-template-rows: auto 1fr;
   grid-gap: 5px;
+  box-sizing: border-box;
+  border: 5px solid black;
+  font-family: var(--bks-regular-text);
+}
+
+div.parent,
+div.folder-tree,
+div.browser-view {
   height: 100%;
 }
 
+div.folder-tree,
+div.navbar,
+div.browser-view {
+  border-radius: 10px;
+}
+
 div.folder-tree {
-  position: relative;
   grid-row: span 2 / span 2;
-  background-color: var(--rp-base);
+  position: relative;
   overflow: scroll;
+  background-color: var(--rp-base);
 }
 
 div.folder-tree,
 div.browser-view {
   position: relative;
-  max-height: 100%;
 }
 
 div.navbar,
 div.browser-view {
   display: flex;
-  background-color: var(--rp-highlight-low);
-  font-family: var(--bks-regular-text);
 }
 
 div.navbar {
-  background-color: var(--rp-highlight-med);
   justify-content: center;
   align-items: center;
+  background-color: var(--rp-highlight-med);
+}
+
+div.browser-view {
+  background-color: var(--rp-highlight-low);
 }
 </style>
 
