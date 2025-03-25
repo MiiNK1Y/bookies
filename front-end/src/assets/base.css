@@ -49,8 +49,7 @@
 
 /* Bookies color palette made from Rose Pine */
 :root {
-  /* I prefer the DARKEST of dark tho. */
-  --bks-background: #000000 ;
+  --bks-background: #000000;
   --bks-text: var(--rp-text);
 
   --bks-big-text: "Varela Round", sans-serif;

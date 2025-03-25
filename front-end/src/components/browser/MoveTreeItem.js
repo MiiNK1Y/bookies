@@ -1,14 +1,19 @@
 import { MoveTreeItem } from '@/stores/folderTree.js'
+import { ref } from 'vue';
+
+export const dragMode = ref(false);
 
 // Drag and drop functionality.
 export function startDrag(event, item) {
   event.dataTransfer.dropEffect = "move";
   event.dataTransfer.effectAllowed = "move";
   event.dataTransfer.setData("itemID", item.Id);
+  dragMode.value = true;
 }
 
 export function onDrop(event, parent) {
   const itemID = Number(event.dataTransfer.getData("itemID"));
+  dragMode.value = false;
   new MoveTreeItem(parent, itemID);
 }
 

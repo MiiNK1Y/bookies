@@ -22,7 +22,9 @@ import { startDrag, onDrop, setBackgroundColor, rmBackgroundColor } from './Move
 
 <style scoped>
 div.root {
+  /* make the border part of the of the element's measurements */
   box-sizing: border-box;
+
   border: 7px solid var(--rp-base);
   border-radius: 1em;
   background-color: var(--rp-base);

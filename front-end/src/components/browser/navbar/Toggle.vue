@@ -1,8 +1,13 @@
 <script setup>
 import { toggles } from '@/stores/toggles.js';
-function toggleTree() {
-  toggles.value.treeJson = !toggles.value.treeJson;
-}
+
+/*
+* NOTE:
+* How should I go about the toggle function to avoid having to \
+* recreate the function for every toggle, but just pass some props \
+* to make this component resuable... Can reactive values usable as props?
+*/
+
 </script>
 
 <template>
