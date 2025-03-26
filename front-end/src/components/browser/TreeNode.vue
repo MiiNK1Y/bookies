@@ -152,6 +152,12 @@ div.folder-padding { padding: 2px; }
 div.folder { background-color: hsla(248deg, 13%, 36%, 0.3); }
 div.folder-open { padding: 3px 7px; }
 
+/* 'dragover' style applied from 'MoveTreeItem.js' */
+div.drop-zone.dragover { background-color: var(--rp-highlight-high); }
+
+/* Apply some margin to the children of folders. */
+div.child { margin-left: 20px; }
+
 div.wrapper {
   position: relative;
   padding: 3px;
@@ -202,14 +208,10 @@ div.favicon-placeholder {
   height: 18px;
 }
 
-/* 'dragover' style applied from 'MoveTreeItem.js' */
-div.drop-zone.dragover { background-color: var(--rp-highlight-high); }
-
-/* Apply some margin to the children of folders. */
-div.child { margin-left: 20px; }
-
-div.item:hover {
-  color: var(--rp-iris);
-  cursor: default;
+@media (hover:hover) {
+    div.item:hover {
+    color: var(--rp-iris);
+    cursor: default;
+  }
 }
 </style>

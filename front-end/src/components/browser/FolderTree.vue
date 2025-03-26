@@ -24,16 +24,12 @@ import { startDrag, onDrop, setBackgroundColor, rmBackgroundColor } from './Move
 
 <style scoped>
 div.root {
-  /* make the border part of the of the element's measurements */
   box-sizing: border-box;
-
   height: 100%;
   border: 7px solid var(--rp-base);
   border-radius: 1em;
   background-color: var(--rp-base);
 }
 
-div.drop-zone.dragover {
-  background-color: var(--rp-highlight-high);
-}
+div.drop-zone.dragover { background-color: var(--rp-highlight-high); }
 </style>
