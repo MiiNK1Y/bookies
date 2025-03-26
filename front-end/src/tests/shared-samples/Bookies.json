@@ -28,6 +28,55 @@
               "Title": "Has Id 2",
               "URL": "https://alnyk.pages.dev",
               "Tags": ["Personal", "Portfolio", "Personal Project"]
+            },
+            {
+              "Type": "Bookmark",
+              "Id": 93,
+              "Title": "Title of the Bookmark, has ID 0",
+              "URL": "https://vg.no",
+              "Tags": ["News", "Norwegian News", "Demo Website"]
+            },
+            {
+              "Type": "Bookmark",
+              "Id": 94,
+              "Title": "Title of the Bookmark, has ID 0",
+              "URL": "https://vg.no",
+              "Tags": ["News", "Norwegian News", "Demo Website"]
+            },
+            {
+              "Type": "Bookmark",
+              "Id": 95,
+              "Title": "Title of the Bookmark, has ID 0",
+              "URL": "https://vg.no",
+              "Tags": ["News", "Norwegian News", "Demo Website"]
+            },
+            {
+              "Type": "Bookmark",
+              "Id": 96,
+              "Title": "Title of the Bookmark, has ID 0",
+              "URL": "https://vg.no",
+              "Tags": ["News", "Norwegian News", "Demo Website"]
+            },
+            {
+              "Type": "Bookmark",
+              "Id": 97,
+              "Title": "Title of the Bookmark, has ID 0",
+              "URL": "https://vg.no",
+              "Tags": ["News", "Norwegian News", "Demo Website"]
+            },
+            {
+              "Type": "Bookmark",
+              "Id": 98,
+              "Title": "Title of the Bookmark, has ID 0",
+              "URL": "https://vg.no",
+              "Tags": ["News", "Norwegian News", "Demo Website"]
+            },
+            {
+              "Type": "Bookmark",
+              "Id": 99,
+              "Title": "Title of the Bookmark, has ID 0",
+              "URL": "https://vg.no",
+              "Tags": ["News", "Norwegian News", "Demo Website"]
             }
           ]
       },

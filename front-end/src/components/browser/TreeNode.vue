@@ -72,19 +72,27 @@ function toggleChildrenOn(event, item) {
     :class="{ hoverTop: hoveringTop, hoverBottom: hoveringBottom }">
 
     <div
+      v-show="dragMode"
       @dragover.prevent
       @dragleave="hoverTop(false)"
       @dragenter.prevent="hoverTop(true)"
       @drop.prevent.stop="onPositionDrop($event, parentId, 'over', index); hoverTop(false)"
-      :class="node.Type === 'Folder' ? { topFolderMask: dragMode } : { topBookmarkMask: dragMode }">
+      :class="node.Type === 'Folder' ? 'topFolderMask' : 'topBookmarkMask'">
+
+      <!-- Drop indicator -->
+      <div :class="{ dropIndicatorTop: hoveringTop }"></div>
     </div>
 
     <div
+      v-show="dragMode"
       @dragover.prevent
       @dragleave="hoverBottom(false)"
       @dragenter.prevent="hoverBottom(true)"
       @drop.prevent.stop="onPositionDrop($event, parentId, 'under', index); hoverBottom(false)"
-      :class="node.Type === 'Folder' ? { bottomFolderMask: dragMode } : { bottomBookmarkMask: dragMode }">
+      :class="node.Type === 'Folder' ? 'bottomFolderMask' : 'bottomBookmarkMask'">
+
+      <!-- Drop indicator -->
+      <div :class="{ dropIndicatorBottom: hoveringBottom }"></div>
     </div>
 
     <div
@@ -139,24 +147,6 @@ function toggleChildrenOn(event, item) {
 div.wrapper {
   position: relative;
   padding: 3px;
-  border-top: 1px solid transparent;
-  border-bottom: 1px solid transparent;
-}
-
-div.wrapper.hoverTop {
-  border-top: 1px solid white;
-}
-
-div.wrapper.hoverBottom {
-  border-bottom: 1px solid white;
-}
-
-div.topBookmarkMask {
-  height: 50%;
-}
-
-div.topFolderMask {
-  height: 5px;
 }
 
 div.topBookmarkMask,
@@ -170,11 +160,11 @@ div.topFolderMask {
   width: 100%;
 }
 
-div.bottomBookmarkMask {
+div.topBookmarkMask {
   height: 50%;
 }
 
-div.bottomFolderMask {
+div.topFolderMask {
   height: 5px;
 }
 
@@ -187,6 +177,34 @@ div.bottomFolderMask {
   opacity: 0.3;
   */
   width: 100%;
+}
+
+div.bottomBookmarkMask {
+  height: 50%;
+}
+
+div.bottomFolderMask {
+  height: 5px;
+}
+
+div.dropIndicatorTop,
+div.dropIndicatorBottom {
+  content: "";
+  position: absolute;
+  left: 0;
+  height: 4px;
+  width: 40px;
+  background-color: purple;
+}
+
+div.dropIndicatorTop {
+  top: 0;
+  margin-top: -2px;
+}
+
+div.dropIndicatorBottom {
+  bottom: 0;
+  margin-bottom: -2px;
 }
 
 div.favicon-fill {
@@ -203,23 +221,14 @@ div.folderPadding {
 }
 
 div.folder {
-  /*
-  background-color: rgba(235, 188, 186, 0.3);
-  */
   background-color: hsla(248deg, 13%, 36%, 0.3);
 }
 
 div.folder,
 div.node {
-  /*
-  width: fit-content;
-  */
   border-radius: 7px;
   font-family: var(--bks-big-text);
   cursor: default;
-  /*
-  box-shadow: 0 0 10px -2px black;
-  */
   transition: background-color 0.1s ease;
 }
 

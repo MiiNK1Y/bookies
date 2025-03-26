@@ -87,12 +87,12 @@ export class MoveTreeItem {
     }
 
     if (!this.newParentId && !this.oldParentId) {
-      shiftPositionInRoot();
+      this.shiftPositionInRoot();
     } else if (!this.newParentId) {
       const item = this.flat.find(a => a.Id === this.childId);
       const itemFlatIndex = this.flat.findIndex(a => a.Id === item.Id)
       delete this.flat[itemFlatIndex];
-      this.flat[newParentIndex].splice(this.indexOfHovered, 0, hovered);
+      //this.flat[newParentIndex].splice(this.indexOfHovered, 0, thishovered);
     }else {
       this.flat[newParentIndex].Children.splice(this.indexOfHovered, 0, this.childId);
     }
