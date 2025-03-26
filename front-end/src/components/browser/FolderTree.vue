@@ -27,10 +27,10 @@ div.root {
   /* make the border part of the of the element's measurements */
   box-sizing: border-box;
 
+  height: 100%;
   border: 7px solid var(--rp-base);
   border-radius: 1em;
   background-color: var(--rp-base);
-  height: 100%;
 }
 
 div.drop-zone.dragover {

@@ -1,7 +1,7 @@
 <script setup>
 import { ref, computed } from 'vue';
-import { dragMode, startDrag, onDrop, onPositionDrop,
-setBackgroundColor, rmBackgroundColor } from './MoveTreeItem.js';
+import { dragMode, startDrag, onDrop, setBackgroundColor,
+rmBackgroundColor } from './MoveTreeItem.js';
 
 const props = defineProps({
   node: {
@@ -38,15 +38,13 @@ const childrenToggledIcon = computed(() => {
     "/src/assets/icons/folder-solid.svg";
 });
 
-const topHoveringMaskClass = props.node.Type === 'Bookmark'
-  ? ['bookmarkMask', 'topBookmarkMask'] : ['folderMask', 'topFolderMask'];
+const itemTypeClass = props.node.Type === 'Bookmark'
+  ? 'bookmark-mask' : 'folder-mask';
 
-const bottomHoveringMaskClass = props.node.Type === 'Bookmark'
-  ? ['bookmarkMask', 'bottomBookmarkMask'] : ['folderMask', 'bottomFolderMask'];
-
-const hoveringMaskPosition = computed(() => {
-  return { toggleHoveringTop: hoveringTop, toggleHoveringBottom: hoveringBottom }
-})
+const hoveringMaskPosition = {
+    toggleHoveringTop: hoveringTop,
+    toggleHoveringBottom: hoveringBottom
+};
 
 </script>
 
@@ -62,13 +60,13 @@ const hoveringMaskPosition = computed(() => {
       v-show="dragMode"
       @dragleave="toggleHoveringTop(false)"
       @dragenter="toggleHoveringTop(true)"
-      @drop.prevent.stop="onPositionDrop($event, parentId, 'over', index); toggleHoveringTop(false)"
-      class="itemHoverMask "
-      :class="topHoveringMaskClass">
+      @drop.prevent.stop="onDrop($event, parentId, 'over', index); toggleHoveringTop(false)"
+      class="item-hover-mask item-top-mask"
+      :class="itemTypeClass">
 
       <div
         v-show="hoveringTop"
-        class="dropIndicator dropIndicatorTop">
+        class="drop-indicator drop-indicator-top">
       </div>
     </div>
 
@@ -77,13 +75,13 @@ const hoveringMaskPosition = computed(() => {
       v-show="dragMode"
       @dragleave="toggleHoveringBottom(false)"
       @dragenter="toggleHoveringBottom(true)"
-      @drop.stop.prevent="onPositionDrop($event, parentId, 'under', index); toggleHoveringBottom(false)"
-      class="itemHoverMask"
-      :class="bottomHoveringMaskClass">
+      @drop.stop.prevent="onDrop($event, parentId, 'under', index); toggleHoveringBottom(false)"
+      class="item-hover-mask item-bottom-mask"
+      :class="itemTypeClass">
 
       <div
         v-show="hoveringBottom"
-        class="dropIndicator dropIndicatorBottom">
+        class="drop-indicator drop-indicator-bottom">
       </div>
     </div>
 
@@ -91,7 +89,7 @@ const hoveringMaskPosition = computed(() => {
     <div
       v-if="node.Type === 'Bookmark'"
       draggable="true"
-      class="node item itemPadding"
+      class="node item item-padding"
       @dragstart="startDrag($event, node)">
 
       <span><div class="favicon-placeholder"></div></span>
@@ -107,7 +105,7 @@ const hoveringMaskPosition = computed(() => {
     <div
       v-else-if="node.Type === 'Folder'"
       class="node folder drop-zone"
-      :class="{ folderPadding: showChildren }"
+      :class="{ 'folder-padding': showChildren }"
       @dragleave="rmBackgroundColor"
       @dragenter="setBackgroundColor"
       @drop.stop.prevent="onDrop($event, node.Id); rmBackgroundColor($event)">
@@ -116,7 +114,7 @@ const hoveringMaskPosition = computed(() => {
       <div
         draggable="true"
         class="item"
-        :class="showChildren ? 'folderOpen' : 'itemPadding'"
+        :class="showChildren ? 'folder-open' : 'item-padding'"
         @click="toggleChildren"
         @dragenter="toggleChildrenOn($event, node)"
         @dragstart="startDrag($event, node)">
@@ -142,22 +140,29 @@ const hoveringMaskPosition = computed(() => {
 
 
 <style scoped>
+div.bookmark-mask { height: 50%; }
+div.folder-mask { height: 5px; }
+
+div.item-top-mask { top: 0; }
+div.item-bottom-mask { bottom: 0; }
+
+div.item-padding { padding: 5px 9px; }
+div.folder-padding { padding: 2px; }
+
+div.folder { background-color: hsla(248deg, 13%, 36%, 0.3); }
+div.folder-open { padding: 3px 7px; }
+
 div.wrapper {
   position: relative;
   padding: 3px;
 }
 
-div.itemHoverMask {
+div.item-hover-mask {
   position: absolute;
   width: 100%;
 }
 
-div.bookmarkMask { height: 50%; }
-div.folderMask { height: 5px; }
-div.topBookmarkMask { top: 0; }
-div.bottomBookmarkMask { bottom: 0; }
-
-div.dropIndicator {
+div.drop-indicator {
   content: "";
   position: absolute;
   left: 0;
@@ -166,12 +171,12 @@ div.dropIndicator {
   background-color: purple;
 }
 
-div.dropIndicatorTop {
+div.drop-indicator-top {
   top: 0;
   margin-top: -2px;
 }
 
-div.dropIndicatorBottom {
+div.drop-indicator-bottom {
   bottom: 0;
   margin-bottom: -2px;
 }
@@ -196,11 +201,6 @@ div.favicon-placeholder {
   width: 18px;
   height: 18px;
 }
-
-div.itemPadding { padding: 5px 9px; }
-div.folder { background-color: hsla(248deg, 13%, 36%, 0.3); }
-div.folderOpen { padding: 3px 7px; }
-div.folderPadding { padding: 2px; }
 
 /* 'dragover' style applied from 'MoveTreeItem.js' */
 div.drop-zone.dragover { background-color: var(--rp-highlight-high); }

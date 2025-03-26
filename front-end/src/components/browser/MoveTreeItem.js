@@ -11,13 +11,7 @@ export function startDrag(event, item) {
   dragMode.value = true;
 }
 
-export function onDrop(event, parent) {
-  const itemID = Number(event.dataTransfer.getData("itemID"));
-  dragMode.value = false;
-  new MoveTreeItem(parent, itemID);
-}
-
-export function onPositionDrop(event, parent, position, index) {
+export function onDrop(event, parent, position = null, index = null) {
   const itemID = Number(event.dataTransfer.getData("itemID"));
   dragMode.value = false;
   new MoveTreeItem(parent, itemID, position, index);
