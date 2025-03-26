@@ -1,135 +1,133 @@
 <script setup>
 import { ref, computed } from 'vue';
-
-import {
-  dragMode,
-  startDrag,
-  onDrop,
-  onPositionDrop,
-  setBackgroundColor,
-  rmBackgroundColor
-} from './MoveTreeItem.js';
+import { dragMode, startDrag, onDrop, onPositionDrop,
+setBackgroundColor, rmBackgroundColor } from './MoveTreeItem.js';
 
 const props = defineProps({
   node: {
     type: Object,
     required: true
   },
-  parentId: {
-    type: Number,
-  },
   index: {
     type: Number,
     required: true
+  },
+  parentId: {
+    type: Number,
   }
 });
-
-/*
-* TODO:
-* Add functionality to add a third parameter to onDrop() that takes \
-* either "over" or "under" to know where in the Child array to place the ID \
-* before or after the hovered item.
-*/
 
 const showChildren = ref(false);
 const hoveringTop = ref(false);
 const hoveringBottom = ref(false);
 
-const hasChildren = computed(() => {
-  const { Bookmarks } = props.node;
-  return Bookmarks;
-});
+function toggleChildren() { showChildren.value = !showChildren.value; }
+function toggleHoveringTop(bool) { hoveringTop.value = bool; }
+function toggleHoveringBottom(bool) { hoveringBottom.value = bool; }
 
-const toggleChildrenIcon = computed(() => {
-  const folderClosed = "/src/assets/icons/folder-solid.svg";
-  const folderOpen = "/src/assets/icons/folder-open-solid.svg";
-  return showChildren.value ? folderOpen : folderClosed;
-});
-
-function hoverTop(bool) {
-  hoveringTop.value = bool;
-}
-
-function hoverBottom(bool) {
-  hoveringBottom.value = bool;
-}
-
-function toggleChildren() {
-  showChildren.value = !showChildren.value;
-}
+const hasChildren = computed(() => { return props.node.Bookmarks; });
 
 function toggleChildrenOn(event, item) {
   const itemID = Number(event.dataTransfer.getData("itemID"));
   if (itemID == item.Id) return;
   showChildren.value = true;
 }
+
+const childrenToggledIcon = computed(() => {
+  return showChildren.value ? "/src/assets/icons/folder-open-solid.svg" :
+    "/src/assets/icons/folder-solid.svg";
+});
+
+const topHoveringMaskClass = props.node.Type === 'Bookmark'
+  ? ['bookmarkMask', 'topBookmarkMask'] : ['folderMask', 'topFolderMask'];
+
+const bottomHoveringMaskClass = props.node.Type === 'Bookmark'
+  ? ['bookmarkMask', 'bottomBookmarkMask'] : ['folderMask', 'bottomFolderMask'];
+
+const hoveringMaskPosition = computed(() => {
+  return { toggleHoveringTop: hoveringTop, toggleHoveringBottom: hoveringBottom }
+})
+
 </script>
 
 
 <template>
+  <!-- Wrapping container for entire node. -->
   <div
     class="wrapper"
-    :class="{ hoverTop: hoveringTop, hoverBottom: hoveringBottom }">
+    :class="hoveringMaskPosition">
 
+    <!-- Top hover-mask. -->
     <div
       v-show="dragMode"
-      @dragover.prevent
-      @dragleave="hoverTop(false)"
-      @dragenter.prevent="hoverTop(true)"
-      @drop.prevent.stop="onPositionDrop($event, parentId, 'over', index); hoverTop(false)"
-      :class="node.Type === 'Folder' ? 'topFolderMask' : 'topBookmarkMask'">
+      @dragleave="toggleHoveringTop(false)"
+      @dragenter="toggleHoveringTop(true)"
+      @drop.prevent.stop="onPositionDrop($event, parentId, 'over', index); toggleHoveringTop(false)"
+      class="itemHoverMask "
+      :class="topHoveringMaskClass">
 
-      <!-- Drop indicator -->
-      <div :class="{ dropIndicatorTop: hoveringTop }"></div>
+      <div
+        v-show="hoveringTop"
+        class="dropIndicator dropIndicatorTop">
+      </div>
     </div>
 
+    <!-- Bottom hover-mask. -->
     <div
       v-show="dragMode"
-      @dragover.prevent
-      @dragleave="hoverBottom(false)"
-      @dragenter.prevent="hoverBottom(true)"
-      @drop.prevent.stop="onPositionDrop($event, parentId, 'under', index); hoverBottom(false)"
-      :class="node.Type === 'Folder' ? 'bottomFolderMask' : 'bottomBookmarkMask'">
+      @dragleave="toggleHoveringBottom(false)"
+      @dragenter="toggleHoveringBottom(true)"
+      @drop.stop.prevent="onPositionDrop($event, parentId, 'under', index); toggleHoveringBottom(false)"
+      class="itemHoverMask"
+      :class="bottomHoveringMaskClass">
 
-      <!-- Drop indicator -->
-      <div :class="{ dropIndicatorBottom: hoveringBottom }"></div>
+      <div
+        v-show="hoveringBottom"
+        class="dropIndicator dropIndicatorBottom">
+      </div>
     </div>
 
+    <!-- Bookmark element, if this node is a bookmark. -->
     <div
       v-if="node.Type === 'Bookmark'"
       draggable="true"
       class="node item itemPadding"
       @dragstart="startDrag($event, node)">
 
-      <span><div class="favicon-fill"></div></span>
+      <span><div class="favicon-placeholder"></div></span>
       <span style="color: orange">{{ node.Id }}</span>
       <span style="color: green">[{{ index }}]</span>
       <span>{{ node.Title.toLowerCase() }}</span>
     </div>
 
+    <!--
+      Folder element, if this node is a folder.
+      This top-most element functions as a container for the folder-children.
+    -->
     <div
       v-else-if="node.Type === 'Folder'"
-      class="folder drop-zone"
+      class="node folder drop-zone"
       :class="{ folderPadding: showChildren }"
-      @dragover.prevent
       @dragleave="rmBackgroundColor"
-      @dragenter.prevent="setBackgroundColor"
-      @drop.prevent.stop="onDrop($event, node.Id); rmBackgroundColor($event)">
+      @dragenter="setBackgroundColor"
+      @drop.stop.prevent="onDrop($event, node.Id); rmBackgroundColor($event)">
 
+      <!-- The node-part of this node, functions as a header when the folder is opened. -->
       <div
         draggable="true"
         class="item"
-        :class="showChildren ? 'resized' : 'itemPadding'"
+        :class="showChildren ? 'folderOpen' : 'itemPadding'"
         @click="toggleChildren"
         @dragenter="toggleChildrenOn($event, node)"
         @dragstart="startDrag($event, node)">
 
-        <img :src="toggleChildrenIcon" v-if="hasChildren" />
+        <img :src="childrenToggledIcon" v-if="hasChildren" />
         <span style="color: orange">{{ node.Id }}</span>
         <span style="color: green">[{{ index }}]</span>
         <span>{{ node.Title.toLowerCase() }}</span>
       </div>
 
+      <!-- Recurse the children if this node is a folder. -->
       <TreeNode
         v-show="showChildren"
         v-for="(child, index) in node.Bookmarks"
@@ -149,46 +147,17 @@ div.wrapper {
   padding: 3px;
 }
 
-div.topBookmarkMask,
-div.topFolderMask {
+div.itemHoverMask {
   position: absolute;
-  top: 0;
-  /*
-  background-color: var(--ct-green);
-  opacity: 0.3;
-  */
   width: 100%;
 }
 
-div.topBookmarkMask {
-  height: 50%;
-}
+div.bookmarkMask { height: 50%; }
+div.folderMask { height: 5px; }
+div.topBookmarkMask { top: 0; }
+div.bottomBookmarkMask { bottom: 0; }
 
-div.topFolderMask {
-  height: 5px;
-}
-
-div.bottomBookmarkMask,
-div.bottomFolderMask {
-  position: absolute;
-  bottom: 0;
-  /*
-  background-color: var(--ct-peach);
-  opacity: 0.3;
-  */
-  width: 100%;
-}
-
-div.bottomBookmarkMask {
-  height: 50%;
-}
-
-div.bottomFolderMask {
-  height: 5px;
-}
-
-div.dropIndicatorTop,
-div.dropIndicatorBottom {
+div.dropIndicator {
   content: "";
   position: absolute;
   left: 0;
@@ -207,24 +176,6 @@ div.dropIndicatorBottom {
   margin-bottom: -2px;
 }
 
-div.favicon-fill {
-  width: 18px;
-  height: 18px;
-}
-
-div.drop-zone.dragover {
-  background-color: var(--rp-highlight-high);
-}
-
-div.folderPadding {
-  padding: 2px;
-}
-
-div.folder {
-  background-color: hsla(248deg, 13%, 36%, 0.3);
-}
-
-div.folder,
 div.node {
   border-radius: 7px;
   font-family: var(--bks-big-text);
@@ -232,19 +183,6 @@ div.node {
   transition: background-color 0.1s ease;
 }
 
-div.child {
-  margin-left: 20px;
-}
-
-div.resized {
-  padding: 3px 7px;
-}
-
-div.itemPadding {
-  padding: 5px 9px;
-}
-
-div.resizable,
 div.item {
   display: flex;
   flex-direction: row;
@@ -254,8 +192,24 @@ div.item {
   background-color: var(--rp-highlight-low);
 }
 
+div.favicon-placeholder {
+  width: 18px;
+  height: 18px;
+}
+
+div.itemPadding { padding: 5px 9px; }
+div.folder { background-color: hsla(248deg, 13%, 36%, 0.3); }
+div.folderOpen { padding: 3px 7px; }
+div.folderPadding { padding: 2px; }
+
+/* 'dragover' style applied from 'MoveTreeItem.js' */
+div.drop-zone.dragover { background-color: var(--rp-highlight-high); }
+
+/* Apply some margin to the children of folders. */
+div.child { margin-left: 20px; }
+
 div.item:hover {
   color: var(--rp-iris);
-  cursor: pointer;
+  cursor: default;
 }
 </style>
