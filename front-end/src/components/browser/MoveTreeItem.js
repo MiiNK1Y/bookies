@@ -17,6 +17,12 @@ export function onDrop(event, parent) {
   new MoveTreeItem(parent, itemID);
 }
 
+export function onPositionDrop(event, parent, position, index) {
+  const itemID = Number(event.dataTransfer.getData("itemID"));
+  dragMode.value = false;
+  new MoveTreeItem(parent, itemID, position, index);
+}
+
 export function setBackgroundColor(event) {
   if (event.target.classList.contains("drop-zone")) {
     event.target.classList.add("dragover");

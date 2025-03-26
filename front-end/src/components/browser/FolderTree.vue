@@ -13,9 +13,11 @@ import { startDrag, onDrop, setBackgroundColor, rmBackgroundColor } from './Move
     @drop.prevent.stop="onDrop($event, null); rmBackgroundColor($event)" >
 
     <TreeNode
-      v-for="node in bookiesTreeRef.Bookmarks"
+      v-for="(node, index) in bookiesTreeRef.Bookmarks"
       :key="node.Id"
       :node="node"
+      :parentId="node.Id"
+      :index="index"
       />
   </div>
 </template>

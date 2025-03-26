@@ -1,10 +1,25 @@
 <script setup>
 import { ref, computed } from 'vue';
-import { dragMode, startDrag, onDrop, setBackgroundColor, rmBackgroundColor } from './MoveTreeItem.js';
+
+import {
+  dragMode,
+  startDrag,
+  onDrop,
+  onPositionDrop,
+  setBackgroundColor,
+  rmBackgroundColor
+} from './MoveTreeItem.js';
 
 const props = defineProps({
   node: {
     type: Object,
+    required: true
+  },
+  parentId: {
+    type: Number,
+  },
+  index: {
+    type: Number,
     required: true
   }
 });
@@ -14,9 +29,6 @@ const props = defineProps({
 * Add functionality to add a third parameter to onDrop() that takes \
 * either "over" or "under" to know where in the Child array to place the ID \
 * before or after the hovered item.
-*
-* TODO:
-* Cleanup the duplicate code, move the "If / else" and optimize cude reuse.
 */
 
 const showChildren = ref(false);
@@ -56,84 +68,67 @@ function toggleChildrenOn(event, item) {
 
 <template>
   <div
-    v-if="node.Type == 'Bookmark'"
     class="wrapper"
     :class="{ hoverTop: hoveringTop, hoverBottom: hoveringBottom }">
 
     <div
-      :class="{ topMask: dragMode }"
       @dragover.prevent
-      @drop.prevent.stop="onDrop($event, node.Id); hoverTop(false)"
+      @dragleave="hoverTop(false)"
       @dragenter.prevent="hoverTop(true)"
-      @dragleave="hoverTop(false)">
+      @drop.prevent.stop="onPositionDrop($event, parentId, 'over', index); hoverTop(false)"
+      :class="node.Type === 'Folder' ? { topFolderMask: dragMode } : { topBookmarkMask: dragMode }">
     </div>
 
     <div
-      :class="{ bottomMask: dragMode }"
       @dragover.prevent
-      @drop.prevent.stop="onDrop($event, node.Id); hoverBottom(false)"
+      @dragleave="hoverBottom(false)"
       @dragenter.prevent="hoverBottom(true)"
-      @dragleave="hoverBottom(false)">
+      @drop.prevent.stop="onPositionDrop($event, parentId, 'under', index); hoverBottom(false)"
+      :class="node.Type === 'Folder' ? { bottomFolderMask: dragMode } : { bottomBookmarkMask: dragMode }">
     </div>
 
     <div
-      class="node item itemPadding"
+      v-if="node.Type === 'Bookmark'"
       draggable="true"
+      class="node item itemPadding"
       @dragstart="startDrag($event, node)">
 
       <span><div class="favicon-fill"></div></span>
       <span style="color: orange">{{ node.Id }}</span>
+      <span style="color: green">[{{ index }}]</span>
       <span>{{ node.Title.toLowerCase() }}</span>
     </div>
-  </div>
-
-  <div
-    v-else-if="node.Type == 'Folder'"
-    class="wrapper"
-    :class="{ hoverTop: hoveringTop, hoverBottom: hoveringBottom }">
 
     <div
-      :class="{ topFolderMask: dragMode }"
-      @dragover.prevent
-      @drop.prevent.stop="onDrop($event, node.Id); hoveringTop(false)"
-      @dragenter.prevent="hoverTop(true)"
-      @dragleave="hoverTop(false)">
-    </div>
-
-    <div
-      :class="{ bottomFolderMask: dragMode }"
-      @dragover.prevent
-      @drop.prevent.stop="onDrop($event, node.Id); hoveringBottom(false)"
-      @dragenter.prevent="hoverBottom(true)"
-      @dragleave="hoverBottom(false)">
-    </div>
-
-    <div
+      v-else-if="node.Type === 'Folder'"
       class="folder drop-zone"
       :class="{ folderPadding: showChildren }"
       @dragover.prevent
-      @dragenter.prevent="setBackgroundColor"
       @dragleave="rmBackgroundColor"
+      @dragenter.prevent="setBackgroundColor"
       @drop.prevent.stop="onDrop($event, node.Id); rmBackgroundColor($event)">
 
       <div
+        draggable="true"
         class="item"
         :class="showChildren ? 'resized' : 'itemPadding'"
-        draggable="true"
         @click="toggleChildren"
         @dragenter="toggleChildrenOn($event, node)"
         @dragstart="startDrag($event, node)">
 
         <img :src="toggleChildrenIcon" v-if="hasChildren" />
         <span style="color: orange">{{ node.Id }}</span>
+        <span style="color: green">[{{ index }}]</span>
         <span>{{ node.Title.toLowerCase() }}</span>
       </div>
 
       <TreeNode
         v-show="showChildren"
-        v-for="child in node.Bookmarks"
+        v-for="(child, index) in node.Bookmarks"
         :key="child.Id"
         :node="child"
+        :parentId="node.Id"
+        :index="index"
         class="child" />
     </div>
   </div>
@@ -143,21 +138,20 @@ function toggleChildrenOn(event, item) {
 <style scoped>
 div.wrapper {
   position: relative;
-  width: fit-content;
-  padding: 4px;
-  border-bottom: 1px solid transparent;
+  padding: 3px;
   border-top: 1px solid transparent;
+  border-bottom: 1px solid transparent;
 }
 
-div.hoverTop {
-  border-top: 1px solid purple;
+div.wrapper.hoverTop {
+  border-top: 1px solid white;
 }
 
-div.hoverBottom {
-  border-bottom: 1px solid purple;
+div.wrapper.hoverBottom {
+  border-bottom: 1px solid white;
 }
 
-div.topMask {
+div.topBookmarkMask {
   height: 50%;
 }
 
@@ -165,18 +159,18 @@ div.topFolderMask {
   height: 5px;
 }
 
-div.topMask,
+div.topBookmarkMask,
 div.topFolderMask {
   position: absolute;
   top: 0;
   /*
-  background-color: green;
-  opacity: 0.2;
+  background-color: var(--ct-green);
+  opacity: 0.3;
   */
   width: 100%;
 }
 
-div.bottomMask {
+div.bottomBookmarkMask {
   height: 50%;
 }
 
@@ -184,13 +178,13 @@ div.bottomFolderMask {
   height: 5px;
 }
 
-div.bottomMask,
+div.bottomBookmarkMask,
 div.bottomFolderMask {
   position: absolute;
   bottom: 0;
   /*
-  background-color: red;
-  opacity: 0.2;
+  background-color: var(--ct-peach);
+  opacity: 0.3;
   */
   width: 100%;
 }
@@ -217,7 +211,9 @@ div.folder {
 
 div.folder,
 div.node {
+  /*
   width: fit-content;
+  */
   border-radius: 7px;
   font-family: var(--bks-big-text);
   cursor: default;
@@ -250,10 +246,6 @@ div.item {
 }
 
 div.item:hover {
-  /*
-  background-color: var(--rp-muted);
-  color: black;
-  */
   color: var(--rp-iris);
   cursor: pointer;
 }

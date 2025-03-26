@@ -18,12 +18,16 @@ stateRefs.value.flatBookies = state.flatBookies
 export const bookiesTreeRef = ref(state.bookies);
 
 export class MoveTreeItem {
-  constructor(newParent, child) {
+  constructor(newParent, child, position = null, index = null) {
     this.flat = [...state.flatBookies];
     this.newParentId = newParent;
     this.childId = child;
+    this.position = position;
+    this.indexOfHovered = index;
     this.oldParentId = this.oldParent();
     this.childType = this.itemType(this.childId);
+
+    console.log(`newParent = [${this.newParentId}], childId = [${this.childId}], position = [${this.position}], hoveredOver = [${this.indexOfHovered}]`);
 
     if (
       this.childType === "Bookmark" ||
@@ -70,9 +74,41 @@ export class MoveTreeItem {
     this.flat[oldParentIndex].Children.splice(childIndex, 1);
   }
 
+  shiftPositionInRoot() {
+    const item = this.flat.find(a => a.Id === this.childId);
+    const itemFlatIndex = this.flat.findIndex(a => a.Id === item.Id)
+    delete this.flat[itemFlatIndex];
+    this.flat.splice(this.indexOfHovered, 0, item);
+  }
+
+  appendToParentPosition(newParentIndex) {
+    if (this.position === 'under' && this.newParentId != this.oldParentId) {
+      this.indexOfHovered++;
+    }
+
+    if (!this.newParentId && !this.oldParentId) {
+      shiftPositionInRoot();
+    } else if (!this.newParentId) {
+      const item = this.flat.find(a => a.Id === this.childId);
+      const itemFlatIndex = this.flat.findIndex(a => a.Id === item.Id)
+      delete this.flat[itemFlatIndex];
+      this.flat[newParentIndex].splice(this.indexOfHovered, 0, hovered);
+    }else {
+      this.flat[newParentIndex].Children.splice(this.indexOfHovered, 0, this.childId);
+    }
+
+    console.log(`index of 'under (+)' hovered = [${this.indexOfHovered}]`);
+    console.log(`index of new parent = [${newParentIndex}], its children = `, this.flat[newParentIndex].Children)
+  }
+
   appendToParent() {
     const newParentIndex = this.flat.findIndex(a => a.Id == this.newParentId);
-    this.flat[newParentIndex].Children.push(this.childId);
+
+    if (this.position) {
+      this.appendToParentPosition(newParentIndex);
+    } else if (this.newParentId){
+      this.flat[newParentIndex].Children.push(this.childId);
+    }
   }
 
   update() {
