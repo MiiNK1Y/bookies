@@ -4,7 +4,7 @@
     [
       {
         "Type": "Bookmark",
-        "Id": 0,
+        "Id": 123,
         "Title": "Title of the Bookmark, has ID 0",
         "URL": "https://vg.no",
         "Tags": ["News", "Norwegian News", "Demo Website"]

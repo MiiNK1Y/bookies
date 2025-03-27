@@ -7,68 +7,107 @@ export const state = {
   bookies: data,
   flatBookies: null
 };
-state.flatBookies = new Flatten(state.bookies).flat;
 
-export const stateRefs = ref({
-  bookies: data,
-  flatBookies: null
-});
-stateRefs.value.flatBookies = state.flatBookies
+state.flatBookies = new Flatten(state.bookies).flat;
 
 export const bookiesTreeRef = ref(state.bookies);
 
+export const stateRefs = ref({
+  bookies: data,
+  flatBookies: state.flatBookies
+});
 
 export class MoveTreeItem {
-  constructor(newParentId, childId, hoveredItemId = null, overUnder = null) {
-    this.newParentId = newParentId;
-    this.childId = childId;
-    this.hoveredItemId = hoveredItemId;
-    this.overUnder = overUnder;
+  constructor(itemId, newParentId, hoveredItemId, overUnder) {
+    this.itemId = itemId;
+    this.newParentId = newParentId ?? null;
+    this.hoveredItemId = hoveredItemId ?? null;
+    this.overUnder = overUnder ?? null;
 
     this.flat = [...state.flatBookies];
 
+    this.item = this.flatItem();
+    this.flatItemIndex = this.flatItemIndex();
+
     this.oldParentId = this.oldParentId() ?? null;
-    this.oldParentIndex = this.flat.findIndex(a => a.Id == this.oldParentId) ?? null;
-    this.newParentIndex = this.flat.findIndex(a => a.Id == this.newParentId) ?? null;
-    this.indexOfHovered = null;
+    this.oldParentIndex =  this.oldParentIndex() ?? null;
+    this.newParentIndex = this.newParentIndex() ?? null;
 
-    console.log("before operation starts...");
-    console.log(`newParent = [${this.newParentId}], childId = [${this.childId}], overUnder = [${this.overUnder}], hoveredOver = [${this.hoveredItemId}], previousParent = [${this.oldParentId}]`);
-
-    if (
-      this.itemType(this.childId) === "Bookmark" ||
-        (
-          this.newParentId != this.childId &&
-          !this.newParentIsOwnChild(this.childId)
-        )
+    if (this.item.Type === "Bookmark" ||
+      (
+        this.newParentId != this.itemId &&
+        !this.newParentIsOwnChild(this.itemId)
+      )
     ) {
       if (this.oldParentId) this.removeChildFromParent();
+      if (this.newParentId === 0) this.removeChildFromRoot();
 
-      this.indexOfHovered = this.newParentId != null
-        ? this.flat[this.newParentIndex].Children.indexOf(this.hoveredItemId)
-        : this.flat.findIndex(a => a.Id === this.hoveredItemId);
+      /*
+      * Find the index of the hovered item after removing item \
+      * in order to get the index right.
+      */
+      this.hoveredItemIndex = this.hoveredItemIndex() ?? null;
 
-      if (this.hoveredItemId) this.appendToParentPosition();
+      if (this.hoveredItemIndex != undefined) this.appendToParentWithPosition();
       else this.appendToParent();
 
       this.updateGlobals();
     }
-
-    console.log(`newParent = [${this.newParentId}], childId = [${this.childId}], overUnder = [${this.overUnder}], hoveredOver = [${this.hoveredItemId}], previousParent = [${this.oldParentId}]`);
   }
 
-  oldParentId = () => {
-    const folders = this.flat.filter(a => a.Type == "Folder");
-    const oldParent = folders.find(a => a.Children.includes(this.childId));
-    if (oldParent) return oldParent.Id;
-    else return;
+  // For safekeeping when deleted from 'root'
+  flatItem = () => {
+    return this.flat.find(a => a.Id === this.itemId);
   };
 
+  // Get the index of the dragged item from the flat array.
+  flatItemIndex = () => {
+    return this.flat.findIndex(a => a.Id === this.itemId);
+  };
+
+  /*
+  * Return 'undefined' if the previous parent was 'root'.
+  * Return the ID of the parent otherwise.
+  */
+  oldParentId = () => {
+    const folders = this.flat.filter(a => a.Type === "Folder");
+    const parent = folders.find(a => a.Children.includes(this.itemId));
+    if (!parent) return;
+    else return parent.Id;
+  };
+
+  /*
+  * Return 'undefined' if the previous parent was 'root' \
+  * and 'this.oldParentId' was not set because of it.
+  * Return the index of the parent otherwise.
+  */
+  oldParentIndex = () => {
+    if (this.oldParentId === null) return;
+    const index = this.flat.findIndex(a => a.Id == this.oldParentId);
+    if (index === -1) return;
+    else return index;
+  };
+
+  /*
+  * Return 'indefined' if the new parent is 'root', or the index is not found.
+  * If the index is not found, even though the new parent is not 'root'; \
+  * might mean there is some other issue at play.
+  * Return the index of the new parent otherwise.
+  */
+  newParentIndex = () => {
+    if (this.newParentId === 0) return;
+    const index = this.flat.findIndex(a => a.Id == this.newParentId);
+    if (index === -1) return;
+    else return index;
+  };
+
+  // Check the type of an Bookies item.
   itemType = (id) => {
     const item = this.flat.find(a => a.Id === id);
     return item.Type;
-  }
+  };
 
+  // Check if the new parent is not its own child.
   newParentIsOwnChild = (id) => {
     const cur = this.flat.find(a => a.Id == id);
 
@@ -81,47 +120,69 @@ export class MoveTreeItem {
     });
   };
 
-  // recheck the index when having to pop from root folder before appending again.
-  recheckIndexOfHovered = () => {
-    this.indexOfHovered = this.newParentId != null
-      ? this.flat[this.newParentIndex].Children.indexOf(this.hoveredItemId)
-      : this.flat.findIndex(a => a.Id === this.hoveredItemId);
-  }
+  /*
+  * Return the index of the hovered-over item; if the item is hovered, \
+  * in order to decide where to place the dragged item.
+  */
+  hoveredItemIndex = () => {
+    let index;
+    /*
+    * If there is no given parent to move the item into; \
+    * means the new parent will be 'root'.
+    * Therefore seek the item index in 'root'
+    */
+    if (this.newParentId === 0 && this.hoveredItemId) {
+      index = this.flat.findIndex(a => a.Id === this.hoveredItemId);
+    } else if (this.hoveredItemId) {
+      index = this.flat[this.newParentIndex].Children.indexOf(this.hoveredItemId);
+    }
 
+    if(index === -1) return;
+    else return index;
+  };
+
+  // Remove the item from its parent in order to move it.
   removeChildFromParent() {
-    const childIndex = this.flat[this.oldParentIndex].Children.indexOf(this.childId);
-    this.flat[this.oldParentIndex].Children.splice(childIndex, 1);
+    if (this.oldParentId) {
+      const index = this.flat[this.oldParentIndex].Children.indexOf(this.itemId);
+      this.flat[this.oldParentIndex].Children.splice(index, 1);
+    }
   }
 
-  appendToParentPosition() {
-    if (this.overUnder === 'under') this.indexOfHovered++;
-
-    // If new parent is root.
-    if (this.newParentId === null) {
-      const flatItem = this.flat.find(a => a.Id === this.childId);
-      const itemFlatIndex = this.flat.findIndex(a => a.Id === this.childId);
-      this.flat.splice(itemFlatIndex, 1);
-      this.recheckIndexOfHovered();
-      this.flat.splice(this.indexOfHovered, 0, flatItem);
+  // Remove the item from 'root' in order to shift or delete it.
+  removeChildFromRoot() {
+    if (this.newParentId === 0) {
+      this.flat.splice(this.flatItemIndex, 1);
     }
-
-    // If new parent is NOT root.
-    else {
-      this.flat[this.newParentIndex].Children.splice(this.indexOfHovered, 0, this.childId);
-    }
-
-    //console.log(`index of new parent = [${this.newParentIndex}], its children = `, this.flat[this.newParentIndex].Children);
   }
 
+  // If the new parent is spesified with a position, append it to that position.
+  appendToParentWithPosition() {
+    // Move the item down one indicy if its supposed to be UNDER a spesiffic item.
+    if (this.overUnder === 'under') {
+      this.hoveredItemIndex++;
+    }
+
+    // Append to 'root'.
+    if (this.newParentId === 0) {
+      this.flat.splice(this.hoveredItemIndex, 0, this.item);
+    }
+
+    // Append to a parent.
+    else if (this.hoveredItemIndex != undefined) {
+      this.flat[this.newParentIndex].Children.splice(this.hoveredItemIndex, 0, this.itemId);
+    }
+  }
+
+  // If there is no spesified position to add the item, push it to the last spot.
   appendToParent() {
-    if (this.newParentId) this.flat[this.newParentIndex].Children.push(this.childId);
+    // Pusing to 'root'.
+    if (this.newParentId === 0) {
+      this.flat.push(this.item);
 
-    // If the new parent is root.
-    else {
-      const item = this.flat.find(a => a.Id === this.childId);
-      const itemIndex = this.flat.findIndex(a => a.Id === this.childId);
-      this.flat.splice(itemIndex, 1);
-      this.flat.push(item);
+    // Pusing to a parent.
+    } else if (this.newParentId && this.newParentIndex) {
+      this.flat[this.newParentIndex].Children.push(this.itemId);
     }
   }
 

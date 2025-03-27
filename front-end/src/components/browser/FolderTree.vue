@@ -10,13 +10,13 @@ import { startDrag, onDrop, setBackgroundColor, rmBackgroundColor } from './Move
     @dragover.prevent
     @dragenter.prevent="setBackgroundColor"
     @dragleave="rmBackgroundColor"
-    @drop.prevent.stop="onDrop($event, null); rmBackgroundColor($event)" >
+    @drop.prevent.stop="onDrop($event, 0); rmBackgroundColor($event)" >
 
     <TreeNode
       v-for="(node, index) in bookiesTreeRef.Bookmarks"
       :key="node.Id"
       :node="node"
-      :parentId="null"
+      :parentId="0"
       :index="index"
       />
   </div>

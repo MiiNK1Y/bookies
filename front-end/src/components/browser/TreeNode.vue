@@ -13,7 +13,7 @@ const props = defineProps({
     required: true
   },
   parentId: {
-    type: Number,
+    type: [Number, null],
   }
 });
 
@@ -89,7 +89,7 @@ const hoveringMaskPosition = {
     <div
       v-if="node.Type === 'Bookmark'"
       draggable="true"
-      class="node item item-padding"
+      class="node item item-padding prevent-select"
       @dragstart="startDrag($event, node)">
 
       <span><div class="favicon-placeholder"></div></span>
@@ -104,7 +104,7 @@ const hoveringMaskPosition = {
     -->
     <div
       v-else-if="node.Type === 'Folder'"
-      class="node folder drop-zone"
+      class="node folder drop-zone prevent-select"
       :class="{ 'folder-padding': showChildren }"
       @dragleave="rmBackgroundColor"
       @dragenter="setBackgroundColor"
@@ -113,7 +113,7 @@ const hoveringMaskPosition = {
       <!-- The node-part of this node, functions as a header when the folder is opened. -->
       <div
         draggable="true"
-        class="item"
+        class="item prevent-select"
         :class="showChildren ? 'folder-open' : 'item-padding'"
         @click="toggleChildren"
         @dragenter="toggleChildrenOn($event, node)"
@@ -206,6 +206,10 @@ div.item {
 div.favicon-placeholder {
   width: 18px;
   height: 18px;
+}
+
+div.prevent-select {
+  user-select: none;
 }
 
 @media (hover:hover) {
