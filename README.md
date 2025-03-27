@@ -29,14 +29,17 @@ So, here I am, trying the best to my abilities in replicating their implementati
 - [ ] 4. The "Bookies.json" file, formatted for the entire tree-structure.
   - [ ] 4.1 Ability to extract the Bookies.json file.
     - [ ] 4.1.1 Ability to edit the Bookies.json file directly to update the tree-structure.
+- [ ] 5. Drag-and-drop multiple items.
+  - [ ] 5.1 Select collection of neighboring indices with shift-click.
+  - [ ] 5.2 Select items far apart (non-neighbor indices) with control-click.
 
-- [ ] 5. Ability to drag-and-drop URLs into Bookies to add bookmark.
-  - [ ] 5.1 Prompt to add / edit: Title, URL, Tags.
-    - [ ] 5.1.1 Fall-back to defaults if the prompt is skipped.
+- [ ] 6. Ability to drag-and-drop URLs into Bookies to add bookmark.
+  - [ ] 6.1 Prompt to add / edit: Title, URL, Tags.
+    - [ ] 6.1.1 Fall-back to defaults if the prompt is skipped.
 
-- [ ] 6. Folder-tree separator, to separate the items in the tree.
-- [ ] 7. The "Main" browser view that views the data of the items in the selected folder, falls back to the root of the hierarchy.
-- [ ] 8. The "Edit Bookmark" window to edit selected item.
+- [ ] 7. Folder-tree separator, to separate the items in the tree.
+- [ ] 8. The "Main" browser view that views the data of the items in the selected folder, falls back to the root of the hierarchy.
+- [ ] 9. The "Edit Bookmark" window to edit selected item.
 
 ---
 # Features -
@@ -116,7 +119,7 @@ Things to keep in mind:
       - Perhaps add a "Folder: ID" property to each item when flattening?
         - This allows for checking it we have to iterate further over the array to find out if the ID is related to a bookmark or folder.
 
-### 18.03.18
+### 2025.03.18
 - [14:01] Since the "inflate" functionality is now complete, and I now can rebuild a modified flat array, I need to figure out how to actually update the folder tree to show those change.
   - I have tried:
     - Emitting the entire modified flat array, only for emit() to do something funky and not actually emit the created modified array, but some other version of it i cant figure out how...
@@ -125,7 +128,11 @@ Things to keep in mind:
   - I'm now going to try and implement Pinia for state management. Where methods can be implemented to modify the data, and then the changes should be applied automatically by Vue.
     - Wait, maybe Pinia is not needed after all? Checking the Vue documentation; entire arrays may be replaced, and Vue will only re-render items that actually changed.
 
-### 21.03.18
+### 2025.03.21
 - [21:21] Damn I've been productive.
   - The tree is now applying changes when they happen, but the reason it worked was because of the shallow nature of emit(). There is a bug that passes an item when drag-and-droped into a nested folder, through all the parents and end up in the root folder. This is because the event listeners for each item assumes the drop was meant for them and takes it from their child folder until it reaches the root parent. To avoid this, i need to disable event propagation, but that makes emits not work, since emits used their parent to pass the data.
   - So I'll be checking out Pinia to handle that action. I was looking at "Provide / Inject", but it appears that is meant for parent-to-child communication, and not vice-versa.
+
+### 2025.03.27
+- [11:00] note on 2025.03.21; Pinia was not needed, instead i created a "Composable" in a "store" directory to manipulate the Bookies, both file and DOM tree (DOM tree applied after the ref() changes value).
+- note on 2025.03.11/12; I ended up using the native HTML5 drag-and-drop feature (with Vue's template abstraction, ofcourse). The event created on drag-event stores the ID of the dragged item, and the event created on drop-event stores the ID of the parent the child was meant to go in. The actual functionality aside from the DOM stuff, is from-the-bottom made JavaScript without any external library or modules.

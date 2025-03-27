@@ -60,7 +60,7 @@ const hoveringMaskPosition = {
       v-show="dragMode"
       @dragleave="toggleHoveringTop(false)"
       @dragenter="toggleHoveringTop(true)"
-      @drop.prevent.stop="onDrop($event, parentId, 'over', index); toggleHoveringTop(false)"
+      @drop.prevent.stop="onDrop($event, parentId, node.Id, 'over'); toggleHoveringTop(false)"
       class="item-hover-mask item-top-mask"
       :class="itemTypeClass">
 
@@ -75,7 +75,7 @@ const hoveringMaskPosition = {
       v-show="dragMode"
       @dragleave="toggleHoveringBottom(false)"
       @dragenter="toggleHoveringBottom(true)"
-      @drop.stop.prevent="onDrop($event, parentId, 'under', index); toggleHoveringBottom(false)"
+      @drop.stop.prevent="onDrop($event, parentId, node.Id, 'under'); toggleHoveringBottom(false)"
       class="item-hover-mask item-bottom-mask"
       :class="itemTypeClass">
 

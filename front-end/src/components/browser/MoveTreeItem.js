@@ -11,10 +11,10 @@ export function startDrag(event, item) {
   dragMode.value = true;
 }
 
-export function onDrop(event, parent, position = null, index = null) {
-  const itemID = Number(event.dataTransfer.getData("itemID"));
+export function onDrop(event, parentId = null, hoveredItemId = null, overUnder = null) {
+  const itemId = Number(event.dataTransfer.getData("itemID"));
   dragMode.value = false;
-  new MoveTreeItem(parent, itemID, position, index);
+  new MoveTreeItem(parentId, itemId, hoveredItemId, overUnder);
 }
 
 export function setBackgroundColor(event) {
