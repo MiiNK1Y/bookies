@@ -16,7 +16,7 @@ import { startDrag, onDrop, setBackgroundColor, rmBackgroundColor } from './Move
       v-for="(node, index) in bookiesTreeRef.Bookmarks"
       :key="node.Id"
       :node="node"
-      :parentId="node.Id"
+      :parentId="null"
       :index="index"
       />
   </div>
