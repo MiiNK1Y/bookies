@@ -1,6 +1,6 @@
 <script setup>
 import { ref, computed } from 'vue';
-import { dragMode, startDrag, onDrop, setBackgroundColor,
+import { dragMode, startDrag, onDragEnd, onDrop, setBackgroundColor,
 rmBackgroundColor } from './MoveTreeItem.js';
 
 const props = defineProps({
@@ -45,7 +45,6 @@ const hoveringMaskPosition = {
     toggleHoveringTop: hoveringTop,
     toggleHoveringBottom: hoveringBottom
 };
-
 </script>
 
 
@@ -90,6 +89,7 @@ const hoveringMaskPosition = {
       v-if="node.Type === 'Bookmark'"
       draggable="true"
       class="node item item-padding prevent-select"
+      @dragend="onDragEnd($event)"
       @dragstart="startDrag($event, node)">
 
       <span><div class="favicon-placeholder"></div></span>
@@ -117,7 +117,8 @@ const hoveringMaskPosition = {
         :class="showChildren ? 'folder-open' : 'item-padding'"
         @click="toggleChildren"
         @dragenter="toggleChildrenOn($event, node)"
-        @dragstart="startDrag($event, node)">
+        @dragstart="startDrag($event, node)"
+        @dragend="onDragEnd($event)">
 
         <img :src="childrenToggledIcon" v-if="hasChildren" />
         <span style="color: orange">{{ node.Id }}</span>

@@ -11,6 +11,11 @@ export function startDrag(event, item) {
   dragMode.value = true;
 }
 
+export function onDragEnd(event) {
+  const itemId = Number(event.dataTransfer.getData("itemID"));
+  dragMode.value = false;
+}
+
 export function onDrop(event, parentId, hoveredItemId, overUnder) {
   const itemId = Number(event.dataTransfer.getData("itemID"));
   dragMode.value = false;
