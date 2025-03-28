@@ -33,6 +33,11 @@ function toggleChildrenOn(event, item) {
   showChildren.value = true;
 }
 
+function delayedToggleChildrenOn(event, item) {
+  // check what is beeing hovered, then set a timout for 1.5s,
+  // if the same item is still beeing hovered, toggle the children.
+}
+
 const childrenToggledIcon = computed(() => {
   return showChildren.value ? "/src/assets/icons/folder-open-solid.svg" :
     "/src/assets/icons/folder-solid.svg";
@@ -192,7 +197,6 @@ div.node {
   border-radius: 7px;
   font-family: var(--bks-big-text);
   cursor: default;
-  transition: background-color 0.1s ease;
 }
 
 div.item {
@@ -215,6 +219,10 @@ div.prevent-select {
 
 @media (hover:hover) {
     div.item:hover {
+    /*
+    background-color: var(--rp-surface);
+    */
+    background-color: var(--ct-surface_0);
     color: var(--rp-iris);
     cursor: default;
   }
