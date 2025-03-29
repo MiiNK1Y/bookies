@@ -1,7 +1,7 @@
 <script setup>
 import { ref, computed } from 'vue';
 import { dragMode, startDrag, onDragEnd, onDrop, setBackgroundColor,
-rmBackgroundColor } from './MoveTreeItem.js';
+rmBackgroundColor, hoveringFolder } from './MoveTreeItem.js';
 
 const props = defineProps({
   node: {
@@ -22,19 +22,8 @@ const hoveringTop = ref(false);
 const hoveringBottom = ref(false);
 
 function toggleChildren() { showChildren.value = !showChildren.value; }
-
-function toggleHoveringTop(bool) {
-  hoveringTop.value = bool;
-  if (hoveringTop.value == true) {
-    console.log("hovering top of: ", props.node.Id);
-  }
-}
-
-function toggleHoveringBottom(bool) {
-  hoveringBottom.value = bool;
-  if (hoveringBottom.value == true) {
-    console.log("hovering bottom of: ", props.node.Id); }
-}
+function toggleHoveringTop(bool) { hoveringTop.value = bool; }
+function toggleHoveringBottom(bool) { hoveringBottom.value = bool; }
 
 const hasChildren = computed(() => { return props.node.Bookmarks; });
 
@@ -49,8 +38,7 @@ const childrenToggledIcon = computed(() => {
     "/src/assets/icons/folder-solid.svg";
 });
 
-const itemTypeClass = props.node.Type === 'Bookmark'
-  ? 'bookmark-mask' : 'folder-mask';
+const itemTypeClass = props.node.Type === 'Bookmark' ? 'bookmark-mask' : 'folder-mask';
 
 const hoveringMaskPosition = {
     toggleHoveringTop: hoveringTop,
@@ -68,8 +56,8 @@ const hoveringMaskPosition = {
     <!-- Top hover-mask. -->
     <div
       v-show="dragMode"
-      @dragenter.prevent.stop="toggleHoveringTop(true)"
-      @dragleave.prevent.stop="toggleHoveringTop(false)"
+      @dragenter.stop="toggleHoveringTop(true)"
+      @dragleave.stop="toggleHoveringTop(false)"
       @drop.prevent.stop="onDrop($event, parentId, node.Id, 'over'); toggleHoveringTop(false)"
       class="item-hover-mask item-top-mask"
       :class="itemTypeClass">
@@ -83,8 +71,8 @@ const hoveringMaskPosition = {
     <!-- Bottom hover-mask. -->
     <div
       v-show="dragMode"
-      @dragenter.prevent.stop="toggleHoveringBottom(true)"
-      @dragleave.prevent.stop="toggleHoveringBottom(false)"
+      @dragenter.stop="toggleHoveringBottom(true)"
+      @dragleave.stop="toggleHoveringBottom(false)"
       @drop.prevent.stop="onDrop($event, parentId, node.Id, 'under'); toggleHoveringBottom(false)"
       class="item-hover-mask item-bottom-mask"
       :class="itemTypeClass">
@@ -118,8 +106,8 @@ const hoveringMaskPosition = {
       class="node folder drop-zone prevent-select"
       :class="{ 'folder-padding': showChildren }"
       @dragover.prevent
-      @dragleave.prevent="rmBackgroundColor"
-      @dragenter.prevent="setBackgroundColor"
+      @dragenter.prevent.stop="setBackgroundColor($event)"
+      @dragleave.prevent.stop="rmBackgroundColor($event)"
       @drop.prevent.stop="onDrop($event, node.Id); rmBackgroundColor($event)">
 
       <!-- The node-part of this node, functions as a header when the folder is opened. -->
@@ -128,7 +116,6 @@ const hoveringMaskPosition = {
         class="item prevent-select"
         :class="showChildren ? 'folder-open' : 'item-padding'"
         @click="toggleChildren"
-        @dragenter.prevent="toggleChildrenOn($event, node)"
         @dragstart="startDrag($event, node)"
         @dragend="onDragEnd($event)">
 
@@ -156,8 +143,8 @@ const hoveringMaskPosition = {
 div.bookmark-mask { height: 50%; }
 div.folder-mask { height: 5px; }
 
-div.item-top-mask { top: 0; background-color: var(--ct-green); opacity: 0.3 }
-div.item-bottom-mask { bottom: 0; background-color: var(--ct-red); opacity: 0.3 }
+div.item-top-mask { top: 0; /* background-color: var(--ct-green); opacity: 0.3 */ }
+div.item-bottom-mask { bottom: 0; /* background-color: var(--ct-red); opacity: 0.3 */ }
 
 div.item-padding { padding: 5px 9px; }
 div.folder-padding { padding: 2px; }

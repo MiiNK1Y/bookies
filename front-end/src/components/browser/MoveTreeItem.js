@@ -2,6 +2,7 @@ import { MoveTreeItem } from '@/stores/folderTree.js'
 import { ref } from 'vue';
 
 export const dragMode = ref(false);
+export const hoveringFolder = ref(null);
 
 // Drag and drop functionality.
 export function startDrag(event, item) {
