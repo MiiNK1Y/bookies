@@ -181,7 +181,7 @@ export class MoveTreeItem {
       this.flat.push(this.item);
 
     // Pusing to a parent.
-    } else if (this.newParentId && this.newParentIndex) {
+    } else if (this.newParentId) {
       this.flat[this.newParentIndex].Children.push(this.itemId);
     }
   }

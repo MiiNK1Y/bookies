@@ -3,11 +3,6 @@ import { ref } from 'vue';
 
 export const dragMode = ref(false);
 
-/*
-* Keep track of what folder to toggle-show when timer runs out.
-*/
-export const initHoveredFolder = ref(null);
-
 // Drag and drop functionality.
 export function startDrag(event, item) {
   event.dataTransfer.dropEffect = "move";

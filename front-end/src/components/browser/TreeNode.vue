@@ -22,8 +22,19 @@ const hoveringTop = ref(false);
 const hoveringBottom = ref(false);
 
 function toggleChildren() { showChildren.value = !showChildren.value; }
-function toggleHoveringTop(bool) { hoveringTop.value = bool; }
-function toggleHoveringBottom(bool) { hoveringBottom.value = bool; }
+
+function toggleHoveringTop(bool) {
+  hoveringTop.value = bool;
+  if (hoveringTop.value == true) {
+    console.log("hovering top of: ", props.node.Id);
+  }
+}
+
+function toggleHoveringBottom(bool) {
+  hoveringBottom.value = bool;
+  if (hoveringBottom.value == true) {
+    console.log("hovering bottom of: ", props.node.Id); }
+}
 
 const hasChildren = computed(() => { return props.node.Bookmarks; });
 
@@ -31,11 +42,6 @@ function toggleChildrenOn(event, item) {
   const itemID = Number(event.dataTransfer.getData("itemID"));
   if (itemID == item.Id) return;
   showChildren.value = true;
-}
-
-function delayedToggleChildrenOn(event, item) {
-  // check what is beeing hovered, then set a timout for 1.5s,
-  // if the same item is still beeing hovered, toggle the children.
 }
 
 const childrenToggledIcon = computed(() => {
@@ -62,8 +68,8 @@ const hoveringMaskPosition = {
     <!-- Top hover-mask. -->
     <div
       v-show="dragMode"
-      @dragleave="toggleHoveringTop(false)"
-      @dragenter="toggleHoveringTop(true)"
+      @dragenter.prevent.stop="toggleHoveringTop(true)"
+      @dragleave.prevent.stop="toggleHoveringTop(false)"
       @drop.prevent.stop="onDrop($event, parentId, node.Id, 'over'); toggleHoveringTop(false)"
       class="item-hover-mask item-top-mask"
       :class="itemTypeClass">
@@ -77,9 +83,9 @@ const hoveringMaskPosition = {
     <!-- Bottom hover-mask. -->
     <div
       v-show="dragMode"
-      @dragleave="toggleHoveringBottom(false)"
-      @dragenter="toggleHoveringBottom(true)"
-      @drop.stop.prevent="onDrop($event, parentId, node.Id, 'under'); toggleHoveringBottom(false)"
+      @dragenter.prevent.stop="toggleHoveringBottom(true)"
+      @dragleave.prevent.stop="toggleHoveringBottom(false)"
+      @drop.prevent.stop="onDrop($event, parentId, node.Id, 'under'); toggleHoveringBottom(false)"
       class="item-hover-mask item-bottom-mask"
       :class="itemTypeClass">
 
@@ -94,8 +100,8 @@ const hoveringMaskPosition = {
       v-if="node.Type === 'Bookmark'"
       draggable="true"
       class="node item item-padding prevent-select"
-      @dragend="onDragEnd($event)"
-      @dragstart="startDrag($event, node)">
+      @dragstart="startDrag($event, node)"
+      @dragend="onDragEnd($event)">
 
       <span><div class="favicon-placeholder"></div></span>
       <span style="color: orange">{{ node.Id }}</span>
@@ -111,9 +117,10 @@ const hoveringMaskPosition = {
       v-else-if="node.Type === 'Folder'"
       class="node folder drop-zone prevent-select"
       :class="{ 'folder-padding': showChildren }"
-      @dragleave="rmBackgroundColor"
-      @dragenter="setBackgroundColor"
-      @drop.stop.prevent="onDrop($event, node.Id); rmBackgroundColor($event)">
+      @dragover.prevent
+      @dragleave.prevent="rmBackgroundColor"
+      @dragenter.prevent="setBackgroundColor"
+      @drop.prevent.stop="onDrop($event, node.Id); rmBackgroundColor($event)">
 
       <!-- The node-part of this node, functions as a header when the folder is opened. -->
       <div
@@ -121,7 +128,7 @@ const hoveringMaskPosition = {
         class="item prevent-select"
         :class="showChildren ? 'folder-open' : 'item-padding'"
         @click="toggleChildren"
-        @dragenter="toggleChildrenOn($event, node)"
+        @dragenter.prevent="toggleChildrenOn($event, node)"
         @dragstart="startDrag($event, node)"
         @dragend="onDragEnd($event)">
 
@@ -149,8 +156,8 @@ const hoveringMaskPosition = {
 div.bookmark-mask { height: 50%; }
 div.folder-mask { height: 5px; }
 
-div.item-top-mask { top: 0; }
-div.item-bottom-mask { bottom: 0; }
+div.item-top-mask { top: 0; background-color: var(--ct-green); opacity: 0.3 }
+div.item-bottom-mask { bottom: 0; background-color: var(--ct-red); opacity: 0.3 }
 
 div.item-padding { padding: 5px 9px; }
 div.folder-padding { padding: 2px; }

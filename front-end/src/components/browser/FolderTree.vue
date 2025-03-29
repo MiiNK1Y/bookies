@@ -9,7 +9,7 @@ import { startDrag, onDrop, setBackgroundColor, rmBackgroundColor } from './Move
     class="root drop-zone"
     @dragover.prevent
     @dragenter.prevent="setBackgroundColor"
-    @dragleave="rmBackgroundColor"
+    @dragleave.prevent="rmBackgroundColor"
     @drop.prevent.stop="onDrop($event, 0); rmBackgroundColor($event)" >
 
     <TreeNode
