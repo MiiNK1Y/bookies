@@ -20,30 +20,29 @@ const props = defineProps({
 const showChildren = ref(false);
 const hoveringTop = ref(false);
 const hoveringBottom = ref(false);
+const hasChildren = computed(() => { return props.node.Bookmarks; });
+const itemTypeClass = props.node.Type === 'Bookmark' ? 'bookmark-mask' : 'folder-mask';
+
+const childrenToggledIcon = computed(() => {
+  return showChildren.value
+    ? "/src/assets/icons/folder-open-solid.svg"
+    : "/src/assets/icons/folder-solid.svg";
+});
+
+const hoveringMaskPosition = {
+    toggleHoveringTop: hoveringTop,
+    toggleHoveringBottom: hoveringBottom
+};
 
 function toggleChildren() { showChildren.value = !showChildren.value; }
 function toggleHoveringTop(bool) { hoveringTop.value = bool; }
 function toggleHoveringBottom(bool) { hoveringBottom.value = bool; }
-
-const hasChildren = computed(() => { return props.node.Bookmarks; });
 
 function toggleChildrenOn(event, item) {
   const itemID = Number(event.dataTransfer.getData("itemID"));
   if (itemID == item.Id) return;
   showChildren.value = true;
 }
-
-const childrenToggledIcon = computed(() => {
-  return showChildren.value ? "/src/assets/icons/folder-open-solid.svg" :
-    "/src/assets/icons/folder-solid.svg";
-});
-
-const itemTypeClass = props.node.Type === 'Bookmark' ? 'bookmark-mask' : 'folder-mask';
-
-const hoveringMaskPosition = {
-    toggleHoveringTop: hoveringTop,
-    toggleHoveringBottom: hoveringBottom
-};
 </script>
 
 
