@@ -43,6 +43,33 @@ function toggleChildrenOn(event, item) {
   if (itemID == item.Id) return;
   showChildren.value = true;
 }
+
+// Timout ID to keep track of the set timer.
+let timeoutID = undefined;
+function delayedToggleChildrenOn(event, item) {
+  //console.log("hovered: ", item.Id);
+  const itemId = Number(event.dataTransfer.getData("itemID"));
+  if (itemId == item.Id) return;
+  hoveringFolder.value = item.Id;
+  //console.log("set hovering value: ", item.Id);
+  //console.log("setting timout...");
+  timeoutID = setTimeout(() => {
+    //console.log("timout completed, checking current hovering...");
+    if (hoveringFolder.value == item.Id) {
+      //console.log("hovering same item, toggeling...");
+      showChildren.value = true;
+    } else {
+      //console.log("not hovering same item...");
+    }
+  }, 500);
+  //console.log("timoutID: ", timeoutID);
+}
+
+function cancelDelayedToggleChildrenOn() {
+  //console.log("canceling timeout, ID: ", timeoutID);
+  hoveringFolder.value = null;
+  clearTimeout(timeoutID);
+}
 </script>
 
 
@@ -65,6 +92,14 @@ function toggleChildrenOn(event, item) {
         v-show="hoveringTop"
         class="drop-indicator drop-indicator-top">
       </div>
+    </div>
+
+    <!-- Dedicated hover-to-open zone for folders. -->
+    <div
+      v-show="dragMode && node.Type === 'Folder' && !showChildren"
+      class="item-hover-mask folder-hover-to-open"
+      @dragenter.stop="delayedToggleChildrenOn($event, node)"
+      @dragleave.stop="cancelDelayedToggleChildrenOn()">
     </div>
 
     <!-- Bottom hover-mask. -->
@@ -142,14 +177,25 @@ function toggleChildrenOn(event, item) {
 div.bookmark-mask { height: 50%; }
 div.folder-mask { height: 5px; }
 
-div.item-top-mask { top: 0; /* background-color: var(--ct-green); opacity: 0.3 */ }
-div.item-bottom-mask { bottom: 0; /* background-color: var(--ct-red); opacity: 0.3 */ }
+div.item-top-mask { top: 0; /* background-color: var(--ct-green); opacity: 0.3; */ }
+div.item-bottom-mask { bottom: 0; /* background-color: var(--ct-red); opacity: 0.3; */ }
 
 div.item-padding { padding: 5px 9px; }
 div.folder-padding { padding: 2px; }
 
 div.folder { background-color: hsla(248deg, 13%, 36%, 0.3); }
 div.folder-open { padding: 3px 7px; }
+
+div.folder-hover-to-open {
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  height: 70%;
+  /*
+  background-color: purple;
+  opacity: 0.3;
+  */
+}
 
 /* 'dragover' style applied from 'MoveTreeItem.js' */
 div.drop-zone.dragover { background-color: var(--rp-highlight-high); }
