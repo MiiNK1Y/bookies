@@ -15,11 +15,13 @@ export function startDrag(event, item) {
 export function onDragEnd(event) {
   const itemId = Number(event.dataTransfer.getData("itemID"));
   dragMode.value = false;
+  hoveringFolder.value = null;
 }
 
 export function onDrop(event, parentId, hoveredItemId, overUnder) {
   const itemId = Number(event.dataTransfer.getData("itemID"));
   dragMode.value = false;
+  hoveringFolder.value = null;
   new MoveTreeItem(itemId, parentId, hoveredItemId, overUnder);
 }
 

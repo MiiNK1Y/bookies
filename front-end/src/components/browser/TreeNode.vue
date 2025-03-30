@@ -55,7 +55,7 @@ function delayedToggleChildrenOn(event, item) {
   //console.log("setting timout...");
   timeoutID = setTimeout(() => {
     //console.log("timout completed, checking current hovering...");
-    if (hoveringFolder.value == item.Id) {
+    if (hoveringFolder.value == item.Id && dragMode) {
       //console.log("hovering same item, toggeling...");
       showChildren.value = true;
     } else {
@@ -99,7 +99,8 @@ function cancelDelayedToggleChildrenOn() {
       v-show="dragMode && node.Type === 'Folder' && !showChildren"
       class="item-hover-mask folder-hover-to-open"
       @dragenter.stop="delayedToggleChildrenOn($event, node)"
-      @dragleave.stop="cancelDelayedToggleChildrenOn()">
+      @dragleave.stop="cancelDelayedToggleChildrenOn()"
+      @drop.prevent.stop="onDrop($event, node.Id)">
     </div>
 
     <!-- Bottom hover-mask. -->
