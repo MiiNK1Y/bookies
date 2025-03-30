@@ -44,29 +44,19 @@ function toggleChildrenOn(event, item) {
   showChildren.value = true;
 }
 
-// Timout ID to keep track of the set timer.
 let timeoutID = undefined;
 function delayedToggleChildrenOn(event, item) {
-  //console.log("hovered: ", item.Id);
   const itemId = Number(event.dataTransfer.getData("itemID"));
   if (itemId == item.Id) return;
   hoveringFolder.value = item.Id;
-  //console.log("set hovering value: ", item.Id);
-  //console.log("setting timout...");
   timeoutID = setTimeout(() => {
-    //console.log("timout completed, checking current hovering...");
     if (hoveringFolder.value == item.Id && dragMode) {
-      //console.log("hovering same item, toggeling...");
       showChildren.value = true;
-    } else {
-      //console.log("not hovering same item...");
     }
   }, 500);
-  //console.log("timoutID: ", timeoutID);
 }
 
 function cancelDelayedToggleChildrenOn() {
-  //console.log("canceling timeout, ID: ", timeoutID);
   hoveringFolder.value = null;
   clearTimeout(timeoutID);
 }
