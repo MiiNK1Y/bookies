@@ -1,7 +1,7 @@
 /*
 * Validate if the Bookies conform to the set structure.
 *
-* Your Bookies may include aditional custom properties \
+* Your Bookies may include additional custom properties \
 * for comments and other sorts of data.
 */
 

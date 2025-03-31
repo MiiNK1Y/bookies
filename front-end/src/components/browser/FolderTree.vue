@@ -1,7 +1,7 @@
 <script setup>
 import TreeNode from './TreeNode.vue';
 import { bookiesTreeRef } from '@/stores/folderTree.js';
-import { startDrag, onDrop, setBackgroundColor, rmBackgroundColor } from './MoveTreeItem.js';
+import { onDrop, setBackgroundColor, rmBackgroundColor } from './MoveTreeItem.js';
 </script>
 
 <template>

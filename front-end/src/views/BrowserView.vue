@@ -59,9 +59,11 @@ div.browser-view {
 }
 
 div.navbar {
+  width: 100%;
   justify-content: center;
   align-items: center;
   background-color: var(--rp-highlight-med);
+  overflow: hidden;
 }
 
 div.browser-view {

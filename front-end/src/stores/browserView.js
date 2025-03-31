@@ -1,3 +1,3 @@
 import { ref } from 'vue';
 
-export const selected = ref(null);
+export const selected = ref("Bookmarks");

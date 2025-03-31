@@ -2,7 +2,6 @@ import data from '../tests/shared-samples/Bookies.json';
 import { Flatten, Rebuild } from '../modules/bookies/bookies.js';
 import { ref } from 'vue';
 
-
 export const state = {
   bookies: data,
   flatBookies: null
@@ -89,7 +88,7 @@ export class MoveTreeItem {
   };
 
   /*
-  * Return 'indefined' if the new parent is 'root', or the index is not found.
+  * Return 'undefined' if the new parent is 'root', or the index is not found.
   * If the index is not found, even though the new parent is not 'root'; \
   * might mean there is some other issue at play.
   * Return the index of the new parent otherwise.
@@ -156,9 +155,9 @@ export class MoveTreeItem {
     }
   }
 
-  // If the new parent is spesified with a position, append it to that position.
+  // If the new parent is specified with a position, append it to that position.
   appendToParentWithPosition() {
-    // Move the item down one indicy if its supposed to be UNDER a spesiffic item.
+    // Move the item down one index if its supposed to be UNDER a specific item.
     if (this.overUnder === 'under') {
       this.hoveredItemIndex++;
     }
@@ -174,13 +173,13 @@ export class MoveTreeItem {
     }
   }
 
-  // If there is no spesified position to add the item, push it to the last spot.
+  // If there is no specified position to add the item, push it to the last spot.
   appendToParent() {
-    // Pusing to 'root'.
+    // Pushing to 'root'.
     if (this.newParentId === 0) {
       this.flat.push(this.item);
 
-    // Pusing to a parent.
+    // Pushing to a parent.
     } else if (this.newParentId) {
       this.flat[this.newParentIndex].Children.push(this.itemId);
     }
