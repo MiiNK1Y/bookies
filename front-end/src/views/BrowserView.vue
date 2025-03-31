@@ -1,19 +1,19 @@
 <script setup>
 import { RouterView } from 'vue-router';
-import FolderTree from '@/components/browser/Tree.vue';
-import Navbar from '@/components/browser/Navbar.vue';
+import BrowserTree from '@/components/browser/BrowserTree.vue';
+import BrowserNavbar from '@/components/browser/BrowserNavbar.vue';
 </script>
 
 <template>
   <div class="parent">
     <div class="folder-tree">
-      <FolderTree />
+      <BrowserTree />
     </div>
     <div class="navbar">
-      <Navbar />
+      <BrowserNavbar />
     </div>
     <div class="browser-view">
-      <router-view />
+      <RouterView />
     </div>
   </div>
 </template>

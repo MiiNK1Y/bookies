@@ -1,10 +1,10 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import BrowserView from '@/views/BrowserView.vue';
-import BookmarksBrowserView from '@/components/browser/views/BookmarksBrowserView.vue';
-import FileBrowserView from '@/components/browser/views/FileBrowserView.vue';
-import HiddenBrowserView from '@/components/browser/views/HiddenBrowserView.vue';
-import TrashBrowserView from '@/components/browser/views/TrashBrowserView.vue';
-import SettingsBrowserView from '@/components/browser/views/SettingsBrowserView.vue';
+import BrowserBookmarksView from '@/components/browser/views/BrowserBookmarksView.vue';
+import BrowserFileView from '@/components/browser/views/BrowserFileView.vue';
+import BrowserHiddenView from '@/components/browser/views/BrowserHiddenView.vue';
+import BrowserTrashView from '@/components/browser/views/BrowserTrashView.vue';
+import BrowserSettingsView from '@/components/browser/views/BrowserSettingsView.vue';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -20,23 +20,23 @@ const router = createRouter({
       children: [
         {
           path: 'bookmarks',
-          component: BookmarksBrowserView,
+          component: BrowserBookmarksView,
         },
         {
           path: 'file',
-          component: FileBrowserView,
+          component: BrowserFileView,
         },
         {
           path: 'hidden',
-          component: HiddenBrowserView,
+          component: BrowserHiddenView,
         },
         {
           path: 'trash',
-          component: TrashBrowserView,
+          component: BrowserTrashView,
         },
         {
           path: 'settings',
-          component: SettingsBrowserView,
+          component: BrowserSettingsView,
         },
       ],
     },
