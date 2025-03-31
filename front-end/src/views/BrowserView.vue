@@ -1,6 +1,6 @@
 <script setup>
-import FolderTree from '@/components/browser/FolderTree.vue';
-import JsonView from '@/components/browser/JsonView.vue';
+import { RouterView } from 'vue-router';
+import FolderTree from '@/components/browser/Tree.vue';
 import Navbar from '@/components/browser/Navbar.vue';
 </script>
 
@@ -13,7 +13,7 @@ import Navbar from '@/components/browser/Navbar.vue';
       <Navbar />
     </div>
     <div class="browser-view">
-      <JsonView />
+      <router-view />
     </div>
   </div>
 </template>

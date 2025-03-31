@@ -1,28 +1,31 @@
 <script setup>
 import { selected } from '@/stores/browserView.js';
+
+// TODO: MEGA IMPORTANT TODO; CHECK WHERE I CAN REPLACE STUFF WITH COMPUTED PROPERTIES!
+
 </script>
 
 <template>
   <div class="navbar">
     <div class="btn selected">
-      <img class="settings" src="/src/assets/icons/list-ul-solid.svg" />
-      <span>Bookmarks</span>
+      <img src="/src/assets/icons/list-ul-solid.svg" />
+      <span><RouterLink to="/browser/bookmarks">Bookmarks</RouterLink></span>
     </div>
     <div class="btn">
-      <img class="settings" src="/src/assets/icons/file-code-solid.svg" />
-      <span>File</span>
+      <img src="/src/assets/icons/file-code-solid.svg" />
+      <span><RouterLink to="/browser/file">File</RouterLink></span>
     </div>
     <div class="btn">
-      <img class="settings" src="/src/assets/icons/ghost-solid.svg" />
-      <span>Hidden</span>
+      <img src="/src/assets/icons/ghost-solid.svg" />
+      <span><RouterLink to="/browser/hidden">Hidden</RouterLink></span>
     </div>
     <div class="btn">
-      <img class="settings" src="/src/assets/icons/trash-can-solid.svg" />
-      <span>Trash</span>
+      <img src="/src/assets/icons/trash-can-solid.svg" />
+      <span><RouterLink to="/browser/trash">Trash</RouterLink></span>
     </div>
     <div class="btn">
-      <img class="settings" src="/src/assets/icons/gear-solid.svg" />
-      <span>Settings</span>
+      <img src="/src/assets/icons/gear-solid.svg" />
+      <span><RouterLink to="/browser/settings">Settings</RouterLink></span>
     </div>
   </div>
 </template>
@@ -46,6 +49,11 @@ div.btn {
   margin: 3px 3px 0 3px;
   font-size: 1.2em;
   cursor: pointer;
+}
+
+div.btn>span>a {
+  color: var(--rp-text);
+  text-decoration: none;
 }
 
 div.selected {

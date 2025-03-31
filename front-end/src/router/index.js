@@ -1,4 +1,11 @@
-import { createRouter, createWebHistory } from 'vue-router'
+import { createRouter, createWebHistory } from 'vue-router';
+import WelcomeView from '@/views/WelcomeView.vue';
+import BrowserView from '@/views/BrowserView.vue';
+import BookmarksBrowserView from '@/components/browser/views/BookmarksBrowserView.vue';
+import FileBrowserView from '@/components/browser/views/FileBrowserView.vue';
+import HiddenBrowserView from '@/components/browser/views/HiddenBrowserView.vue';
+import TrashBrowserView from '@/components/browser/views/TrashBrowserView.vue';
+import SettingsBrowserView from '@/components/browser/views/SettingsBrowserView.vue';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -6,14 +13,35 @@ const router = createRouter({
     {
       path: '/',
       name: 'welcome',
-      component: () => import('../views/WelcomeView.vue'),
+      component: WelcomeView,
     },
     {
       path: '/browser',
-      name: 'browser',
-      component: () => import('../views/BrowserView.vue'),
+      component: BrowserView,
+      children: [
+        {
+          path: 'bookmarks',
+          component: BookmarksBrowserView,
+        },
+        {
+          path: 'file',
+          component: FileBrowserView,
+        },
+        {
+          path: 'hidden',
+          component: HiddenBrowserView,
+        },
+        {
+          path: 'trash',
+          component: TrashBrowserView,
+        },
+        {
+          path: 'settings',
+          component: SettingsBrowserView,
+        },
+      ],
     },
   ],
-})
+});
 
 export default router
