@@ -1,32 +1,31 @@
-<script setup>
-import { selected } from '@/stores/browserView.js';
-
-// TODO: MEGA IMPORTANT TODO; CHECK WHERE I CAN REPLACE STUFF WITH COMPUTED PROPERTIES!
-
-</script>
-
 <template>
   <div class="navbar">
-    <div class="btn selected">
+
+    <RouterLink to="/browser/bookmarks">
       <img src="/src/assets/icons/list-ul-solid.svg" />
-      <span><RouterLink to="/browser/bookmarks">Bookmarks</RouterLink></span>
-    </div>
-    <div class="btn">
-      <img src="/src/assets/icons/file-code-solid.svg" />
-      <span><RouterLink to="/browser/file">File</RouterLink></span>
-    </div>
-    <div class="btn">
+      <span>Bookmarks</span>
+    </RouterLink>
+
+    <RouterLink to="/browser/file">
+      <img src="/src/assets/icons/list-ul-solid.svg" />
+      <span>File</span>
+    </RouterLink>
+
+    <RouterLink to="/browser/hidden">
       <img src="/src/assets/icons/ghost-solid.svg" />
-      <span><RouterLink to="/browser/hidden">Hidden</RouterLink></span>
-    </div>
-    <div class="btn">
+      <span>Hidden</span>
+    </RouterLink>
+
+    <RouterLink to="/browser/trash">
       <img src="/src/assets/icons/trash-can-solid.svg" />
-      <span><RouterLink to="/browser/trash">Trash</RouterLink></span>
-    </div>
-    <div class="btn">
+      <span>Trash</span>
+    </RouterLink>
+
+    <RouterLink to="/browser/settings">
       <img src="/src/assets/icons/gear-solid.svg" />
-      <span><RouterLink to="/browser/settings">Settings</RouterLink></span>
-    </div>
+      <span>Settings</span>
+    </RouterLink>
+
   </div>
 </template>
 
@@ -38,7 +37,7 @@ div.navbar {
   gap: 15px;
 }
 
-div.btn {
+div.navbar>a {
   float: right;
   display: flex;
   flex-direction: row;
@@ -48,21 +47,18 @@ div.btn {
   border-radius: 10px 10px 0 0;
   margin: 3px 3px 0 3px;
   font-size: 1.2em;
+  color: var(--rp-text);
+  text-decoration: none;
   cursor: pointer;
 }
 
-div.btn>span>a {
-  color: var(--rp-text);
-  text-decoration: none;
-}
-
-div.selected {
+div.navbar>a.router-link-exact-active {
   position: relative;
   background-color: black;
 }
 
-div.selected:before,
-div.selected:after {
+div.navbar>a.router-link-exact-active:before,
+div.navbar>a.router-link-exact-active:after {
   content: "";
   position: absolute;
   bottom: 0;
@@ -72,13 +68,13 @@ div.selected:after {
   cursor: default;
 }
 
-div.selected:before {
+div.navbar>a.router-link-exact-active:before {
   left: -20px;
   border-radius: 0 0 10px 0;
   box-shadow: 5px 5px 0 0 black;
 }
 
-div.selected:after {
+div.navbar>a.router-link-exact-active:after {
   right: -20px;
   border-radius: 0 0 0 10px;
   box-shadow: -5px 5px 0 0 black;

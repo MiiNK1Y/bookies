@@ -1,5 +1,4 @@
 import { createRouter, createWebHistory } from 'vue-router';
-import WelcomeView from '@/views/WelcomeView.vue';
 import BrowserView from '@/views/BrowserView.vue';
 import BookmarksBrowserView from '@/components/browser/views/BookmarksBrowserView.vue';
 import FileBrowserView from '@/components/browser/views/FileBrowserView.vue';
@@ -13,7 +12,7 @@ const router = createRouter({
     {
       path: '/',
       name: 'welcome',
-      component: WelcomeView,
+      component: () => import ('../views/WelcomeView.vue'),
     },
     {
       path: '/browser',
