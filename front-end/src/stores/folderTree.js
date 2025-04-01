@@ -13,7 +13,8 @@ export const bookiesTreeRef = ref(state.bookies);
 
 export const stateRefs = ref({
   bookies: data,
-  flatBookies: state.flatBookies
+  flatBookies: state.flatBookies,
+  selectedItem: null,
 });
 
 export class MoveTreeItem {

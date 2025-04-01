@@ -136,3 +136,12 @@ Things to keep in mind:
 ### 2025.03.27
 - [11:00] note on 2025.03.21; Pinia was not needed, instead i created a "Composable" in a "store" directory to manipulate the Bookies, both file and DOM tree (DOM tree applied after the ref() changes value).
 - note on 2025.03.11/12; I ended up using the native HTML5 drag-and-drop feature (with Vue's template abstraction, ofcourse). The event created on drag-event stores the ID of the dragged item, and the event created on drop-event stores the ID of the parent the child was meant to go in. The actual functionality aside from the DOM stuff, is from-the-bottom made JavaScript without any external library or modules.
+
+### 2025.04.01
+- [10:12] Completed the hover-dragged-item-over-folder-to-open feature (with a 500ms delay). Had to setup the ability to cancel the timer with the returned ID from setTimout(), as well as create a hover-mask to sit between the top and bottom mask that are used to show the drop-hint.
+- Now, im starting on the main-view of the browser view, where the contents of a folder will show, as well as the information of a single selected bookmark (on the bottom of the same view).
+- Some things to keep in mind when creating said view:
+  - Some way to keep tabs on the selected TreeItem folder. (a state within this component? a store?)
+  - Some way to keep tabs on the selected item in this view (to show the relevant information).
+  - When double clicking a folder in this view, move to that folder (don't open it in this view).
+  - Highlight the selected folder in the BookmarksTreeView, to know where in the structure we are.

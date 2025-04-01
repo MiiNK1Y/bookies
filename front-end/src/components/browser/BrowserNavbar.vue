@@ -7,7 +7,7 @@
     </RouterLink>
 
     <RouterLink to="/browser/file">
-      <img src="/src/assets/icons/list-ul-solid.svg" />
+      <img src="/src/assets/icons/file-code-solid.svg" />
       <span>File</span>
     </RouterLink>
 

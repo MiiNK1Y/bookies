@@ -1,5 +1,6 @@
 <script setup>
 import { ref, computed } from 'vue';
+import { stateRefs } from '@/stores/folderTree.js';
 import { dragMode, startDrag, onDragEnd, onDrop, setBackgroundColor,
 rmBackgroundColor, hoveringFolder } from './BrowserMoveTreeItem.js';
 
@@ -17,36 +18,34 @@ const props = defineProps({
   }
 });
 
-const showChildren = ref(false);
 const hoveringTop = ref(false);
 const hoveringBottom = ref(false);
-const hasChildren = computed(() => { return props.node.Bookmarks; });
+const showChildren = ref(false);
+
+const hasChildren = computed(() => props.node.Bookmarks );
 const itemTypeClass = props.node.Type === 'Bookmark' ? 'bookmark-mask' : 'folder-mask';
 
-const childrenToggledIcon = computed(() => {
-  return showChildren.value
+const showOpenFolderHoverZone = computed(() =>
+  dragMode.value && props.node.Type === 'Folder' && !showChildren.value
+);
+
+const childrenToggledIcon = computed(() =>
+  showChildren.value
     ? "/src/assets/icons/folder-open-solid.svg"
-    : "/src/assets/icons/folder-solid.svg";
-});
+    : "/src/assets/icons/folder-solid.svg"
+);
 
-const hoveringMaskPosition = {
-    toggleHoveringTop: hoveringTop,
-    toggleHoveringBottom: hoveringBottom
-};
-
-function toggleChildren() { showChildren.value = !showChildren.value; }
-function toggleHoveringTop(bool) { hoveringTop.value = bool; }
-function toggleHoveringBottom(bool) { hoveringBottom.value = bool; }
-
-let timeoutID = undefined;
+let timeoutID;
 function delayedToggleChildrenOn(event, item) {
+
   const itemId = Number(event.dataTransfer.getData("itemID"));
   if (itemId == item.Id) return;
+
   hoveringFolder.value = item.Id;
+
   timeoutID = setTimeout(() => {
-    if (hoveringFolder.value == item.Id && dragMode) {
-      showChildren.value = true;
-    }
+    if (hoveringFolder.value == item.Id && dragMode) showChildren.value = true;
+    hoveringFolder.value = null;
   }, 500);
 }
 
@@ -54,21 +53,27 @@ function cancelDelayedToggleChildrenOn() {
   hoveringFolder.value = null;
   clearTimeout(timeoutID);
 }
+
+const folderNodeClass = computed(() => {
+  return [
+    showChildren.value ? 'folder-open' : 'item-padding',
+    stateRefs.selectedItem == props.node.Id ? 'selected-item' : ''
+  ]
+})
 </script>
 
 
 <template>
   <!-- Wrapping container for entire node. -->
   <div
-    class="wrapper"
-    :class="hoveringMaskPosition">
+    class="wrapper">
 
     <!-- Top hover-mask. -->
     <div
       v-show="dragMode"
-      @dragenter.stop="toggleHoveringTop(true)"
-      @dragleave.stop="toggleHoveringTop(false)"
-      @drop.prevent.stop="onDrop($event, parentId, node.Id, 'over'); toggleHoveringTop(false)"
+      @dragenter.stop="hoveringTop = true"
+      @dragleave.stop="hoveringTop = false"
+      @drop.prevent.stop="onDrop($event, parentId, node.Id, 'over'); hoveringTop = false;"
       class="item-hover-mask item-top-mask"
       :class="itemTypeClass">
 
@@ -80,7 +85,7 @@ function cancelDelayedToggleChildrenOn() {
 
     <!-- Dedicated hover-to-open zone for folders. -->
     <div
-      v-show="dragMode && node.Type === 'Folder' && !showChildren"
+      v-show="showOpenFolderHoverZone"
       class="item-hover-mask folder-hover-to-open"
       @dragenter.stop="delayedToggleChildrenOn($event, node)"
       @dragleave.stop="cancelDelayedToggleChildrenOn()"
@@ -90,9 +95,9 @@ function cancelDelayedToggleChildrenOn() {
     <!-- Bottom hover-mask. -->
     <div
       v-show="dragMode"
-      @dragenter.stop="toggleHoveringBottom(true)"
-      @dragleave.stop="toggleHoveringBottom(false)"
-      @drop.prevent.stop="onDrop($event, parentId, node.Id, 'under'); toggleHoveringBottom(false)"
+      @dragenter.stop="hoveringBottom = true"
+      @dragleave.stop="hoveringBottom = false"
+      @drop.prevent.stop="onDrop($event, parentId, node.Id, 'under'); hoveringBottom = false;"
       class="item-hover-mask item-bottom-mask"
       :class="itemTypeClass">
 
@@ -107,6 +112,8 @@ function cancelDelayedToggleChildrenOn() {
       v-if="node.Type === 'Bookmark'"
       draggable="true"
       class="node item item-padding prevent-select"
+      :class="{ 'selected-item': stateRefs.selectedItem == node.Id }"
+      @click="stateRefs.selectedItem = node.Id"
       @dragstart="startDrag($event, node)"
       @dragend="onDragEnd($event)">
 
@@ -133,12 +140,17 @@ function cancelDelayedToggleChildrenOn() {
       <div
         draggable="true"
         class="item prevent-select"
-        :class="showChildren ? 'folder-open' : 'item-padding'"
-        @click="toggleChildren"
+        :class="[folderNodeClass, stateRefs.selectedItem == node.Id ? 'selected-item' : '']"
+        @click="stateRefs.selectedItem = node.Id"
         @dragstart="startDrag($event, node)"
         @dragend="onDragEnd($event)">
 
-        <img :src="childrenToggledIcon" v-if="hasChildren" />
+        <img
+          draggable="false"
+          @click="showChildren = !showChildren"
+          :src="childrenToggledIcon"
+          v-if="hasChildren"
+        />
         <span style="color: orange">{{ node.Id }}</span>
         <span style="color: green">[{{ index }}]</span>
         <span>{{ node.Title.toLowerCase() }}</span>
@@ -161,13 +173,10 @@ function cancelDelayedToggleChildrenOn() {
 <style scoped>
 div.bookmark-mask { height: 50%; }
 div.folder-mask { height: 5px; }
-
-div.item-top-mask { top: 0; /* background-color: var(--ct-green); opacity: 0.3; */ }
-div.item-bottom-mask { bottom: 0; /* background-color: var(--ct-red); opacity: 0.3; */ }
-
+div.item-top-mask { top: 0; }
+div.item-bottom-mask { bottom: 0; }
 div.item-padding { padding: 5px 9px; }
 div.folder-padding { padding: 2px; }
-
 div.folder { background-color: hsla(248deg, 13%, 36%, 0.3); }
 div.folder-open { padding: 3px 7px; }
 
@@ -176,10 +185,6 @@ div.folder-hover-to-open {
   left: 50%;
   transform: translate(-50%, -50%);
   height: 70%;
-  /*
-  background-color: purple;
-  opacity: 0.3;
-  */
 }
 
 /* 'dragover' style applied from 'MoveTreeItem.js' */
@@ -232,6 +237,10 @@ div.item {
   background-color: var(--rp-highlight-low);
 }
 
+div.selected-item {
+  background-color: var(--rp-highlight-med);
+}
+
 div.favicon-placeholder {
   width: 18px;
   height: 18px;
@@ -243,9 +252,6 @@ div.prevent-select {
 
 @media (hover:hover) {
     div.item:hover {
-    /*
-    background-color: var(--rp-surface);
-    */
     background-color: var(--ct-surface_0);
     color: var(--rp-iris);
     cursor: default;

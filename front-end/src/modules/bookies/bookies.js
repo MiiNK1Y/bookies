@@ -2,7 +2,6 @@
 * Rebuild flat Bookies to its original tree-shape.
 */
 
-
 export class Rebuild {
   constructor(flatBookies, tempArray = []) {
     this.flatArray = flatBookies;
@@ -49,7 +48,7 @@ export class Rebuild {
           break;
       }
     })
-  };
+  }
 
   get bookies() {
     const meta = {
@@ -60,7 +59,6 @@ export class Rebuild {
     return meta;
   }
 }
-
 
 export class FlatParent extends Rebuild {
   constructor(parent, flatArray, tempArray) {
@@ -123,7 +121,6 @@ export class FlatParent extends Rebuild {
     throw new Error(`Error: ${this.parent.Id} is NOT complete!`);
   };
 }
-
 
 export class Flatten {
   constructor(bookies) {

@@ -1,5 +1,5 @@
 <script setup>
-import { stateRefs } from '@/stores/folderTree.js';
+//
 </script>
 
 <template>
@@ -10,6 +10,8 @@ import { stateRefs } from '@/stores/folderTree.js';
 
 <style scoped>
 div.main-view {
+  width: 100%;
+  height: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
