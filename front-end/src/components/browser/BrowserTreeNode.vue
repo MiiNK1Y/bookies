@@ -11,6 +11,11 @@ import {
   hoveringFolder
 } from './BrowserMoveTreeItem.js';
 
+// TODO:
+// CODE-SPLIT TO BE ABLE TO REUSE STUFF IN THE BROWSER BOOKMARKS VIEW!!!
+//
+// TODO:
+// ADD BLINKING ANIMATION HINT FOR HOVERING OVER CLOSED FOLDER WITH ITEM!!!
 
 const props = defineProps({
   node: {
@@ -30,6 +35,8 @@ const props = defineProps({
 
 
 const hovering = ref({
+  item: false,
+
   top: false,
 
   bottom: false,
@@ -91,15 +98,23 @@ const style = ref({
       children.value.show ? 'folder-open' : 'item-padding'
     ),
 
+    hover: computed(() =>
+      hovering.value.item ? 'inactive-hover' : ''
+    ),
+
     selected: computed(() =>
       stateRefs.value.selectedItem == props.node.Id ? 'selected-item' : ''
     )
   }
 });
 
+const thisNodeIsSelected = computed(() =>
+  stateRefs.value.selectedItem == props.node.Id
+);
 
 function selectThisNode() {
   stateRefs.value.selectedItem = props.node.Id;
+  hovering.value.item = false;
 }
 </script>
 
@@ -155,7 +170,9 @@ function selectThisNode() {
       v-if="node.Type === 'Bookmark'"
       draggable="true"
       class="node item item-padding prevent-select"
-      :class="style.item.selected"
+      :class="[style.item.selected, style.item.hover]"
+      @mouseover="hovering.item = thisNodeIsSelected ? false : true"
+      @mouseleave="hovering.item = false"
       @click="selectThisNode()"
       @dragstart="startDrag($event, node)"
       @dragend="onDragEnd($event)">
@@ -186,7 +203,9 @@ function selectThisNode() {
       <div
         draggable="true"
         class="item prevent-select"
-        :class="[style.item.folder, style.item.selected]"
+        :class="[style.item.folder, style.item.selected, style.item.hover]"
+        @mouseover="hovering.item = thisNodeIsSelected ? false : true"
+        @mouseleave="hovering.item = false"
         @click="selectThisNode()"
         @dragstart="startDrag($event, node)"
         @dragend="onDragEnd($event)">
@@ -284,7 +303,7 @@ div.item {
 }
 
 div.selected-item {
-  background-color: var(--rp-highlight-med);
+  background-color: var(--rp-pine);
 }
 
 div.favicon-placeholder {
@@ -296,11 +315,9 @@ div.prevent-select {
   user-select: none;
 }
 
-@media (hover:hover) {
-    div.item:hover {
-    background-color: var(--ct-surface_0);
-    color: var(--rp-iris);
-    cursor: default;
-  }
+div.inactive-hover {
+  background-color: var(--ct-surface_0);
+  color: var(--rp-iris);
+  cursor: default;
 }
 </style>
