@@ -1,65 +1,102 @@
 <script setup>
-import { ref, computed } from 'vue';
+import { ref, reactive, computed } from 'vue';
 import { stateRefs } from '@/stores/folderTree.js';
-import { dragMode, startDrag, onDragEnd, onDrop, setBackgroundColor,
-rmBackgroundColor, hoveringFolder } from './BrowserMoveTreeItem.js';
+import {
+  dragMode,
+  startDrag,
+  onDragEnd,
+  onDrop,
+  setBackgroundColor,
+  rmBackgroundColor,
+  hoveringFolder
+} from './BrowserMoveTreeItem.js';
+
 
 const props = defineProps({
   node: {
     type: Object,
     required: true
   },
+
   index: {
     type: Number,
     required: true
   },
+
   parentId: {
-    type: [Number, null],
+    type: [Number, null]
   }
 });
 
-const hoveringTop = ref(false);
-const hoveringBottom = ref(false);
-const showChildren = ref(false);
 
-const hasChildren = computed(() => props.node.Bookmarks );
-const itemTypeClass = props.node.Type === 'Bookmark' ? 'bookmark-mask' : 'folder-mask';
+const hovering = ref({
+  top: false,
 
-const showOpenFolderHoverZone = computed(() =>
-  dragMode.value && props.node.Type === 'Folder' && !showChildren.value
-);
+  bottom: false,
 
-const childrenToggledIcon = computed(() =>
-  showChildren.value
-    ? "/src/assets/icons/folder-open-solid.svg"
-    : "/src/assets/icons/folder-solid.svg"
-);
+  closedFolder: computed(() =>
+    dragMode.value && props.node.Type === 'Folder' && !children.value.show
+  )
+});
 
-let timeoutID;
-function delayedToggleChildrenOn(event, item) {
 
-  const itemId = Number(event.dataTransfer.getData("itemID"));
-  if (itemId == item.Id) return;
+const children = ref({
+  show: false,
 
-  hoveringFolder.value = item.Id;
+  exists: computed(() => props.node.Bookmarks),
 
-  timeoutID = setTimeout(() => {
-    if (hoveringFolder.value == item.Id && dragMode) showChildren.value = true;
+  icon: computed(() =>
+    children.value.show
+      ? "/src/assets/icons/folder-open-solid.svg"
+      : "/src/assets/icons/folder-solid.svg"
+  )
+});
+
+
+const toggle = {
+  hovering: {
+    top: function(bool) { hovering.value.top = bool; },
+
+    bottom: function(bool) { hovering.value.bottom = bool;}
+  },
+
+  timoutId: undefined,
+
+  childrenDelay: function(event, item) {
+    const itemId = Number(event.dataTransfer.getData('itemID'));
+    if (itemId == item.Id) return;
+    hoveringFolder.value = item.Id;
+    toggle.timeoutId = setTimeout(() => {
+      if (hoveringFolder.value == item.Id && dragMode) children.value.show = true;
+      hoveringFolder.value = null;
+    }, 500);
+  },
+
+  cancelChildrenDelay: function() {
     hoveringFolder.value = null;
-  }, 500);
+    clearTimeout(toggle.timoutId);
+  }
+};
+
+
+const style = {
+  item: {
+    type: props.node.Type === 'Bookmark' ? 'bookmark-mask' : 'folder-mask',
+
+    folder: computed(() =>
+      children.value.show ? 'folder-open' : 'item-padding'
+    ),
+
+    selected: computed(() =>
+      stateRefs.value.selectedItem == props.node.Id ? 'selected-item' : ''
+    ),
+  }
 }
 
-function cancelDelayedToggleChildrenOn() {
-  hoveringFolder.value = null;
-  clearTimeout(timeoutID);
-}
 
-const folderNodeClass = computed(() => {
-  return [
-    showChildren.value ? 'folder-open' : 'item-padding',
-    stateRefs.selectedItem == props.node.Id ? 'selected-item' : ''
-  ]
-})
+function selectThisNode() {
+  stateRefs.value.selectedItem = props.node.Id;
+}
 </script>
 
 
@@ -71,38 +108,38 @@ const folderNodeClass = computed(() => {
     <!-- Top hover-mask. -->
     <div
       v-show="dragMode"
-      @dragenter.stop="hoveringTop = true"
-      @dragleave.stop="hoveringTop = false"
-      @drop.prevent.stop="onDrop($event, parentId, node.Id, 'over'); hoveringTop = false;"
+      @dragenter.stop="toggle.hovering.top(true)"
+      @dragleave.stop="toggle.hovering.top(false)"
+      @drop.prevent.stop="onDrop($event, parentId, node.Id, 'over'); toggle.hovering.top(false);"
       class="item-hover-mask item-top-mask"
-      :class="itemTypeClass">
+      :class="style.item.type">
 
       <div
-        v-show="hoveringTop"
+        v-show="hovering.top"
         class="drop-indicator drop-indicator-top">
       </div>
     </div>
 
     <!-- Dedicated hover-to-open zone for folders. -->
     <div
-      v-show="showOpenFolderHoverZone"
+      v-show="hovering.closedFolder"
       class="item-hover-mask folder-hover-to-open"
-      @dragenter.stop="delayedToggleChildrenOn($event, node)"
-      @dragleave.stop="cancelDelayedToggleChildrenOn()"
+      @dragenter.stop="toggle.childrenDelay($event, node)"
+      @dragleave.stop="toggle.cancelChildrenDelay()"
       @drop.prevent.stop="onDrop($event, node.Id)">
     </div>
 
     <!-- Bottom hover-mask. -->
     <div
       v-show="dragMode"
-      @dragenter.stop="hoveringBottom = true"
-      @dragleave.stop="hoveringBottom = false"
-      @drop.prevent.stop="onDrop($event, parentId, node.Id, 'under'); hoveringBottom = false;"
+      @dragenter.stop="toggle.hovering.bottom(true)"
+      @dragleave.stop="toggle.hovering.bottom(false)"
+      @drop.prevent.stop="onDrop($event, parentId, node.Id, 'under'); toggle.hovering.bottom(false);"
       class="item-hover-mask item-bottom-mask"
-      :class="itemTypeClass">
+      :class="style.item.type">
 
       <div
-        v-show="hoveringBottom"
+        v-show="hovering.bottom"
         class="drop-indicator drop-indicator-bottom">
       </div>
     </div>
@@ -112,8 +149,8 @@ const folderNodeClass = computed(() => {
       v-if="node.Type === 'Bookmark'"
       draggable="true"
       class="node item item-padding prevent-select"
-      :class="{ 'selected-item': stateRefs.selectedItem == node.Id }"
-      @click="stateRefs.selectedItem = node.Id"
+      :class="style.item.selected"
+      @click="selectThisNode()"
       @dragstart="startDrag($event, node)"
       @dragend="onDragEnd($event)">
 
@@ -130,26 +167,29 @@ const folderNodeClass = computed(() => {
     <div
       v-else-if="node.Type === 'Folder'"
       class="node folder drop-zone prevent-select"
-      :class="{ 'folder-padding': showChildren }"
+      :class="{ 'folder-padding': children.show }"
       @dragover.prevent
       @dragenter.prevent.stop="setBackgroundColor($event)"
       @dragleave.prevent.stop="rmBackgroundColor($event)"
       @drop.prevent.stop="onDrop($event, node.Id); rmBackgroundColor($event)">
 
-      <!-- The node-part of this node, functions as a header when the folder is opened. -->
+      <!--
+        The node-part of this node, functions as a header \
+        when the folder is opened.
+      -->
       <div
         draggable="true"
         class="item prevent-select"
-        :class="[folderNodeClass, stateRefs.selectedItem == node.Id ? 'selected-item' : '']"
-        @click="stateRefs.selectedItem = node.Id"
+        :class="[style.item.folder, style.item.folder]"
+        @click="selectThisNode()"
         @dragstart="startDrag($event, node)"
         @dragend="onDragEnd($event)">
 
         <img
           draggable="false"
-          @click="showChildren = !showChildren"
-          :src="childrenToggledIcon"
-          v-if="hasChildren"
+          @click.stop="children.show = !children.show"
+          :src="children.icon"
+          v-if="children.exists"
         />
         <span style="color: orange">{{ node.Id }}</span>
         <span style="color: green">[{{ index }}]</span>
@@ -158,7 +198,7 @@ const folderNodeClass = computed(() => {
 
       <!-- Recurse the children if this node is a folder. -->
       <BrowserTreeNode
-        v-show="showChildren"
+        v-show="children.show"
         v-for="(child, index) in node.Bookmarks"
         :key="child.Id"
         :node="child"
