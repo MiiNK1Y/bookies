@@ -43,7 +43,9 @@ const hovering = ref({
 const children = ref({
   show: false,
 
-  exists: computed(() => props.node.Bookmarks),
+  exists: computed(() =>
+    props.node.Bookmarks
+  ),
 
   icon: computed(() =>
     children.value.show
@@ -67,7 +69,9 @@ const toggle = {
     if (itemId == item.Id) return;
     hoveringFolder.value = item.Id;
     toggle.timeoutId = setTimeout(() => {
-      if (hoveringFolder.value == item.Id && dragMode) children.value.show = true;
+      if (hoveringFolder.value == item.Id && dragMode) {
+        children.value.show = true;
+      }
       hoveringFolder.value = null;
     }, 500);
   },
@@ -110,7 +114,8 @@ function selectThisNode() {
       v-show="dragMode"
       @dragenter.stop="toggle.hovering.top(true)"
       @dragleave.stop="toggle.hovering.top(false)"
-      @drop.prevent.stop="onDrop($event, parentId, node.Id, 'over'); toggle.hovering.top(false);"
+      @drop.prevent.stop="onDrop($event, parentId, node.Id, 'over');
+        toggle.hovering.top(false);"
       class="item-hover-mask item-top-mask"
       :class="style.item.type">
 
@@ -134,7 +139,8 @@ function selectThisNode() {
       v-show="dragMode"
       @dragenter.stop="toggle.hovering.bottom(true)"
       @dragleave.stop="toggle.hovering.bottom(false)"
-      @drop.prevent.stop="onDrop($event, parentId, node.Id, 'under'); toggle.hovering.bottom(false);"
+      @drop.prevent.stop="onDrop($event, parentId, node.Id, 'under');
+        toggle.hovering.bottom(false);"
       class="item-hover-mask item-bottom-mask"
       :class="style.item.type">
 
