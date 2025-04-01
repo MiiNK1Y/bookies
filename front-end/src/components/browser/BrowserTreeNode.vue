@@ -79,7 +79,7 @@ const toggle = {
 };
 
 
-const style = {
+const style = ref({
   item: {
     type: props.node.Type === 'Bookmark' ? 'bookmark-mask' : 'folder-mask',
 
@@ -89,9 +89,9 @@ const style = {
 
     selected: computed(() =>
       stateRefs.value.selectedItem == props.node.Id ? 'selected-item' : ''
-    ),
+    )
   }
-}
+});
 
 
 function selectThisNode() {
@@ -180,7 +180,7 @@ function selectThisNode() {
       <div
         draggable="true"
         class="item prevent-select"
-        :class="[style.item.folder, style.item.folder]"
+        :class="[style.item.folder, style.item.selected]"
         @click="selectThisNode()"
         @dragstart="startDrag($event, node)"
         @dragend="onDragEnd($event)">
