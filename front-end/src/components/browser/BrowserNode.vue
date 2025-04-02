@@ -1,4 +1,12 @@
 <script setup>
+
+/*
+* TODO:
+* - CODE-SPLIT TO BE ABLE TO REUSE STUFF IN THE BROWSER BOOKMARKS VIEW!!!
+* - ADD BLINKING ANIMATION HINT FOR HOVERING OVER CLOSED FOLDER WITH ITEM!!!
+* - Add passive highligh when the item is selected, but the window is not focused.
+*/
+
 import { ref, reactive, computed } from 'vue';
 import { stateRefs } from '@/stores/folderTree.js';
 import {
@@ -11,15 +19,14 @@ import {
   hoveringFolder
 } from './BrowserMoveTreeItem.js';
 
-// TODO:
-// CODE-SPLIT TO BE ABLE TO REUSE STUFF IN THE BROWSER BOOKMARKS VIEW!!!
-//
-// TODO:
-// ADD BLINKING ANIMATION HINT FOR HOVERING OVER CLOSED FOLDER WITH ITEM!!!
-
 const props = defineProps({
   node: {
     type: Object,
+    required: true
+  },
+
+  enableChildren: {
+    type: Boolean,
     required: true
   },
 
@@ -107,6 +114,7 @@ const style = ref({
     )
   }
 });
+
 
 const thisNodeIsSelected = computed(() =>
   stateRefs.value.selectedItem == props.node.Id
@@ -222,12 +230,13 @@ function selectThisNode() {
       </div>
 
       <!-- Recurse the children if this node is a folder. -->
-      <BrowserTreeNode
-        v-show="children.show"
+      <BrowserNode
+        v-show="enableChildren && children.show"
         v-for="(child, index) in node.Bookmarks"
         :key="child.Id"
         :node="child"
         :parentId="node.Id"
+        :enableChildren="true"
         :index="index"
         class="child" />
     </div>
