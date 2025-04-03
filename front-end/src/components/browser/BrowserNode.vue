@@ -1,3 +1,5 @@
+<!-- WARN: OLD NODE-->
+
 <script setup>
 
 /*
@@ -18,6 +20,7 @@ import {
   rmBackgroundColor,
   hoveringFolder
 } from './BrowserMoveTreeItem.js';
+
 
 const props = defineProps({
   node: {
