@@ -4,20 +4,27 @@
 import NodeHead from './NodeHead.vue';
 import NodeHoverZone from './NodeHoverZone.vue';
 
+
 const props = defineProps({
   node: {
-    type: Object, required: true
+    type: Object,
+    required: true
   },
   index: {
-    type: Number, required: true
+    type: Number,
+    required: true
   },
   parentId: {
-    type: Number, required: true
+    type: Number,
+    required: true
   },
   enableTree: {
-    type: Boolean, required: false, default: false
+    type: Boolean,
+    required: false,
+    default: false
   }
 });
+
 
 const children = ref({
   show: false,
@@ -28,16 +35,25 @@ const children = ref({
   )
 });
 
+
 const icon = computed(() =>
   props.open
     ? "/src/assets/icons/folder-solid.svg"
     : "/src/assets/icons/folder-open-solid.svg"
 );
+
+
+function toggleShowChildren(bool) {
+  children.value.show = true;
+}
 </script>
+
 
 <template>
   <div class="wrapper">
-    <NodeHoverZone :type="node.Type" />
+    <NodeHoverZone
+      :type="node.Type"
+      @show-children="toggleShowChildren" />
 
     <!-- Bookmark. -->
     <NodeHead
@@ -68,15 +84,19 @@ const icon = computed(() =>
       </NodeHead>
 
       <Node
-        v-show=""
-        v-for=""
-        :key=""
-        :node=""
-        :index=""
-        :parentId=""
-        :enableChildren="true"
-        :enableTree="enableTree"
-        class="" />
+        v-show="enableTree && children.show"
+        v-for="(child, index) in node.Bookmark"
+        :key="child.Id"
+        :node="child"
+        :index="index"
+        :parentId="node.Id"
+        :enableTree
+        class="child" />
     </div>
   </div">
 </template>
+
+
+<style scoped>
+div.child { margin-left: 20px; }
+</style>

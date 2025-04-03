@@ -2,13 +2,30 @@
 
 <script setup>
 const props = defineProps({
-  type:   { type: String, required: true }
-  title:  { type: String, required: true },
-  id:     { type: Number, required: true },
-  index:  { type: Number, required: true },
-  open:   { type: Boolean, required: true, default: false }
+  type: {
+    type: String,
+    required: true
+  },
+  title: {
+    type: String,
+    required: true
+  },
+  id: {
+    type: Number,
+    required: true
+  },
+  index: {
+    type: Number,
+    required: true
+  },
+  open: {
+    type: Boolean,
+    required: true,
+    default: false
+  }
 });
 </script>
+
 
 <template>
   <div
