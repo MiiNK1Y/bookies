@@ -29,7 +29,6 @@ const emit = defineEmits(['showChildren']);
 
 
 const hovering = ref({
-  item: false,
   top: false,
   bottom: false,
   closedFolder: computed(() => dragMode.value && props.type === 'Folder')
@@ -43,7 +42,7 @@ function toggleChildrenDelay(event, nodeId) {
   hoveringFolder.value = nodeId;
   timeoutId = setTimeout(() => {
     if (hoveringFolder.value == nodeId && dragMode) {
-      emit('showChildren', true);
+      emit('showChildren');
     }
     hoveringFolder.value = null;
     timoutId = undefined;
@@ -85,6 +84,7 @@ const topBottomMaskClass = computed(() => {
     <!-- Middle folder hover-mask (for hover-to-open) -->
     <div
       v-if="type === 'Folder'"
+      v-show="hovering.closedFolder"
       @dragenter.stop="toggleChildrenDelay($event, id)"
       @dragleave.stop="cancelToggleChildrenDelay()"
       @drop.prevent.stop="onDrop($event, id)"
@@ -93,7 +93,6 @@ const topBottomMaskClass = computed(() => {
 
     <!-- Bottom. -->
     <div
-      v-show="dragMode"
       @dragenter.stop="hovering.bottom = true"
       @dragleave.stop="hovering.bottom = false"
       @drop.prevent.stop="onDrop($event, parentId, id, 'under')
