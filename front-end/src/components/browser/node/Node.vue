@@ -1,4 +1,4 @@
-<!-- NOTE: NodeWrapper.vue -->
+<!-- NOTE: Node.vue -->
 
 <script setup>
 import NodeHead from './NodeHead.vue';
@@ -27,31 +27,29 @@ const children = ref({
     : "/src/assets/icons/folder-solid.svg"
   )
 });
+
+const icon = computed(() =>
+  props.open
+    ? "/src/assets/icons/folder-solid.svg"
+    : "/src/assets/icons/folder-open-solid.svg"
+);
 </script>
 
 <template>
   <div class="wrapper">
-    <NodeHoverZone :node="node.Type" :position="top" />
-    <NodeHoverZone :node="node.Type" :position="middle" />
-    <NodeHoverZone :node="node.Type" :position="bottom" />
+    <NodeHoverZone :type="node.Type" />
 
     <!-- Bookmark. -->
-    <div
+    <NodeHead
       v-if="node.Type === 'Bookmark'"
-      @mouseover=""
-      @mouseleave=""
-      @click=""
-      @dragstart=""
-      @dragend=""
-      :class=""
-      draggable="true"
-      class="" >
-
-      <NodeHead :type="bookmark" />
-    </div>
+      :type="Bookmark" >
+      <template #icon>{{ icon }}</template>
+      <template #id></template>
+      <template #index></template>
+      <template #title></template>
+    </NodeHead>
 
     <!-- Folder. -->
-    <!-- The container that wrappes the children of this node. -->
     <div
       v-else-if="node.Type === 'Folder'"
       @dragover.prevent
@@ -61,29 +59,23 @@ const children = ref({
       :class=""
       class="" >
 
-      <!-- The node, functions as a header when the folder is opened. -->
-      <div
-        draggable="true"
-        class=""
-        :class=""
-        @mouseover=""
-        @mouseleave=""
-        @click=""
-        @dragstart=""
-        @dragend="">
+      <NodeHead
+        :type="Folder" >
+        <template #icon></template>
+        <template #id></template>
+        <template #index></template>
+        <template #title></template>
+      </NodeHead>
 
-        <NodeHead :type="folder" />
-      </div>
-
-      <!-- Recurse the children if this node is a folder. -->
-      <BrowserNode
+      <Node
         v-show=""
         v-for=""
         :key=""
         :node=""
+        :index=""
         :parentId=""
         :enableChildren="true"
-        :index=""
+        :enableTree="enableTree"
         class="" />
     </div>
   </div">

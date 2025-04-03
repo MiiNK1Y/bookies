@@ -1,15 +1,10 @@
-<!-- NOTE: HoverZone.vue -->
+<!-- NOTE: NodeHoverZone.vue -->
 
 <script setup>
+import NodeHoverMask from './NodeHoverMask.vue';
+
 const props = defineProps({
-  type: {
-    type: Object,
-    required: true
-  },
-  position: {
-    type: String,
-    required: true
-  }
+  type: { type: Object, required: true },
 });
 </script>
 
@@ -17,8 +12,7 @@ const props = defineProps({
 
   <!-- Top / bottom hover-mask -->
   <div
-    v-if="position === 'top'"
-    v-show=""
+    v-show="dragMode"
     @dragenter.stop=""
     @dragleave.stop=""
     @drop.prevent.stop=""
@@ -41,3 +35,11 @@ const props = defineProps({
     class="">
   </div>
 </template>
+
+<style scoped>
+div.bookmark-mask { height: 50%; }
+div.folder-mask { height: 5px; }
+
+div.item-top-mask { top: 0; }
+div.item-bottom-mask { bottom: 0; }
+</style>
