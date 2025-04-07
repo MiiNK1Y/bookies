@@ -1,7 +1,7 @@
 <!-- NOTE: NodeHoverZone.vue -->
 
 <script setup>
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 import {
   dragMode,
   onDrop,
@@ -11,7 +11,7 @@ import {
 
 const props = defineProps({
   type: {
-    type: Object,
+    type: String,
     required: true
   },
   id: {
@@ -20,6 +20,10 @@ const props = defineProps({
   },
   parentId: {
     type: Number,
+    required: true
+  },
+  showChildren: {
+    type: Boolean,
     required: true
   }
 });
@@ -31,7 +35,9 @@ const emit = defineEmits(['showChildren']);
 const hovering = ref({
   top: false,
   bottom: false,
-  closedFolder: computed(() => dragMode.value && props.type === 'Folder')
+  closedFolder: computed(() =>
+    dragMode.value && props.type === 'Folder' && !props.showChildren
+  )
 })
 
 
@@ -41,7 +47,7 @@ function toggleChildrenDelay(event, nodeId) {
   if (itemId == nodeId) return;
   hoveringFolder.value = nodeId;
   timeoutId = setTimeout(() => {
-    if (hoveringFolder.value == nodeId && dragMode) {
+    if (hoveringFolder.value == nodeId && dragMode.value) {
       emit('showChildren');
     }
     hoveringFolder.value = null;
@@ -57,8 +63,10 @@ function cancelToggleChildrenDelay() {
 
 
 const topBottomMaskClass = computed(() => {
-  'bookmark-mask': props.type === 'Bookmark',
-  'folder-mask': props.type === 'Folder'
+  return {
+    'bookmark-mask': props.type === 'Bookmark',
+    'folder-mask': props.type === 'Folder'
+  }
 });
 </script>
 

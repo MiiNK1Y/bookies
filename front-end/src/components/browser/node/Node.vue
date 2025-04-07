@@ -1,7 +1,7 @@
 <!-- NOTE: Node.vue -->
 
 <script setup>
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 import NodeHead from './NodeHead.vue';
 import NodeHoverZone from './NodeHoverZone.vue';
 import { stateRefs } from '@/stores/folderTree.js';
@@ -37,7 +37,7 @@ const hoveringThis = ref(false);
 
 
 const children = ref({
-  show: false,
+  show: false, // maybe expression to add enableTree here?
   exists: computed(() => props.node.Bookmarks),
   icon: computed(() => children.value.show
     ? "/src/assets/icons/folder-open-solid.svg"
@@ -71,7 +71,7 @@ const thisNodeIsSelected = computed(() =>
     <!-- Bookmark. -->
     <NodeHead
       v-if="node.Type === 'Bookmark'"
-      :type="Bookmark" >
+      :node="node" >
 
       <template #id>{{ node.Id }}</template>
       <template #index>{{ index }}</template>
@@ -86,12 +86,19 @@ const thisNodeIsSelected = computed(() =>
       @dragleave.prevent.stop="rmBackgroundColor($event)"
       @drop.prevent.stop="onDrop($event, node.Id);
         rmBackgroundColor($event);"
-      :class=""
-      class="" >
+      :class="{ 'folder-padding': children.show }"
+      class="node folder drop-zone prevent-select" >
 
       <NodeHead
-        :type="Folder" >
+        :node="node" >
 
+        <template #icon>
+          <img
+            @click.stop="$emit('showChildren')"
+            :src="children.icon"
+            draggable="false"
+          />
+        </template>
         <template #id>{{ node.Id }}</template>
         <template #index>{{ index }}</template>
         <template #title>{{ node.Title }}</template>
@@ -107,7 +114,7 @@ const thisNodeIsSelected = computed(() =>
         :enableTree
         class="child" />
     </div>
-  </div">
+  </div>
 </template>
 
 
@@ -123,7 +130,11 @@ div.node {
   cursor: default;
 }
 
+div.folder { background-color: hsla(248deg, 13%, 36%, 0.3); }
 div.child { margin-left: 20px; }
+
+/* 'dragover' style applied from 'MoveTreeItem.js' */
+div.drop-zone.dragover { background-color: var(--rp-highlight-high); }
 
 div.inactive-hover {
   background-color: var(--ct-surface_0);

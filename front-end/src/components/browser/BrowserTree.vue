@@ -1,5 +1,7 @@
 <script setup>
-import BrowserNode from './BrowserNode.vue';
+//import BrowserNode from './BrowserNode.vue';
+
+import Node from './node/Node.vue';
 import { bookiesTreeRef } from '@/stores/folderTree.js';
 import { onDrop, setBackgroundColor, rmBackgroundColor } from './BrowserMoveTreeItem.js';
 </script>
@@ -12,13 +14,13 @@ import { onDrop, setBackgroundColor, rmBackgroundColor } from './BrowserMoveTree
     @dragleave.prevent="rmBackgroundColor"
     @drop.prevent.stop="onDrop($event, 0); rmBackgroundColor($event)" >
 
-    <BrowserNode
+    <Node
       v-for="(node, index) in bookiesTreeRef.Bookmarks"
       :key="node.Id"
       :node="node"
-      :parentId="0"
-      :enableChildren="true"
       :index="index"
+      :parentId="0"
+      :enableTree="true"
       />
   </div>
 </template>

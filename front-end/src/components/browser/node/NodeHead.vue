@@ -1,7 +1,9 @@
 <!-- NOTE: NodeHead.vue -->
 
 <script setup>
+import { ref, computed } from 'vue';
 import { startDrag, onDragEnd } from '../BrowserMoveTreeItem.js';
+import { stateRefs } from '@/stores/folderTree.js';
 
 
 const props = defineProps({
@@ -9,12 +11,10 @@ const props = defineProps({
     type: Object,
     required: true
   },
-  open: {
-    type: Boolean,
-    required: true,
-    default: false
-  }
 });
+
+
+const hoveringThis = ref(false);
 
 
 function selectThisNode() {
