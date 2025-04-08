@@ -118,31 +118,39 @@ const topBottomMaskClass = computed(() => {
 
 
 <style scoped>
+div.bookmark-mask { height: 50%; }
+div.folder-mask { height: 5px; }
+
 div.hover-mask {
   background-color: gray;
-  opacity: 0.2;
+  opacity: 0.5;
 
+  z-index: 10;
   position: absolute;
   height: 100%;
   width: 100%;
 }
 
+div.folder-hover-to-open-mask {
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  height: 70%;
+}
+
 div.top-mask {
   background-color: green;
-  opacity: 0.2;
+  opacity: 0.5;
 
   top: 0;
 }
 
 div.bottom-mask {
   background-color: blue;
-  opacity: 0.2;
+  opacity: 0.5;
 
   bottom: 0;
 }
-
-div.bookmark-mask { height: 50%; }
-div.folder-mask { height: 5px; }
 
 div.folder-hover-to-open-mask {
   top: 50%;

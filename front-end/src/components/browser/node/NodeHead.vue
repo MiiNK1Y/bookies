@@ -11,16 +11,25 @@ const props = defineProps({
     type: Object,
     required: true
   },
+  showingChildren: {
+    type: Boolean,
+    required: true
+  }
 });
 
 
-const hoveringThis = ref(false);
+const hovering = ref(false);
 
 
 function selectThisNode() {
   stateRefs.value.selectedItem = props.node.Id;
-  hovering.value.item = false;
+  hovering.value = false;
 }
+
+
+const thisNodeIsSelected = computed(() =>
+  stateRefs.value.selectedItem == props.node.Id
+);
 
 
 const style = ref({
@@ -43,38 +52,64 @@ const nodeStyle = () => {
 
 <template>
   <div
+    @mouseover="hovering = true"
+    @mouseleave="hovering = false"
     @dragstart="startDrag($event, node)"
     @dragend="onDragEnd($event)"
     @click="selectThisNode()"
-    :class="nodeStyle"
-    draggable="true" >
+    :class="{ 'inactive-hover': hovering && !thisNodeIsSelected }"
+    draggable="true"
+    class="wrapper" >
 
       <slot name="icon">
         <div class="favicon-placeholder"></div>
       </slot>
 
-      <span class="id">
-        [<slot name="id"></slot>]
-      </span>
+      <div class="id">
+        <slot name="id"></slot>
+      </div>
 
-      <span class="index">
+      <div class="index">
         [<slot name="index"></slot>]
-      </span>
+      </div>
 
-      <span class="title">
-        <slot name="title"></slot>
-      </span>
+      <slot name="title"></slot>
+
   </div>
 </template>
 
 
 <style scoped>
+div.wrapper {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 9px;
+  background-color: var(--rp-highlight-low);
+  user-select: none;
+}
+
 div.favicon-placeholder {
   width: 18px;
   height: 18px;
 }
 
-div.prevent-select {
-  user-select: none;
+div.id {
+  color: orange;
+}
+
+div.index {
+  color: green;
+}
+
+div.inactive-hover {
+  background-color: var(--ct-surface_0);
+  color: var(--rp-iris);
+  cursor: default;
+}
+
+div.folder-open {
+  padding: 3px 7px;
 }
 </style>

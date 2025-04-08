@@ -5,11 +5,7 @@ import { ref, computed } from 'vue';
 import NodeHead from './NodeHead.vue';
 import NodeHoverZone from './NodeHoverZone.vue';
 import { stateRefs } from '@/stores/folderTree.js';
-import {
-  setBackgroundColor,
-  rmBackgroundColor,
-  dragMode
-} from '../BrowserMoveTreeItem.js';
+import { setBackgroundColor, rmBackgroundColor, dragMode, onDrop } from '../BrowserMoveTreeItem.js';
 
 
 const props = defineProps({
@@ -33,30 +29,19 @@ const props = defineProps({
 });
 
 
-const hoveringThis = ref(false);
-
-
 const children = ref({
-  show: false, // maybe expression to add enableTree here?
+  show: false,
   exists: computed(() => props.node.Bookmarks),
   icon: computed(() => children.value.show
     ? "/src/assets/icons/folder-open-solid.svg"
     : "/src/assets/icons/folder-solid.svg"
   )
 });
-
-
-const thisNodeIsSelected = computed(() =>
-  stateRefs.value.selectedItem == props.node.Id
-);
 </script>
 
 
 <template>
   <div
-    @mouseover="hoveringThis = thisNodeIsSelected ? false : true"
-    @mouseleave="hoveringThis = false"
-    :class="{ 'inactive-hover': hoveringThis }"
     class="wrapper">
 
     <NodeHoverZone
@@ -65,13 +50,14 @@ const thisNodeIsSelected = computed(() =>
       :id="node.Id"
       :parentId="parentId"
       :showChildren="children.show"
-      @show-children="children.value.show = true"
+      @show-children="children.show = true"
     />
 
     <!-- Bookmark. -->
     <NodeHead
       v-if="node.Type === 'Bookmark'"
-      :node="node" >
+      :node="node"
+      :showingChildren="children.show">
 
       <template #id>{{ node.Id }}</template>
       <template #index>{{ index }}</template>
@@ -87,14 +73,15 @@ const thisNodeIsSelected = computed(() =>
       @drop.prevent.stop="onDrop($event, node.Id);
         rmBackgroundColor($event);"
       :class="{ 'folder-padding': children.show }"
-      class="node folder drop-zone prevent-select" >
+      class="folder drop-zone" >
 
       <NodeHead
-        :node="node" >
+        :node="node"
+        :showingChildren="children.show">
 
         <template #icon>
           <img
-            @click.stop="$emit('showChildren')"
+            @click.stop="children.show = !children.show"
             :src="children.icon"
             draggable="false"
           />
@@ -106,7 +93,7 @@ const thisNodeIsSelected = computed(() =>
 
       <Node
         v-show="enableTree && children.show"
-        v-for="(child, index) in node.Bookmark"
+        v-for="(child, index) in node.Bookmarks"
         :key="child.Id"
         :node="child"
         :index="index"
@@ -121,23 +108,32 @@ const thisNodeIsSelected = computed(() =>
 <style scoped>
 div.wrapper {
   position: relative;
-  padding: 3px;
-}
-
-div.node {
   border-radius: 7px;
+  padding: 3px;
   font-family: var(--bks-big-text);
   cursor: default;
+  user-select: none;
 }
 
-div.folder { background-color: hsla(248deg, 13%, 36%, 0.3); }
-div.child { margin-left: 20px; }
+div.folder {
+  border-radius: 7px;
+  background-color: hsla(248deg, 13%, 36%, 0.3);
+}
+
+div.folder-padding {
+  padding: 2px;
+}
+
+div.folder-open {
+  padding: 3px 7px;
+}
 
 /* 'dragover' style applied from 'MoveTreeItem.js' */
-div.drop-zone.dragover { background-color: var(--rp-highlight-high); }
+div.drop-zone.dragover {
+  background-color: var(--rp-highlight-high);
+}
 
-div.inactive-hover {
-  background-color: var(--ct-surface_0);
-  cursor: default;
+div.child {
+  margin-left: 20px;
 }
 </style>
