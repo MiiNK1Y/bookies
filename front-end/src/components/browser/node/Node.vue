@@ -42,7 +42,7 @@ const children = ref({
 
 <template>
   <div
-    class="wrapper">
+    class="node__wrapper">
 
     <NodeHoverZone
       v-show="dragMode"
@@ -106,10 +106,10 @@ const children = ref({
 
 
 <style scoped>
-div.wrapper {
+div.node__wrapper {
   position: relative;
-  border-radius: 7px;
   padding: 3px;
+  border-radius: 7px;
   font-family: var(--bks-big-text);
   cursor: default;
   user-select: none;
@@ -122,10 +122,6 @@ div.folder {
 
 div.folder-padding {
   padding: 2px;
-}
-
-div.folder-open {
-  padding: 3px 7px;
 }
 
 /* 'dragover' style applied from 'MoveTreeItem.js' */

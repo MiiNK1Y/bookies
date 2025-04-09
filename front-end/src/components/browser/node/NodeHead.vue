@@ -21,32 +21,16 @@ const props = defineProps({
 const hovering = ref(false);
 
 
-function selectThisNode() {
+function select() {
   stateRefs.value.selectedItem = props.node.Id;
-  hovering.value = false;
 }
 
 
-const thisNodeIsSelected = computed(() =>
-  stateRefs.value.selectedItem == props.node.Id
-);
-
-
-const style = ref({
-  type: props.node.Type === 'Bookmark' ? 'bookmark-mask' : 'folder-mask',
-  folder: computed(() => children.value.show ? 'folder-open' : 'item-padding'),
-  hover: computed(() => hovering.value.item ? 'inactive-hover' : ''),
-  selected: computed(() => stateRefs.value.selectedItem == props.node.Id ? 'selected-item' : '')
-});
-
-
-const nodeStyle = () => {
-  if (node.Type === 'Bookmark') {
-    return [style.selected, style.hover];
-  } else if (node.Type === 'Folder') {
-    return [style.folder, style.selected, style.hover];
-  }
-};
+const style = computed(() => ({
+  'head__folder-open-padding': props.showingChildren,
+  'head__hovering': hovering.value && stateRefs.value.selectedItem != props.node.Id,
+  'head__selected': stateRefs.value.selectedItem == props.node.Id
+}));
 </script>
 
 
@@ -56,20 +40,20 @@ const nodeStyle = () => {
     @mouseleave="hovering = false"
     @dragstart="startDrag($event, node)"
     @dragend="onDragEnd($event)"
-    @click="selectThisNode()"
-    :class="{ 'inactive-hover': hovering && !thisNodeIsSelected }"
-    draggable="true"
-    class="wrapper" >
+    @click="select()"
+    :class="style"
+    class="head__wrapper"
+    draggable="true" >
 
       <slot name="icon">
-        <div class="favicon-placeholder"></div>
+        <div class="head__favicon-placeholder"></div>
       </slot>
 
-      <div class="id">
+      <div class="head__id">
         <slot name="id"></slot>
       </div>
 
-      <div class="index">
+      <div class="head__index">
         [<slot name="index"></slot>]
       </div>
 
@@ -80,36 +64,41 @@ const nodeStyle = () => {
 
 
 <style scoped>
-div.wrapper {
+div.head__wrapper {
   display: flex;
   flex-direction: row;
   align-items: center;
   gap: 5px;
+  border-radius: 7px;
   padding: 5px 9px;
   background-color: var(--rp-highlight-low);
   user-select: none;
 }
 
-div.favicon-placeholder {
+div.head__favicon-placeholder {
   width: 18px;
   height: 18px;
 }
 
-div.id {
+div.head__id {
   color: orange;
 }
 
-div.index {
+div.head__index {
   color: green;
 }
 
-div.inactive-hover {
-  background-color: var(--ct-surface_0);
+div.head__selected {
+  background-color: var(--rp-pine);
+}
+
+div.head__hovering {
   color: var(--rp-iris);
+  background-color: var(--ct-surface_0);
   cursor: default;
 }
 
-div.folder-open {
+div.head__folder-open-padding {
   padding: 3px 7px;
 }
 </style>

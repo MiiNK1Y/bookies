@@ -72,45 +72,47 @@ const topBottomMaskClass = computed(() => {
 
 
 <template>
-  <div class="hover-mask">
+  <div class="mask-wrapper">
+    <div class="hover-mask">
 
-    <!-- Top. -->
-    <div
-      @dragenter.stop="hovering.top = true"
-      @dragleave.stop="hovering.top = false"
-      @drop.prevent.stop="onDrop($event, parentId, id, 'over');
-        hovering.top = false;"
-      :class="topBottomMaskClass"
-      class="top-mask">
-
+      <!-- Top. -->
       <div
-        v-show="hovering.top"
-        class="drop-indicator drop-indicator-top">
+        @dragenter.stop="hovering.top = true"
+        @dragleave.stop="hovering.top = false"
+        @drop.prevent.stop="onDrop($event, parentId, id, 'over');
+          hovering.top = false;"
+        :class="topBottomMaskClass"
+        class="top-mask">
+
+        <div
+          v-show="hovering.top"
+          class="drop-indicator drop-indicator-top">
+        </div>
       </div>
-    </div>
 
-    <!-- Middle folder hover-mask (for hover-to-open) -->
-    <div
-      v-if="type === 'Folder'"
-      v-show="hovering.closedFolder"
-      @dragenter.stop="toggleChildrenDelay($event, id)"
-      @dragleave.stop="cancelToggleChildrenDelay()"
-      @drop.prevent.stop="onDrop($event, id)"
-      class="folder-hover-to-open-mask" >
-    </div>
-
-    <!-- Bottom. -->
-    <div
-      @dragenter.stop="hovering.bottom = true"
-      @dragleave.stop="hovering.bottom = false"
-      @drop.prevent.stop="onDrop($event, parentId, id, 'under')
-        hovering.bottom = false;"
-      :class="topBottomMaskClass"
-      class="bottom-mask">
-
+      <!-- Middle folder hover-mask (for hover-to-open) -->
       <div
-        v-show="hovering.bottom"
-        class="drop-indicator drop-indicator-bottom">
+        v-if="type === 'Folder'"
+        v-show="hovering.closedFolder"
+        @dragenter.stop="toggleChildrenDelay($event, id)"
+        @dragleave.stop="cancelToggleChildrenDelay()"
+        @drop.prevent.stop="onDrop($event, id)"
+        class="folder-hover-to-open-mask" >
+      </div>
+
+      <!-- Bottom. -->
+      <div
+        @dragenter.stop="hovering.bottom = true"
+        @dragleave.stop="hovering.bottom = false"
+        @drop.prevent.stop="onDrop($event, parentId, id, 'under')
+          hovering.bottom = false;"
+        :class="topBottomMaskClass"
+        class="bottom-mask">
+
+        <div
+          v-show="hovering.bottom"
+          class="drop-indicator drop-indicator-bottom">
+        </div>
       </div>
     </div>
   </div>
@@ -118,44 +120,54 @@ const topBottomMaskClass = computed(() => {
 
 
 <style scoped>
-div.bookmark-mask { height: 50%; }
-div.folder-mask { height: 5px; }
-
-div.hover-mask {
-  background-color: gray;
-  opacity: 0.5;
-
+div.mask-wrapper {
   z-index: 10;
   position: absolute;
   height: 100%;
   width: 100%;
+  margin-left: -3px;
+  margin-top: -3px;
 }
 
-div.folder-hover-to-open-mask {
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  height: 70%;
+div.hover-mask {
+  position: relative;
+  height: 100%;
+  width: 100%;
+}
+
+div.bookmark-mask {
+  height: 50%;
+  width: 100%;
+}
+
+div.folder-mask {
+  height: 5px;
+  width: 100%;
 }
 
 div.top-mask {
-  background-color: green;
-  opacity: 0.5;
-
+  position: absolute;
   top: 0;
+
+  background-color: green;
+  opacity: 0.3;
 }
 
 div.bottom-mask {
-  background-color: blue;
-  opacity: 0.5;
-
+  position: absolute;
   bottom: 0;
+
+  background-color: blue;
+  opacity: 0.3;
 }
 
 div.folder-hover-to-open-mask {
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  height: 10px;
+  width: 100%;
+  position: absolute;
+  top: 5px;
+  bottom: 5px;
+
+  background-color: white;
+  opacity: 0.3;
 }
 </style>
