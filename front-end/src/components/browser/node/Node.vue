@@ -72,8 +72,8 @@ const children = ref({
       @dragleave.prevent.stop="rmBackgroundColor($event)"
       @drop.prevent.stop="onDrop($event, node.Id);
         rmBackgroundColor($event);"
-      :class="{ 'folder-padding': children.show }"
-      class="folder drop-zone" >
+      :class="{ 'node__folder-padding': children.show }"
+      class="node__folder node__drop-zone" >
 
       <NodeHead
         :node="node"
@@ -99,7 +99,7 @@ const children = ref({
         :index="index"
         :parentId="node.Id"
         :enableTree
-        class="child" />
+        class="node__child" />
     </div>
   </div>
 </template>
@@ -109,27 +109,26 @@ const children = ref({
 div.node__wrapper {
   position: relative;
   padding: 3px;
-  border-radius: 7px;
   font-family: var(--bks-big-text);
   cursor: default;
   user-select: none;
 }
 
-div.folder {
+div.node__folder {
   border-radius: 7px;
   background-color: hsla(248deg, 13%, 36%, 0.3);
 }
 
-div.folder-padding {
+div.node__folder-padding {
   padding: 2px;
 }
 
 /* 'dragover' style applied from 'MoveTreeItem.js' */
-div.drop-zone.dragover {
+div.node__drop-zone.dragover {
   background-color: var(--rp-highlight-high);
 }
 
-div.child {
+div.node__child {
   margin-left: 20px;
 }
 </style>
