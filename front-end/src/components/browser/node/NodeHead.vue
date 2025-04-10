@@ -40,6 +40,7 @@ const style = computed(() => ({
     @mouseleave="hovering = false"
     @dragstart="startDrag($event, node)"
     @dragend="onDragEnd($event)"
+    @drop.prevent.stop="onDrop($event, node.Id)"
     @click="select()"
     :class="style"
     class="head__wrapper"

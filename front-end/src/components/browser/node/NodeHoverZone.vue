@@ -41,7 +41,7 @@ const hovering = ref({
 })
 
 
-let timoutId;
+let timeoutId;
 function toggleChildrenDelay(event, nodeId) {
   const itemId = Number(event.dataTransfer.getData('itemID'));
   if (itemId == nodeId) return;
@@ -51,14 +51,14 @@ function toggleChildrenDelay(event, nodeId) {
       emit('showChildren');
     }
     hoveringFolder.value = null;
-    timoutId = undefined;
+    timeoutId = undefined;
   }, 500);
 };
 
 
 function cancelToggleChildrenDelay() {
   hoveringFolder.value = null;
-  clearTimeout(timoutId);
+  clearTimeout(timeoutId);
 }
 
 
@@ -103,7 +103,7 @@ const topBottomMaskClass = computed(() => {
     <div
       @dragenter.stop="hovering.bottom = true"
       @dragleave.stop="hovering.bottom = false"
-      @drop.prevent.stop="onDrop($event, parentId, id, 'under')
+      @drop.prevent.stop="onDrop($event, parentId, id, 'under');
         hovering.bottom = false;"
       :class="topBottomMaskClass"
       class="mask bottom-mask">
@@ -152,20 +152,42 @@ div.folder-hover-to-open-mask {
   bottom: 10px;
 }
 
+div.drop-indicator {
+  position: absolute;
+  left: 0;
+  height: 4px;
+  width: 40px;
+  border-radius: 1em;
+  background-color: var(--ct-red);
+}
 
-/* Colors for visual aid. */
+div.drop-indicator-top {
+  top: 0;
+  margin-top: -2px;
+}
+
+div.drop-indicator-bottom {
+  bottom: 0;
+  margin-bottom: -2px;
+}
+
+
+/* Colors for visual aid and debugging. */
+.top-mask,
+.bottom-mask,
+.folder-hover-to-open-mask {
+  opacity: 0.3;
+}
+
 .top-mask {
   background-color: green;
-  opacity: 0.3;
 }
 
 .bottom-mask {
   background-color: blue;
-  opacity: 0.3;
 }
 
 .folder-hover-to-open-mask {
   background-color: white;
-  opacity: 0.3;
 }
 </style>

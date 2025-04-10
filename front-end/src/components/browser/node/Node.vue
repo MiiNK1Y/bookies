@@ -42,7 +42,7 @@ const children = ref({
 
 <template>
   <div
-    class="node__wrapper">
+    class="node__wrapper" >
 
     <NodeHoverZone
       v-show="dragMode"
@@ -73,7 +73,7 @@ const children = ref({
       @drop.prevent.stop="onDrop($event, node.Id);
         rmBackgroundColor($event);"
       :class="{ 'node__folder-padding': children.show }"
-      class="node__folder node__drop-zone" >
+      class="node__folder drop-zone" >
 
       <NodeHead
         :node="node"
@@ -124,8 +124,8 @@ div.node__folder-padding {
 }
 
 /* 'dragover' style applied from 'MoveTreeItem.js' */
-div.node__drop-zone.dragover {
-  background-color: var(--rp-highlight-high);
+div.drop-zone.dragover {
+  background-color: var(--rp-highlight-high) !important;
 }
 
 div.node__child {
