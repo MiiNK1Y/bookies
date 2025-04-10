@@ -14,7 +14,7 @@ const props = defineProps({
     type: String,
     required: true
   },
-  id: {
+  nodeId: {
     type: Number,
     required: true
   },
@@ -72,13 +72,12 @@ const topBottomMaskClass = computed(() => {
 
 
 <template>
-  <div class="mask__wrapper">
-
+  <div>
     <!-- Top. -->
     <div
       @dragenter.stop="hovering.top = true"
       @dragleave.stop="hovering.top = false"
-      @drop.prevent.stop="onDrop($event, parentId, id, 'over');
+      @drop.prevent.stop="onDrop($event, parentId, nodeId, 'over');
         hovering.top = false;"
       :class="topBottomMaskClass"
       class="mask top-mask">
@@ -93,9 +92,9 @@ const topBottomMaskClass = computed(() => {
     <div
       v-if="type === 'Folder'"
       v-show="hovering.closedFolder"
-      @dragenter.stop="toggleChildrenDelay($event, id)"
+      @dragenter.stop="toggleChildrenDelay($event, nodeId)"
       @dragleave.stop="cancelToggleChildrenDelay()"
-      @drop.prevent.stop="onDrop($event, id)"
+      @drop.prevent.stop="onDrop($event, nodeId)"
       class="mask folder-hover-to-open-mask" >
     </div>
 
@@ -103,7 +102,7 @@ const topBottomMaskClass = computed(() => {
     <div
       @dragenter.stop="hovering.bottom = true"
       @dragleave.stop="hovering.bottom = false"
-      @drop.prevent.stop="onDrop($event, parentId, id, 'under');
+      @drop.prevent.stop="onDrop($event, parentId, nodeId, 'under');
         hovering.bottom = false;"
       :class="topBottomMaskClass"
       class="mask bottom-mask">
@@ -118,14 +117,6 @@ const topBottomMaskClass = computed(() => {
 
 
 <style scoped>
-div.mask__wrapper {
-  position: absolute;
-  height: 100%;
-  width: 100%;
-  margin-left: -3px;
-  margin-top: -3px;
-}
-
 div.mask {
   position: absolute;
   width: 100%;
@@ -173,6 +164,7 @@ div.drop-indicator-bottom {
 
 
 /* Colors for visual aid and debugging. */
+/*
 .top-mask,
 .bottom-mask,
 .folder-hover-to-open-mask {
@@ -190,4 +182,5 @@ div.drop-indicator-bottom {
 .folder-hover-to-open-mask {
   background-color: white;
 }
+*/
 </style>

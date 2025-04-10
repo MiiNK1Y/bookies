@@ -24,10 +24,8 @@ export function onDragEnd() {
 }
 
 export function setBackgroundColor(event) {
-  console.log("applying hover-color...");
   if (event.target.classList.contains("drop-zone")) {
     event.target.classList.add("dragover");
-    console.log("hovering-color applied!");
   }
 }
 

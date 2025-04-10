@@ -40,7 +40,6 @@ const style = computed(() => ({
     @mouseleave="hovering = false"
     @dragstart="startDrag($event, node)"
     @dragend="onDragEnd($event)"
-    @drop.prevent.stop="onDrop($event, node.Id)"
     @click="select()"
     :class="style"
     class="head__wrapper"
@@ -70,9 +69,14 @@ div.head__wrapper {
   flex-direction: row;
   align-items: center;
   gap: 5px;
+  box-sizing: border-box;
+  border: 2px solid transparent;
   border-radius: 7px;
-  padding: 5px 9px;
+  padding: 3px 6px;
   background-color: var(--rp-highlight-low);
+  font-family: var(--bks-big-text);
+  user-select: none;
+  cursor: default;
   user-select: none;
 }
 
@@ -90,7 +94,7 @@ div.head__index {
 }
 
 div.head__selected {
-  background-color: var(--rp-pine);
+  border: 2px solid var(--ct-lavender);
 }
 
 div.head__hovering {
@@ -100,6 +104,6 @@ div.head__hovering {
 }
 
 div.head__folder-open-padding {
-  padding: 3px 7px;
+  padding: 1px 4px;
 }
 </style>

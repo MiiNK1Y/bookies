@@ -4,7 +4,6 @@
 import { ref, computed } from 'vue';
 import NodeHead from './NodeHead.vue';
 import NodeHoverZone from './NodeHoverZone.vue';
-import { stateRefs } from '@/stores/folderTree.js';
 import { setBackgroundColor, rmBackgroundColor, dragMode, onDrop } from '../BrowserMoveTreeItem.js';
 
 
@@ -31,7 +30,6 @@ const props = defineProps({
 
 const children = ref({
   show: false,
-  exists: computed(() => props.node.Bookmarks),
   icon: computed(() => children.value.show
     ? "/src/assets/icons/folder-open-solid.svg"
     : "/src/assets/icons/folder-solid.svg"
@@ -42,12 +40,12 @@ const children = ref({
 
 <template>
   <div
-    class="node__wrapper" >
+    class="wrapper" >
 
     <NodeHoverZone
       v-show="dragMode"
       :type="node.Type"
-      :id="node.Id"
+      :nodeId="node.Id"
       :parentId="parentId"
       :showChildren="children.show"
       @show-children="children.show = true"
@@ -68,12 +66,12 @@ const children = ref({
     <div
       v-else-if="node.Type === 'Folder'"
       @dragover.prevent
-      @dragenter.prevent.stop="setBackgroundColor($event)"
-      @dragleave.prevent.stop="rmBackgroundColor($event)"
+      @dragenter="setBackgroundColor($event)"
+      @dragleave="rmBackgroundColor($event)"
       @drop.prevent.stop="onDrop($event, node.Id);
         rmBackgroundColor($event);"
-      :class="{ 'node__folder-padding': children.show }"
-      class="node__folder drop-zone" >
+      :class="{ 'folder-padding': children.show }"
+      class="folder drop-zone" >
 
       <NodeHead
         :node="node"
@@ -99,27 +97,24 @@ const children = ref({
         :index="index"
         :parentId="node.Id"
         :enableTree
-        class="node__child" />
+        class="child"/>
     </div>
   </div>
 </template>
 
 
 <style scoped>
-div.node__wrapper {
+div.wrapper {
   position: relative;
   padding: 3px;
-  font-family: var(--bks-big-text);
-  cursor: default;
-  user-select: none;
 }
 
-div.node__folder {
+div.folder {
   border-radius: 7px;
   background-color: hsla(248deg, 13%, 36%, 0.3);
 }
 
-div.node__folder-padding {
+div.folder-padding {
   padding: 2px;
 }
 
@@ -128,7 +123,7 @@ div.drop-zone.dragover {
   background-color: var(--rp-highlight-high) !important;
 }
 
-div.node__child {
+div.child {
   margin-left: 20px;
 }
 </style>
