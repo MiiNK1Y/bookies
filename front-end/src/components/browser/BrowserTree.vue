@@ -1,10 +1,13 @@
 <script setup>
-//import BrowserNode from './BrowserNode.vue';
-
 import Node from './node/Node.vue';
 import { bookiesTreeRef } from '@/stores/folderTree.js';
-import { onDrop, setBackgroundColor, rmBackgroundColor } from './BrowserMoveTreeItem.js';
+import {
+  onDrop,
+  setBackgroundColor,
+  rmBackgroundColor
+} from './BrowserMoveTreeItem.js';
 </script>
+
 
 <template>
   <div
@@ -12,7 +15,8 @@ import { onDrop, setBackgroundColor, rmBackgroundColor } from './BrowserMoveTree
     @dragover.prevent
     @dragenter.prevent="setBackgroundColor"
     @dragleave.prevent="rmBackgroundColor"
-    @drop.prevent.stop="onDrop($event, 0); rmBackgroundColor($event)" >
+    @drop.prevent.stop="onDrop($event, 0);
+      rmBackgroundColor($event)" >
 
     <Node
       v-for="(node, index) in bookiesTreeRef.Bookmarks"
@@ -25,6 +29,7 @@ import { onDrop, setBackgroundColor, rmBackgroundColor } from './BrowserMoveTree
   </div>
 </template>
 
+
 <style scoped>
 div.root {
   box-sizing: border-box;
@@ -34,5 +39,7 @@ div.root {
   background-color: var(--rp-base);
 }
 
-div.drop-zone.dragover { background-color: var(--rp-highlight-high); }
+div.drop-zone.dragover {
+  background-color: var(--rp-highlight-high);
+}
 </style>

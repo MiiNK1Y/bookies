@@ -28,7 +28,8 @@ function select() {
 
 const style = computed(() => ({
   'head__folder-open-padding': props.showingChildren,
-  'head__hovering': hovering.value && stateRefs.value.selectedItem != props.node.Id,
+  'head__hovering': hovering.value &&
+    stateRefs.value.selectedItem != props.node.Id,
   'head__selected': stateRefs.value.selectedItem == props.node.Id
 }));
 </script>
@@ -69,13 +70,16 @@ div.head__wrapper {
   flex-direction: row;
   align-items: center;
   gap: 5px;
+
+  /*
   box-sizing: border-box;
+  */
+
   border: 2px solid transparent;
-  border-radius: 7px;
+  border-radius: 5px;
   padding: 3px 6px;
   background-color: var(--rp-highlight-low);
   font-family: var(--bks-big-text);
-  user-select: none;
   cursor: default;
   user-select: none;
 }

@@ -4,7 +4,11 @@
 import { ref, computed } from 'vue';
 import NodeHead from './NodeHead.vue';
 import NodeHoverZone from './NodeHoverZone.vue';
-import { setBackgroundColor, rmBackgroundColor, dragMode, onDrop } from '../BrowserMoveTreeItem.js';
+import {
+  setBackgroundColor,
+  rmBackgroundColor,
+  dragMode, onDrop
+} from '../BrowserMoveTreeItem.js';
 
 
 const props = defineProps({
