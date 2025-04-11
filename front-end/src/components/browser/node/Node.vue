@@ -69,7 +69,6 @@ const children = ref({
     <!-- Folder. -->
     <div
       v-else-if="node.Type === 'Folder'"
-      @dragover.prevent
       @dragenter="setBackgroundColor($event)"
       @dragleave="rmBackgroundColor($event)"
       @drop.prevent.stop="onDrop($event, node.Id);
@@ -93,15 +92,18 @@ const children = ref({
         <template #title>{{ node.Title }}</template>
       </NodeHead>
 
-      <Node
+      <div
         v-show="enableTree && children.show"
-        v-for="(child, index) in node.Bookmarks"
-        :key="child.Id"
-        :node="child"
-        :index="index"
-        :parentId="node.Id"
-        :enableTree
-        class="child"/>
+        class="children" >
+
+        <Node
+          v-for="(child, index) in node.Bookmarks"
+          :key="child.Id"
+          :node="child"
+          :index="index"
+          :parentId="node.Id"
+          :enableTree />
+      </div>
     </div>
   </div>
 </template>
@@ -110,7 +112,7 @@ const children = ref({
 <style scoped>
 div.wrapper {
   position: relative;
-  padding: 3px;
+  padding: 3px 3px 3px 0;
 }
 
 div.folder {
@@ -124,10 +126,13 @@ div.folder-padding {
 
 /* 'dragover' style applied from 'MoveTreeItem.js' */
 div.drop-zone.dragover {
-  background-color: var(--rp-highlight-high) !important;
+  background-color: rgba(0,0,0,0.3) !important;
+  border: 2px solid var(--ct-red);
+  padding: 0 !important;
 }
 
-div.child {
+div.children {
+  padding-top: 3px;
   margin-left: 20px;
 }
 </style>

@@ -62,30 +62,37 @@ function cancelToggleChildrenDelay() {
 }
 
 
-const topBottomMaskClass = computed(() => {
-  return {
+const topBottomMaskClass = {
     'bookmark-mask': props.type === 'Bookmark',
     'folder-mask': props.type === 'Folder'
-  }
-});
+};
+
+
+const dropIndicatorPositionClass = computed(() => ({
+    'drop-indicator-top': hovering.value.top,
+    'drop-indicator-bottom': hovering.value.bottom
+}));
 </script>
 
 
 <template>
   <div>
-    <!-- Top. -->
+
+    <!-- Drop-indicator -->
+    <div
+      v-show="hovering.top || hovering.bottom"
+      :class="dropIndicatorPositionClass"
+      class="drop-indicator" >
+    </div>
+
+    <!-- Top mask. -->
     <div
       @dragenter.stop="hovering.top = true"
       @dragleave.stop="hovering.top = false"
       @drop.prevent.stop="onDrop($event, parentId, nodeId, 'over');
         hovering.top = false;"
       :class="topBottomMaskClass"
-      class="mask top-mask">
-
-      <div
-        v-show="hovering.top"
-        class="drop-indicator drop-indicator-top">
-      </div>
+      class="mask top-mask" >
     </div>
 
     <!-- Middle folder hover-mask (for hover-to-open) -->
@@ -98,19 +105,14 @@ const topBottomMaskClass = computed(() => {
       class="mask folder-hover-to-open-mask" >
     </div>
 
-    <!-- Bottom. -->
+    <!-- Bottom mask. -->
     <div
       @dragenter.stop="hovering.bottom = true"
       @dragleave.stop="hovering.bottom = false"
       @drop.prevent.stop="onDrop($event, parentId, nodeId, 'under');
         hovering.bottom = false;"
       :class="topBottomMaskClass"
-      class="mask bottom-mask">
-
-      <div
-        v-show="hovering.bottom"
-        class="drop-indicator drop-indicator-bottom">
-      </div>
+      class="mask bottom-mask" >
     </div>
   </div>
 </template>
@@ -118,6 +120,7 @@ const topBottomMaskClass = computed(() => {
 
 <style scoped>
 div.mask {
+  z-index: 2;
   position: absolute;
   width: 100%;
 }
@@ -144,11 +147,13 @@ div.folder-hover-to-open-mask {
 }
 
 div.drop-indicator {
+  z-index: 1;
   position: absolute;
   left: 0;
   height: 4px;
   width: 40px;
   border-radius: 1em;
+  margin-left: -3px;
   background-color: var(--ct-red);
 }
 

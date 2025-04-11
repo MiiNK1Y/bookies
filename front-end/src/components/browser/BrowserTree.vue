@@ -37,6 +37,7 @@ div.root {
   border: 7px solid var(--rp-base);
   border-radius: 1em;
   background-color: var(--rp-base);
+  padding-left: 3px;
 }
 
 div.drop-zone.dragover {
