@@ -1,17 +1,19 @@
 <script setup>
-import FolderTree from '@/components/browser/FolderTree.vue';
+import { RouterView } from 'vue-router';
+import BrowserTree from '@/components/browser/BrowserTree.vue';
+import BrowserNavbar from '@/components/browser/BrowserNavbar.vue';
 </script>
 
 <template>
   <div class="parent">
     <div class="folder-tree">
-      <FolderTree />
+      <BrowserTree />
     </div>
     <div class="navbar">
-      some text
+      <BrowserNavbar />
     </div>
     <div class="browser-view">
-      some text
+      <RouterView />
     </div>
   </div>
 </template>
@@ -22,26 +24,50 @@ div.parent {
   grid-template-columns: auto 1fr;
   grid-template-rows: auto 1fr;
   grid-gap: 5px;
+  box-sizing: border-box;
+  border: 5px solid black;
+  font-family: var(--bks-regular-text);
+}
+
+div.parent,
+div.folder-tree,
+div.browser-view {
   height: 100%;
 }
 
+div.folder-tree,
+div.navbar,
+div.browser-view {
+  border-radius: 10px;
+}
+
 div.folder-tree {
-  position: relative;
   grid-row: span 2 / span 2;
+  position: relative;
+  overflow: scroll;
   background-color: var(--rp-base);
+}
+
+div.folder-tree,
+div.browser-view {
+  position: relative;
 }
 
 div.navbar,
 div.browser-view {
   display: flex;
-  justify-content: center;
-  align-items: center;
-  background-color: var(--rp-highlight-low);
-  font-family: var(--bks-regular-text);
 }
 
 div.navbar {
+  width: 100%;
+  justify-content: center;
+  align-items: center;
   background-color: var(--rp-highlight-med);
+  overflow: hidden;
+}
+
+div.browser-view {
+  background-color: var(--rp-highlight-low);
 }
 </style>
 
