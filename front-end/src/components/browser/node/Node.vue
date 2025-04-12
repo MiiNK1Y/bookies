@@ -1,5 +1,3 @@
-<!-- NOTE: Node.vue -->
-
 <script setup>
 import { ref, computed } from 'vue';
 import NodeHead from './NodeHead.vue';
@@ -7,7 +5,8 @@ import NodeHoverZone from './NodeHoverZone.vue';
 import {
   setBackgroundColor,
   rmBackgroundColor,
-  dragMode, onDrop
+  dragMode,
+  onDrop
 } from '../BrowserMoveTreeItem.js';
 
 

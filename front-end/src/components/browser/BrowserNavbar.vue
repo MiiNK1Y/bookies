@@ -35,6 +35,7 @@ div.navbar {
   flex-direction: row;
   justify-content: center;
   gap: 15px;
+  user-select: none;
 }
 
 div.navbar>a {

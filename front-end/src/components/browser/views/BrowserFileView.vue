@@ -5,9 +5,12 @@ import { stateRefs } from '@/lib/folderTree.js';
 <template>
   <div class="main-view">
     <div class="data">
+      <h4>Your file</h4>
       <pre><code>{{ stateRefs.bookies }}</code></pre>
     </div>
+
     <div class="data">
+      <h4>Your file flattened</h4>
       <pre><code>{{ stateRefs.flatBookies }}</code></pre>
     </div>
   </div>
@@ -23,6 +26,14 @@ div.main-view {
   display: grid;
   grid-template-columns: auto auto;
   gap: 5px;
+}
+
+h4 {
+  padding: 4px;
+  margin: 10px;
+  border-radius: 10px;
+  text-align: center;
+  background-color: var(--rp-highlight-low);
 }
 
 div.data {

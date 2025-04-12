@@ -4,28 +4,32 @@ import { bookiesTreeRef } from '@/lib/folderTree.js';
 
 <template>
   <div class="info__container">
+
     <div class="info__title info__input-text">
       <p>title</p>
       <input type="text" />
     </div>
+
     <div class="info__url info__input-text">
       <p>url</p>
       <input type="text" />
     </div>
+
     <div class="info__tags info__input-text">
       <p>tags</p>
       <input type="text" placeholder="Separate tags with commas" />
     </div>
+
   </div>
 </template>
 
 <style scoped>
 div.info__container {
   position: absolute;
-  box-sizing: border-box;
-  gap: 10px;
-  display: grid;
   bottom: 0;
+  box-sizing: border-box;
+  display: grid;
+  gap: 10px;
   width: 100%;
   border-radius: 6px;
   padding: 10px;

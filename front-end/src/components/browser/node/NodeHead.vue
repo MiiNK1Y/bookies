@@ -1,5 +1,3 @@
-<!-- NOTE: NodeHead.vue -->
-
 <script setup>
 import { ref, computed } from 'vue';
 import { startDrag, onDragEnd } from '../BrowserMoveTreeItem.js';
@@ -70,11 +68,6 @@ div.head__wrapper {
   flex-direction: row;
   align-items: center;
   gap: 5px;
-
-  /*
-  box-sizing: border-box;
-  */
-
   border: 2px solid transparent;
   border-radius: 5px;
   padding: 3px 6px;

@@ -1,11 +1,9 @@
-<!-- NOTE: NodeHoverZone.vue -->
-
 <script setup>
 import { ref, computed } from 'vue';
 import {
   dragMode,
   onDrop,
-  hoveringFolder,
+  hoveringFolder
 } from '../BrowserMoveTreeItem.js';
 
 
