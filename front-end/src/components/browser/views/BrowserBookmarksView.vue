@@ -1,6 +1,7 @@
 <script setup>
 import Node from '../node/Node.vue';
-import { bookiesTreeRef } from '@/stores/folderTree.js';
+import NodeInfo from '../node/NodeInfo.vue';
+import { bookiesTreeRef } from '@/lib/folderTree.js';
 import {
   onDrop,
   setBackgroundColor,
@@ -25,21 +26,27 @@ import {
       :parentId="0"
       :enableTree="false"
       />
+
+    <NodeInfo />
   </div>
 </template>
 
 <style scoped>
 div.main-view {
+  position: relative;
   width: 100%;
   height: 100%;
 }
+
 div.root {
   box-sizing: border-box;
   height: 100%;
   border: 7px solid var(--rp-base);
-  border-radius: 1em;
+  border-radius: 10px;
   background-color: var(--rp-base);
 }
 
-div.drop-zone.dragover { background-color: var(--rp-highlight-high); }
+div.drop-zone.dragover {
+  background-color: var(--rp-highlight-high);
+}
 </style>

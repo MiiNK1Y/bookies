@@ -1,6 +1,6 @@
 <script setup>
 import Node from './node/Node.vue';
-import { bookiesTreeRef } from '@/stores/folderTree.js';
+import { bookiesTreeRef } from '@/lib/folderTree.js';
 import {
   onDrop,
   setBackgroundColor,

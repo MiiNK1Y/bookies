@@ -1,4 +1,4 @@
-import { MoveTreeItem } from '@/stores/folderTree.js'
+import { MoveTreeItem } from '@/lib/folderTree.js'
 import { ref } from 'vue';
 
 export const dragMode = ref(false);

@@ -1,5 +1,5 @@
 <script setup>
-import { stateRefs } from '@/stores/folderTree.js';
+import { stateRefs } from '@/lib/folderTree.js';
 </script>
 
 <template>

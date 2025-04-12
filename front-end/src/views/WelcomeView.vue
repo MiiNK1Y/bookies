@@ -1,5 +1,5 @@
 <script setup>
-import { shrinkWrapAll } from '@/helpers.js';
+import { shrinkWrapAll } from '@/lib/shrinkwrap.js';
 import ContinueSetupCardComponent from '@/components/setup/ContinueSetupCardComponent.vue';
 import { onMounted, nextTick } from 'vue';
 
@@ -66,5 +66,15 @@ div.container {
   justify-content: center;
   gap: 20px;
   flex-wrap: wrap;
+}
+</style>
+
+<style>
+#app {
+  height: auto;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 </style>

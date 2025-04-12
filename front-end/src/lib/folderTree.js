@@ -1,5 +1,5 @@
 import data from '../tests/shared-samples/Bookies.json';
-import { Flatten, Rebuild } from '../modules/bookies/bookies.js';
+import { Flatten, Rebuild } from './bookies/bookies.js';
 import { ref } from 'vue';
 
 export const state = {

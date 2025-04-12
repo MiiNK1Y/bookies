@@ -3,7 +3,7 @@
 <script setup>
 import { ref, computed } from 'vue';
 import { startDrag, onDragEnd } from '../BrowserMoveTreeItem.js';
-import { stateRefs } from '@/stores/folderTree.js';
+import { stateRefs } from '@/lib/folderTree.js';
 
 
 const props = defineProps({
