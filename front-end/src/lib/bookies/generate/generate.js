@@ -3,7 +3,7 @@
 * @class
 * @classdesc - Generate a randomized Bookies object for testing.
 */
-export class GenerateBookiesTree {
+export class GenerateJsonTree {
 
   /**
   * @constructor
@@ -35,7 +35,6 @@ export class GenerateBookiesTree {
   *   }
   * }
   *
-  * @param {object} samples - Object defining what each template property should fill in.
   * @param {number} min - The minimum length of the array, nested items included.
   * @param {number} max - The maximum length of the array, nested items included.
   * @param {number} minDepth - The minimum depth of nesting.
@@ -47,5 +46,24 @@ export class GenerateBookiesTree {
     this.max = max;
     this.minDepth = minDepth;
     this.maxDepth = maxDepth;
+
+    this.tree = [];
+  }
+
+  /**
+  * @private
+  * @desc - Fill each item with the given samples.
+  * @param {object} item - An item from the given template.
+  */
+  fill(item) {
+    //
+  }
+
+  /**
+  * @private
+  * @desc - Build the new tree.
+  */
+  build() {
+    //
   }
 }
