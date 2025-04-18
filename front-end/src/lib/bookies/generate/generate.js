@@ -3,35 +3,43 @@
 * @class
 * @classdesc - Generate a randomized Bookies object for testing.
 */
-export class GenerateJsonTree {
+export class Generate {
 
   /**
   * @constructor
+  *
   * @param {array} template - Array of objects that define the template.
-  *
-  * Format:
-  * minimum characters - maximum characters - array of sample data
-  *
   * const example = {
-  *   title: {
-  *     min: 10,
-  *     max: 20,
-  *     samples: [example, example]
+  *
+  *   item: {
+  *     url: {
+  *       min: 20,
+  *       max: 30,
+  *       samples: ["https://url", "http://url"]
+  *     },
+  *     tags: {
+  *       min: 2,
+  *       max: 15,
+  *       samples: ["tag", "tags"]
+  *     }
   *   },
-  *   url: {
-  *     min: 20,
-  *     max: 30,
-  *     samples: [example, example]
-  *   },
-  *   tags: {
-  *     min: 2,
-  *     max: 15,
-  *     samples: [tag, tags]
-  *   },
-  *   children: {
-  *     min: 3,
-  *     max: 10,
-  *     samples: [SELF, some-other]
+  *
+  *   nestable: {
+  *     title: {
+  *       min: 10,
+  *       max: 20,
+  *       samples: ["example", "example"]
+  *     },
+  *     tags: {
+  *       min: 2,
+  *       max: 15,
+  *       samples: ["tag", "tags"]
+  *     },
+  *     children: {
+  *       min: 3,
+  *       max: 10,
+  *       samples: [self]
+  *     }
   *   }
   * }
   *
@@ -48,6 +56,8 @@ export class GenerateJsonTree {
     this.maxDepth = maxDepth;
 
     this.tree = [];
+
+    // this.build();
   }
 
   /**
@@ -56,7 +66,10 @@ export class GenerateJsonTree {
   * @param {object} item - An item from the given template.
   */
   fill(item) {
-    //
+    let builtItem = { ...item };
+    for (const [key, value] in Object.entries(item)) {
+      //
+    }
   }
 
   /**

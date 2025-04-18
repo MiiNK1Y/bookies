@@ -1,25 +1,53 @@
 <script setup>
 import { bookiesTreeRef } from '@/lib/folderTree.js';
+import { state } from '@/stores/browserTree.js';
+
+function updateTitle() {
+  //
+}
+
+function updateUrl() {
+  //
+}
+
+function updateTags() {
+  //
+}
 </script>
 
 <template>
   <div class="info__container">
 
     <div class="info__title info__input-text">
-      <p>title</p>
-      <input type="text" />
+      <p>Title</p>
+
+      <input
+        type="text"
+        :value="state.selected.title"
+      />
+
     </div>
 
     <div class="info__url info__input-text">
-      <p>url</p>
-      <input type="text" />
+      <p>URL</p>
+
+      <input
+        type="text"
+        :value="state.selected.url"
+      />
+
     </div>
 
     <div class="info__tags info__input-text">
-      <p>tags</p>
-      <input type="text" placeholder="Separate tags with commas" />
-    </div>
+      <p>Tags</p>
 
+      <input
+        type="text"
+        placeholder="Separate tags with commas"
+        :value="state.selected.tags"
+      />
+
+    </div>
   </div>
 </template>
 
