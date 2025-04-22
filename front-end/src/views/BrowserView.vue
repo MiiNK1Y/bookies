@@ -1,5 +1,6 @@
 <script setup>
 import { RouterView } from 'vue-router';
+
 import BrowserTree from '@/components/browser/BrowserTree.vue';
 import BrowserNavbar from '@/components/browser/BrowserNavbar.vue';
 </script>
@@ -7,15 +8,19 @@ import BrowserNavbar from '@/components/browser/BrowserNavbar.vue';
 
 <template>
   <div class="parent">
+
     <div class="folder-tree">
       <BrowserTree />
     </div>
+
     <div class="navbar">
       <BrowserNavbar />
     </div>
+
     <div class="browser-view">
       <RouterView />
     </div>
+
   </div>
 </template>
 

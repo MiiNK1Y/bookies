@@ -1,10 +1,13 @@
 import { createRouter, createWebHistory } from 'vue-router';
+
 import BrowserView from '@/views/BrowserView.vue';
+
 import BrowserBookmarksView from '@/components/browser/views/BrowserBookmarksView.vue';
 import BrowserFileView from '@/components/browser/views/BrowserFileView.vue';
 import BrowserHiddenView from '@/components/browser/views/BrowserHiddenView.vue';
 import BrowserTrashView from '@/components/browser/views/BrowserTrashView.vue';
 import BrowserSettingsView from '@/components/browser/views/BrowserSettingsView.vue';
+
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -42,5 +45,6 @@ const router = createRouter({
     },
   ],
 });
+
 
 export default router

@@ -1,7 +1,8 @@
 <script setup>
 import { ref, computed } from 'vue';
-import { startDrag, onDragEnd } from '../BrowserMoveTreeItem.js';
-import { stateRefs } from '@/lib/folderTree.js';
+
+import { startDrag, onDragEnd } from '@/components/browser/BrowserMoveTreeItem.js';
+import { state } from '@/stores/bookies.js';
 
 
 const props = defineProps({
@@ -20,15 +21,16 @@ const hovering = ref(false);
 
 
 function select() {
-  stateRefs.value.selectedItem = props.node.Id;
+  state.value.selected = {...props.node};
 }
 
 
-const style = computed(() => ({
+const nodeHeadClass = computed(() => ({
   'head__folder-open-padding': props.showingChildren,
-  'head__hovering': hovering.value &&
-    stateRefs.value.selectedItem != props.node.Id,
-  'head__selected': stateRefs.value.selectedItem == props.node.Id
+  'head__hovering': hovering.value && (
+    !state.value.selected || state.value.selected.Id != props.node.Id
+  ),
+  'head__selected': state.value.selected && state.value.selected.Id == props.node.Id
 }));
 </script>
 
@@ -40,7 +42,7 @@ const style = computed(() => ({
     @dragstart="startDrag($event, node)"
     @dragend="onDragEnd($event)"
     @click="select()"
-    :class="style"
+    :class="nodeHeadClass"
     class="head__wrapper"
     draggable="true" >
 

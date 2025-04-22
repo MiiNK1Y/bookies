@@ -1,16 +1,22 @@
-/*
+/**
+*
+*
 * Validate if the Bookies conform to the set structure.
 *
 * Your Bookies may include additional custom properties \
 * for comments and other sorts of data.
+*
+* @public
+* @class
+*
+*
 */
-
-
-export class Valid {
+export class Validate {
   constructor(bookies) {
     this.usedIDs = [];
     this.isValid = this.valid(bookies);
   }
+
 
   props = {
     Type: "string",
@@ -29,6 +35,7 @@ export class Valid {
     Bookmarks: "object"
   };
 
+
   itemIdIsValid = (id) => {
     const ex = /^(0|[1-9]\d*)$/;
     if (!ex.test(String(id))) {
@@ -40,6 +47,7 @@ export class Valid {
     else return true;
   };
 
+
   itemPropsAreValid = (item, props) => {
     for (const [property, type] of props) {
       if (!Object.keys(item).includes(property)) {
@@ -50,6 +58,7 @@ export class Valid {
     }
     return true;
   }
+
 
   checkItemProps = (item) => {
     let props;
@@ -68,6 +77,7 @@ export class Valid {
     return this.itemPropsAreValid(item, props);
   }
 
+
   validateItem = (item) => {
     try {
       var validId = this.itemIdIsValid(item.Id);
@@ -78,6 +88,7 @@ export class Valid {
     }
     return validId && validProps;
   };
+
 
   valid = (folder) => {
     return folder.Bookmarks.every(item => {

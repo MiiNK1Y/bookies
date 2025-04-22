@@ -1,17 +1,17 @@
 <script setup>
-import { stateRefs } from '@/lib/folderTree.js';
+import { state } from '@/stores/bookies.js';
 </script>
 
 <template>
   <div class="main-view">
     <div class="data">
       <h4>Your file</h4>
-      <pre><code>{{ stateRefs.bookies }}</code></pre>
+      <pre><code>{{ state.bookies.regular }}</code></pre>
     </div>
 
     <div class="data">
       <h4>Your file flattened</h4>
-      <pre><code>{{ stateRefs.flatBookies }}</code></pre>
+      <pre><code>{{ state.bookies.flat }}</code></pre>
     </div>
   </div>
 </template>

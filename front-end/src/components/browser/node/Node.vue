@@ -1,13 +1,11 @@
 <script setup>
 import { ref, computed } from 'vue';
+
 import NodeHead from './NodeHead.vue';
 import NodeHoverZone from './NodeHoverZone.vue';
-import {
-  setBackgroundColor,
-  rmBackgroundColor,
-  dragMode,
-  onDrop
-} from '../BrowserMoveTreeItem.js';
+
+import { setBackgroundColor, rmBackgroundColor, onDrop } from '@/components/browser/BrowserMoveTreeItem.js';
+import { state } from '@/stores/bookies.js';
 
 
 const props = defineProps({
@@ -46,7 +44,7 @@ const children = ref({
     class="wrapper" >
 
     <NodeHoverZone
-      v-show="dragMode"
+      v-show="state.dragging"
       :type="node.Type"
       :nodeId="node.Id"
       :parentId="parentId"

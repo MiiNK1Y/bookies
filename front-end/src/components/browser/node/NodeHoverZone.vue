@@ -1,10 +1,8 @@
 <script setup>
 import { ref, computed } from 'vue';
-import {
-  dragMode,
-  onDrop,
-  hoveringFolder
-} from '../BrowserMoveTreeItem.js';
+
+import { onDrop } from '@/components/browser/BrowserMoveTreeItem.js';
+import { state } from '@/stores/bookies.js';
 
 
 const props = defineProps({
@@ -34,7 +32,7 @@ const hovering = ref({
   top: false,
   bottom: false,
   closedFolder: computed(() =>
-    dragMode.value && props.type === 'Folder' && !props.showChildren
+    state.value.dragging && props.type === 'Folder' && !props.showChildren
   )
 })
 
@@ -42,20 +40,24 @@ const hovering = ref({
 let timeoutId;
 function toggleChildrenDelay(event, nodeId) {
   const itemId = Number(event.dataTransfer.getData('itemID'));
+
+  console.log("hovering");
+
   if (itemId == nodeId) return;
-  hoveringFolder.value = nodeId;
+
+  state.value.hovering.folder = nodeId;
   timeoutId = setTimeout(() => {
-    if (hoveringFolder.value == nodeId && dragMode.value) {
+    if (state.value.hovering.folder == nodeId && state.value.dragging) {
       emit('showChildren');
     }
-    hoveringFolder.value = null;
+    state.value.hovering.folder = null;
     timeoutId = undefined;
   }, 500);
 };
 
 
 function cancelToggleChildrenDelay() {
-  hoveringFolder.value = null;
+  state.value.hovering.folder = null;
   clearTimeout(timeoutId);
 }
 
@@ -112,6 +114,7 @@ const dropIndicatorPositionClass = computed(() => ({
       :class="topBottomMaskClass"
       class="mask bottom-mask" >
     </div>
+
   </div>
 </template>
 
@@ -167,7 +170,6 @@ div.drop-indicator-bottom {
 
 
 /* Colors for visual aid and debugging. */
-/*
 .top-mask,
 .bottom-mask,
 .folder-hover-to-open-mask {
@@ -185,5 +187,4 @@ div.drop-indicator-bottom {
 .folder-hover-to-open-mask {
   background-color: white;
 }
-*/
 </style>

@@ -1,30 +1,23 @@
-import data from '../tests/shared-samples/Bookies.json';
-import { Flatten, Rebuild } from './bookies/bookies.js';
-import { ref } from 'vue';
-
-export const state = {
-  bookies: data,
-  flatBookies: null
-};
-
-state.flatBookies = new Flatten(state.bookies).flat;
-
-export const bookiesTreeRef = ref(state.bookies);
-
-export const stateRefs = ref({
-  bookies: data,
-  flatBookies: state.flatBookies,
-  selectedItem: null,
-});
-
-export class MoveTreeItem {
-  constructor(itemId, newParentId, hoveredItemId, overUnder) {
+/**
+*
+*
+* Moves a single item from one location in the flat array to another.
+*
+* It does so by shifting the moved item and then returns the \
+* updated / modified flat array to then be rebuilt by the Bookies rebuilder.
+*
+* @public
+* @class
+*
+*
+*/
+export class Move {
+  constructor(flatArray, itemId, newParentId, hoveredItemId, overUnder) {
+    this.flat = flatArray;
     this.itemId = itemId;
     this.newParentId = newParentId ?? null;
     this.hoveredItemId = hoveredItemId ?? null;
     this.overUnder = overUnder ?? null;
-
-    this.flat = [...state.flatBookies];
 
     this.item = this.flatItem();
     this.flatItemIndex = this.flatItemIndex();
@@ -50,20 +43,21 @@ export class MoveTreeItem {
 
       if (this.hoveredItemIndex != undefined) this.appendToParentWithPosition();
       else this.appendToParent();
-
-      this.updateGlobals();
     }
   }
+
 
   // For safekeeping when deleted from 'root'
   flatItem = () => {
     return this.flat.find(a => a.Id === this.itemId);
   };
 
+
   // Get the index of the dragged item from the flat array.
   flatItemIndex = () => {
     return this.flat.findIndex(a => a.Id === this.itemId);
   };
+
 
   /*
   * Return 'undefined' if the previous parent was 'root'.
@@ -76,6 +70,7 @@ export class MoveTreeItem {
     else return parent.Id;
   };
 
+
   /*
   * Return 'undefined' if the previous parent was 'root' \
   * and 'this.oldParentId' was not set because of it.
@@ -87,6 +82,7 @@ export class MoveTreeItem {
     if (index === -1) return;
     else return index;
   };
+
 
   /*
   * Return 'undefined' if the new parent is 'root', or the index is not found.
@@ -101,11 +97,13 @@ export class MoveTreeItem {
     else return index;
   };
 
+
   // Check the type of an Bookies item.
   itemType = (id) => {
     const item = this.flat.find(a => a.Id === id);
     return item.Type;
   };
+
 
   // Check if the new parent is not its own child.
   newParentIsOwnChild = (id) => {
@@ -119,6 +117,7 @@ export class MoveTreeItem {
       }
     });
   };
+
 
   /*
   * Return the index of the hovered-over item; if the item is hovered, \
@@ -141,6 +140,7 @@ export class MoveTreeItem {
     else return index;
   };
 
+
   // Remove the item from its parent in order to move it.
   removeChildFromParent() {
     if (this.oldParentId) {
@@ -149,12 +149,14 @@ export class MoveTreeItem {
     }
   }
 
+
   // Remove the item from 'root' in order to shift or delete it.
   removeChildFromRoot() {
     if (this.newParentId === 0) {
       this.flat.splice(this.flatItemIndex, 1);
     }
   }
+
 
   // If the new parent is specified with a position, append it to that position.
   appendToParentWithPosition() {
@@ -174,6 +176,7 @@ export class MoveTreeItem {
     }
   }
 
+
   // If there is no specified position to add the item, push it to the last spot.
   appendToParent() {
     // Pushing to 'root'.
@@ -186,13 +189,8 @@ export class MoveTreeItem {
     }
   }
 
-  updateGlobals() {
-    state.bookies = new Rebuild(this.flat).bookies;
-    state.flatBookies = new Flatten(state.bookies).flat;
-    bookiesTreeRef.value = state.bookies;
 
-    // State refs.
-    stateRefs.value.bookies = state.bookies;
-    stateRefs.value.flatBookies = state.flatBookies;
+  get update() {
+    return this.flat;
   }
 }

@@ -1,8 +1,24 @@
 <script setup>
-import { bookiesTreeRef } from '@/lib/folderTree.js';
-import { state, update } from '@/stores/browserTree.js';
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
+
+import { state } from '@/stores/bookies.js';
+
+
+const title = computed(() => {
+  if (state.value.selected) return state.value.selected.Title;
+});
+
+
+const url = computed(() => {
+  if (state.value.selected) return state.value.selected.URL;
+});
+
+
+const tags = computed(() => {
+  if (state.value.selected) return state.value.selected.Tags;
+});
 </script>
+
 
 <template>
   <div class="info__container">
@@ -12,8 +28,8 @@ import { ref } from 'vue';
 
       <input
         type="text"
-        :value="state.selected.title"
-        @change="update.title($event.target.value)" >
+        :value="title"
+        @change="state.selected.Title = $event.target.value" >
     </div>
 
     <div class="info__url info__input-text">
@@ -21,8 +37,8 @@ import { ref } from 'vue';
 
       <input
         type="text"
-        :value="state.selected.url"
-        @change="update.url($event.target.value)" >
+        :value="url"
+        @change="state.selected.URL = $event.target.value" >
     </div>
 
     <div class="info__tags info__input-text">
@@ -30,12 +46,13 @@ import { ref } from 'vue';
 
       <input
         type="text"
-        :value="state.selected.tags"
-        @change="update.tags($event.target.value)" >
+        :value="tags"
+        @change="state.selected.Tags = $event.target.value" >
     </div>
 
   </div>
 </template>
+
 
 <style scoped>
 div.info__container {
