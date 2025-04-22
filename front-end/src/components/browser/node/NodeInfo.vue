@@ -1,18 +1,7 @@
 <script setup>
 import { bookiesTreeRef } from '@/lib/folderTree.js';
-import { state } from '@/stores/browserTree.js';
-
-function updateTitle() {
-  //
-}
-
-function updateUrl() {
-  //
-}
-
-function updateTags() {
-  //
-}
+import { state, update } from '@/stores/browserTree.js';
+import { ref } from 'vue';
 </script>
 
 <template>
@@ -24,8 +13,7 @@ function updateTags() {
       <input
         type="text"
         :value="state.selected.title"
-      />
-
+        @change="update.title($event.target.value)" >
     </div>
 
     <div class="info__url info__input-text">
@@ -34,8 +22,7 @@ function updateTags() {
       <input
         type="text"
         :value="state.selected.url"
-      />
-
+        @change="update.url($event.target.value)" >
     </div>
 
     <div class="info__tags info__input-text">
@@ -43,11 +30,10 @@ function updateTags() {
 
       <input
         type="text"
-        placeholder="Separate tags with commas"
         :value="state.selected.tags"
-      />
-
+        @change="update.tags($event.target.value)" >
     </div>
+
   </div>
 </template>
 

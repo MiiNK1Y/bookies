@@ -4,6 +4,7 @@ import BrowserTree from '@/components/browser/BrowserTree.vue';
 import BrowserNavbar from '@/components/browser/BrowserNavbar.vue';
 </script>
 
+
 <template>
   <div class="parent">
     <div class="folder-tree">
@@ -17,6 +18,7 @@ import BrowserNavbar from '@/components/browser/BrowserNavbar.vue';
     </div>
   </div>
 </template>
+
 
 <style scoped>
 div.parent {
