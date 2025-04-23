@@ -3,6 +3,7 @@ import { ref, computed } from 'vue';
 
 import { startDrag, onDragEnd } from '@/components/browser/BrowserMoveTreeItem.js';
 import { state } from '@/stores/bookies.js';
+import { debugState } from '@/stores/settings.js';
 
 
 const props = defineProps({
@@ -24,6 +25,12 @@ function select() {
   state.value.selected = {...props.node};
 }
 
+function goToUrl() {
+  if (props.node.Type === "Bookmark") {
+    window.open(props.node.URL, '_blank');
+  }
+}
+
 
 const nodeHeadClass = computed(() => ({
   'head__folder-open-padding': props.showingChildren,
@@ -42,6 +49,7 @@ const nodeHeadClass = computed(() => ({
     @dragstart="startDrag($event, node)"
     @dragend="onDragEnd($event)"
     @click="select()"
+    @dblclick="goToUrl()"
     :class="nodeHeadClass"
     class="head__wrapper"
     draggable="true" >
@@ -50,11 +58,11 @@ const nodeHeadClass = computed(() => ({
         <div class="head__favicon-placeholder"></div>
       </slot>
 
-      <div class="head__id">
+      <div v-if="debugState.showNodeId" class="head__id">
         <slot name="id"></slot>
       </div>
 
-      <div class="head__index">
+      <div v-if="debugState.showNodeIndex" class="head__index">
         [<slot name="index"></slot>]
       </div>
 

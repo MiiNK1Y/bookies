@@ -3,6 +3,7 @@ import { ref, computed } from 'vue';
 
 import { onDrop } from '@/components/browser/BrowserMoveTreeItem.js';
 import { state } from '@/stores/bookies.js';
+import { debugState } from '@/stores/settings.js';
 
 
 const props = defineProps({
@@ -63,8 +64,8 @@ function cancelToggleChildrenDelay() {
 
 
 const topBottomMaskClass = {
-    'bookmark-mask': props.type === 'Bookmark',
-    'folder-mask': props.type === 'Folder'
+  'bookmark-mask': props.type === 'Bookmark',
+  'folder-mask': props.type === 'Folder',
 };
 
 
@@ -91,7 +92,8 @@ const dropIndicatorPositionClass = computed(() => ({
       @dragleave.stop="hovering.top = false"
       @drop.prevent.stop="onDrop($event, parentId, nodeId, 'over');
         hovering.top = false;"
-      :class="topBottomMaskClass"
+      :class="[topBottomMaskClass,
+        { ['top-mask_debug']: debugState.showColoredDropzones }]"
       class="mask top-mask" >
     </div>
 
@@ -102,6 +104,8 @@ const dropIndicatorPositionClass = computed(() => ({
       @dragenter.stop="toggleChildrenDelay($event, nodeId)"
       @dragleave.stop="cancelToggleChildrenDelay()"
       @drop.prevent.stop="onDrop($event, nodeId)"
+      :class="{ 'folder-hover-to-open-mask_debug':
+        debugState.showColoredDropzones }"
       class="mask folder-hover-to-open-mask" >
     </div>
 
@@ -111,7 +115,8 @@ const dropIndicatorPositionClass = computed(() => ({
       @dragleave.stop="hovering.bottom = false"
       @drop.prevent.stop="onDrop($event, parentId, nodeId, 'under');
         hovering.bottom = false;"
-      :class="topBottomMaskClass"
+      :class="[topBottomMaskClass,
+        { ['bottom-mask_debug']: debugState.showColoredDropzones }]"
       class="mask bottom-mask" >
     </div>
 
@@ -170,23 +175,18 @@ div.drop-indicator-bottom {
 
 
 /* Colors for visual aid and debugging. */
-/*
-.top-mask,
-.bottom-mask,
-.folder-hover-to-open-mask {
+.top-mask_debug {
+  background-color: green;
   opacity: 0.3;
 }
 
-.top-mask {
-  background-color: green;
-}
-
-.bottom-mask {
+.bottom-mask_debug {
   background-color: blue;
+  opacity: 0.3;
 }
 
-.folder-hover-to-open-mask {
+.folder-hover-to-open-mask_debug {
   background-color: white;
+  opacity: 0.3;
 }
-*/
 </style>

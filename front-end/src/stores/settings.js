@@ -25,8 +25,14 @@ export const styleState = ref({
         nodeHeadText: null
       }
     }
+  },
+  text: {
+    nodeTitleAllUppercase: false,
+    nodeTitleAllLowercase: false,
+    nodeTitleMaxRederedLength: 50,
+    nodeTitleUnderscoreReplacesWhitespace: false
   }
-};
+});
 
 
 export const settingsState = ref({
@@ -34,15 +40,11 @@ export const settingsState = ref({
     keepOpen: [null],
     nodeFolderHoverToOpenDelay: 500,
   }
-})
+});
 
 
 export const debugState = ref({
   showColoredDropzones: false,
   showNodeId: true,
   showNodeIndex: true,
-  nodeTitleAllUppercase: false,
-  nodeTitleAllLowercase: false,
-  nodeTitleMaxRederedLength: 50,
-  nodeTitleUnderscoreReplacesWhitespace:false
 });
