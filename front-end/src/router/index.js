@@ -3,6 +3,7 @@ import { createRouter, createWebHistory } from 'vue-router';
 import BrowserView from '@/views/BrowserView.vue';
 
 import BrowserBookmarksView from '@/components/browser/views/BrowserBookmarksView.vue';
+import BrowserTagsView from '@/components/browser/views/BrowserTagsView.vue';
 import BrowserFileView from '@/components/browser/views/BrowserFileView.vue';
 import BrowserHiddenView from '@/components/browser/views/BrowserHiddenView.vue';
 import BrowserTrashView from '@/components/browser/views/BrowserTrashView.vue';
@@ -24,6 +25,10 @@ const router = createRouter({
         {
           path: 'bookmarks',
           component: BrowserBookmarksView,
+        },
+        {
+          path: 'tags',
+          component: BrowserTagsView,
         },
         {
           path: 'file',

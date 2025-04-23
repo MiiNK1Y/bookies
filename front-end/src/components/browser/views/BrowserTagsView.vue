@@ -1,10 +1,10 @@
 <script setup>
-import SettingsSwitch from '@/components/browser/SettingsSwitch.vue';
+//
 </script>
 
 <template>
   <div class="main-view">
-    <SettingsSwitch />
+    Tags View
   </div>
 </template>
 

@@ -58,6 +58,12 @@ const children = ref({
       :node="node"
       :showingChildren="children.show">
 
+      <template #icon>
+        <img
+          src="/src/assets/icons/arrow-up-right-from-square-solid.svg"
+          draggable="false"
+        />
+      </template>
       <template #id>{{ node.Id }}</template>
       <template #index>{{ index }}</template>
       <template #title>{{ node.Title }}</template>

@@ -1,6 +1,7 @@
 <script setup>
 import { ref, computed } from 'vue';
 
+import { updateTitle, updateUrl, updateTags } from './NodeInfoUpdate.js';
 import { state } from '@/stores/bookies.js';
 
 
@@ -15,7 +16,11 @@ const url = computed(() => {
 
 
 const tags = computed(() => {
-  if (state.value.selected) return state.value.selected.Tags;
+  if (state.value.selected && state.value.selected.Tags) {
+    const tags = String(state.value.selected.Tags);
+
+    return tags.replace(/\s/g, "").split(",").join(", ");
+  }
 });
 </script>
 
@@ -29,7 +34,7 @@ const tags = computed(() => {
       <input
         type="text"
         :value="title"
-        @change="state.selected.Title = $event.target.value" >
+        @change="updateTitle($event.target.value)" >
     </div>
 
     <div class="info__url info__input-text">
@@ -38,7 +43,7 @@ const tags = computed(() => {
       <input
         type="text"
         :value="url"
-        @change="state.selected.URL = $event.target.value" >
+        @change="updateUrl($event.target.value)" >
     </div>
 
     <div class="info__tags info__input-text">
@@ -47,7 +52,7 @@ const tags = computed(() => {
       <input
         type="text"
         :value="tags"
-        @change="state.selected.Tags = $event.target.value" >
+        @change="updateTags($event.target.value)" >
     </div>
 
   </div>

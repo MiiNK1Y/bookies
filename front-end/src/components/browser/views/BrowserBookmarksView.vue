@@ -1,6 +1,6 @@
 <script setup>
 import Node from '@/components/browser/node/Node.vue';
-import NodeInfo from '@/components/browser/node/NodeInfo.vue';
+import NodeInfo from '@/components/browser/NodeInfo.vue';
 
 import { onDrop, setBackgroundColor, rmBackgroundColor } from '@/components/browser/BrowserMoveTreeItem.js';
 import { state } from '@/stores/bookies.js';

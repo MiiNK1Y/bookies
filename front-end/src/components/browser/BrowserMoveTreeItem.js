@@ -16,25 +16,24 @@ export function startDrag(event, item) {
 }
 
 
+function update(itemId, parentId, hoveredItemId, overUnder) {
+  const update = new Move(bookies.flat, itemId, parentId, hoveredItemId, overUnder).update;
+
+  bookies.regular = new Rebuild(update).bookies;
+  bookies.flat = new Flatten(bookies.regular).flat;
+
+  state.value.bookies.regular = bookies.regular;
+  state.value.bookies.flat = bookies.flat;
+}
+
+
 export function onDrop(event, parentId, hoveredItemId, overUnder) {
   const itemId = Number(event.dataTransfer.getData("itemID"));
 
   state.value.dragging = false;
   state.value.hovering.folder = null;
 
-  const update = new Move(bookies.flat, itemId, parentId, hoveredItemId, overUnder).update;
-
-  bookies.flat = update;
-  bookies.regular = new Rebuild(update).bookies;
-
-  console.log("flat updated:\n", bookies.flat);
-  console.log("regular updated:\n", bookies.regular);
-
-  state.value.bookies.flat = bookies.flat;
-  state.value.bookies.regular = bookies.regular;
-
-  console.log("ref flat updated:\n", state.value.bookies.flat);
-  console.log("ref regular updated:\n", state.value.bookies.regular);
+  update(itemId, parentId, hoveredItemId, overUnder);
 }
 
 

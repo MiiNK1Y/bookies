@@ -20,9 +20,6 @@ app.use(router);
 bookies.regular = data;
 bookies.flat = new Flatten(bookies.regular).flat;
 
-console.log("inital loaded bookies:\n", bookies.regular);
-console.log("inital loaded FLAT bookies:\n", bookies.flat);
-
 state.value.bookies.regular = bookies.regular;
 state.value.bookies.flat = bookies.flat;
 

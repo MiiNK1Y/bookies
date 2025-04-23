@@ -170,6 +170,7 @@ div.drop-indicator-bottom {
 
 
 /* Colors for visual aid and debugging. */
+/*
 .top-mask,
 .bottom-mask,
 .folder-hover-to-open-mask {
@@ -187,4 +188,5 @@ div.drop-indicator-bottom {
 .folder-hover-to-open-mask {
   background-color: white;
 }
+*/
 </style>

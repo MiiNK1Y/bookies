@@ -6,6 +6,11 @@
       <span>Bookmarks</span>
     </RouterLink>
 
+    <RouterLink to="/browser/tags">
+      <img src="/src/assets/icons/tag-solid.svg" />
+      <span>Tags</span>
+    </RouterLink>
+
     <RouterLink to="/browser/file">
       <img src="/src/assets/icons/file-code-solid.svg" />
       <span>File</span>

@@ -49,6 +49,6 @@ export class Flatten {
           this.appendFlatItem(item, parentId);
           break;
       }
-    })
+    });
   }
 }
