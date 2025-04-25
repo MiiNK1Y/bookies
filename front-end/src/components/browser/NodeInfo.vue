@@ -7,11 +7,13 @@ import { state } from '@/stores/bookies.js';
 
 const title = computed(() => {
   if (state.value.selected) return state.value.selected.Title;
+  else return "";
 });
 
 
 const url = computed(() => {
   if (state.value.selected) return state.value.selected.URL;
+  else return "";
 });
 
 
@@ -21,6 +23,7 @@ const tags = computed(() => {
 
     return tags.replace(/\s/g, "").split(",").join(", ");
   }
+  else return "";
 });
 </script>
 

@@ -3,6 +3,19 @@
   "Bookmarks":
     [
       {
+        "Type": "Folder",
+        "Id": 1234,
+        "Title": "Testing item (folder) info update.",
+        "Bookmarks": []
+      },
+      {
+        "Type": "Bookmark",
+        "Id": 12345,
+        "Title": "Testing item (bookmark) info update.",
+        "URL": "https://vg.no",
+        "Tags": ["News", "Norwegian News", "Demo Website"]
+      },
+      {
         "Type": "Bookmark",
         "Id": 123,
         "Title": "Title of the Bookmark, has ID 0",
