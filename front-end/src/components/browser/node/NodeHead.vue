@@ -19,7 +19,6 @@ const props = defineProps({
 
 
 const hovering = ref(false);
-const dragging = ref(false);
 
 
 function select() {
@@ -38,8 +37,7 @@ const nodeHeadClass = computed(() => ({
   'head__hovering': hovering.value && (
     !state.value.selected || state.value.selected.Id != props.node.Id
   ),
-  'head__selected': state.value.selected && state.value.selected.Id == props.node.Id,
-  'dragging': dragging.value
+  'head__selected': state.value.selected && state.value.selected.Id == props.node.Id
 }));
 </script>
 
@@ -48,8 +46,8 @@ const nodeHeadClass = computed(() => ({
   <div
     @mouseover="hovering = true"
     @mouseleave="hovering = false"
-    @dragstart="dragging = true; startDrag($event, node)"
-    @dragend="dragging = false; onDragEnd($event)"
+    @dragstart="startDrag($event, node)"
+    @dragend="onDragEnd()"
     @click="select()"
     @dblclick="goToUrl()"
     :class="nodeHeadClass"
@@ -114,9 +112,5 @@ div.head__hovering {
 
 div.head__folder-open-padding {
   padding: 1px 4px;
-}
-
-div.head__wrapper.dragging {
-  opacity: 0.5;
 }
 </style>

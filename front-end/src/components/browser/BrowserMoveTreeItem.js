@@ -30,7 +30,7 @@ export function startDrag(event, item) {
 }
 
 
-export function onDragEnd(event) {
+export function onDragEnd() {
   resetDraggingAndHoveringState();
 }
 
