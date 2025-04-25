@@ -7,39 +7,39 @@ import { Rebuild } from '@/lib/bookies/rebuild.js';
 import { Flatten } from '@/lib/bookies/flatten.js';
 
 
-export function startDrag(event, item) {
-  event.dataTransfer.dropEffect = "move";
-  event.dataTransfer.effectAllowed = "move";
-  event.dataTransfer.setData("itemID", item.Id);
-
-  state.value.dragging = true;
+function resetDraggingAndHoveringState() {
+  state.value.dragging = false;
+  state.value.hovering.folder = null;
 }
 
 
 function update(itemId, parentId, hoveredItemId, overUnder) {
   const update = new Move(bookies.flat, itemId, parentId, hoveredItemId, overUnder).update;
-
   bookies.regular = new Rebuild(update).bookies;
   bookies.flat = new Flatten(bookies.regular).flat;
-
   state.value.bookies.regular = bookies.regular;
   state.value.bookies.flat = bookies.flat;
 }
 
 
-export function onDrop(event, parentId, hoveredItemId, overUnder) {
-  const itemId = Number(event.dataTransfer.getData("itemID"));
-
-  state.value.dragging = false;
-  state.value.hovering.folder = null;
-
-  update(itemId, parentId, hoveredItemId, overUnder);
+export function startDrag(event, item) {
+  event.dataTransfer.dropEffect = "move";
+  event.dataTransfer.effectAllowed = "move";
+  event.dataTransfer.setData("itemID", item.Id);
+  state.value.dragging = true;
 }
 
 
-export function onDragEnd() {
-  state.value.dragging = false;
-  state.value.hovering.folder = null;
+export function onDragEnd(event) {
+  resetDraggingAndHoveringState();
+}
+
+
+export function onDrop(event, parentId, hoveredItemId, overUnder) {
+  const itemId = Number(event.dataTransfer.getData("itemID"));
+  setTimeout(() => {
+    update(itemId, parentId, hoveredItemId, overUnder);
+  }, 1000);
 }
 
 
@@ -51,7 +51,7 @@ export function setBackgroundColor(event) {
 
 
 export function rmBackgroundColor(event) {
-  if (event.target.classList.contains("drop-zone")) {
+  if (event.target.classList.contains("dragover")) {
     event.target.classList.remove("dragover");
   }
 }
