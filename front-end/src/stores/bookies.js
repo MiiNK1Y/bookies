@@ -10,6 +10,7 @@ export const bookies = {
 export const state = ref({
   selected: null,
   dragging: false,
+  lastMoved: null,
   hovering: {
     folder: null
   },

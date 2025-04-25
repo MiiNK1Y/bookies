@@ -29,6 +29,9 @@ const props = defineProps({
 });
 
 
+const draggingNodeHead = ref(false);
+
+
 const children = ref({
   show: false,
   icon: computed(() => children.value.show
@@ -41,7 +44,8 @@ const children = ref({
 
 <template>
   <div
-    class="wrapper" >
+    class="wrapper"
+    :class="{ 'dragging': draggingNodeHead }">
 
     <NodeHoverZone
       v-show="state.dragging"
@@ -56,7 +60,9 @@ const children = ref({
     <NodeHead
       v-if="node.Type === 'Bookmark'"
       :node="node"
-      :showingChildren="children.show">
+      :showingChildren="children.show"
+      @dragging="draggingNodeHead = true"
+      @not-dragging="draggingNodeHead = false" >
 
       <template #icon>
         <img
@@ -81,7 +87,9 @@ const children = ref({
 
       <NodeHead
         :node="node"
-        :showingChildren="children.show">
+        :showingChildren="children.show"
+        @dragging="draggingNodeHead = true"
+        @not-dragging="draggingNodeHead = false" >
 
         <template #icon>
           <img
@@ -137,5 +145,9 @@ div.drop-zone.dragover {
 div.children {
   padding-top: 3px;
   margin-left: 20px;
+}
+
+div.wrapper.dragging {
+  opacity: 0.5;
 }
 </style>

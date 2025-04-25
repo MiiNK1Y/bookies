@@ -42,8 +42,6 @@ let timeoutId;
 function toggleChildrenDelay(event, nodeId) {
   const itemId = Number(event.dataTransfer.getData('itemID'));
 
-  console.log("hovering");
-
   if (itemId == nodeId) return;
 
   state.value.hovering.folder = nodeId;

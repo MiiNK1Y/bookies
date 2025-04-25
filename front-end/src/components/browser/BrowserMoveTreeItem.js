@@ -10,6 +10,10 @@ import { Flatten } from '@/lib/bookies/flatten.js';
 function resetDraggingAndHoveringState() {
   state.value.dragging = false;
   state.value.hovering.folder = null;
+
+  setTimeout(() => {
+    state.value.lastMoved = null;
+  }, 400);
 }
 
 
@@ -27,19 +31,24 @@ export function startDrag(event, item) {
   event.dataTransfer.effectAllowed = "move";
   event.dataTransfer.setData("itemID", item.Id);
   state.value.dragging = true;
+  state.value.lastMoved = item.Id;
 }
 
 
-export function onDragEnd() {
+export function onDragEnd(event) {
   resetDraggingAndHoveringState();
 }
 
 
+/*
+ * BUG:
+ * When dropping an item inside a new folder, the highlight-blinking does not show.
+ * But when moving that same item to a new position inside the same folder \
+ * the blinking shows as intended.
+ */
 export function onDrop(event, parentId, hoveredItemId, overUnder) {
   const itemId = Number(event.dataTransfer.getData("itemID"));
-  setTimeout(() => {
-    update(itemId, parentId, hoveredItemId, overUnder);
-  }, 1000);
+  update(itemId, parentId, hoveredItemId, overUnder);
 }
 
 
