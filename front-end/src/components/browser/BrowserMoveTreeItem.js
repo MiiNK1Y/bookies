@@ -40,12 +40,6 @@ export function onDragEnd(event) {
 }
 
 
-/*
- * BUG:
- * When dropping an item inside a new folder, the highlight-blinking does not show.
- * But when moving that same item to a new position inside the same folder \
- * the blinking shows as intended.
- */
 export function onDrop(event, parentId, hoveredItemId, overUnder) {
   const itemId = Number(event.dataTransfer.getData("itemID"));
   update(itemId, parentId, hoveredItemId, overUnder);

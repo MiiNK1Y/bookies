@@ -26,23 +26,25 @@ export class Move {
     this.oldParentIndex =  this.oldParentIndex() ?? null;
     this.newParentIndex = this.newParentIndex() ?? null;
 
-    if (this.item.Type === "Bookmark" ||
-      (
-        this.newParentId != this.itemId &&
-        !this.newParentIsOwnChild(this.itemId)
-      )
-    ) {
-      if (this.oldParentId) this.removeChildFromParent();
-      if (this.newParentId === 0) this.removeChildFromRoot();
+    if (this.itemId != this.hoveredItemId) {
+      if (this.item.Type === "Bookmark" ||
+        (
+          this.newParentId != this.itemId &&
+          !this.newParentIsOwnChild(this.itemId)
+        )
+      ) {
+        if (this.oldParentId) this.removeChildFromParent();
+        if (this.newParentId === 0) this.removeChildFromRoot();
 
-      /*
-      * Find the index of the hovered item after removing item \
-      * in order to get the index right.
-      */
-      this.hoveredItemIndex = this.hoveredItemIndex() ?? null;
+        /*
+        * Find the index of the hovered item after removing item \
+        * in order to get the index right.
+        */
+        this.hoveredItemIndex = this.hoveredItemIndex() ?? null;
 
-      if (this.hoveredItemIndex != undefined) this.appendToParentWithPosition();
-      else this.appendToParent();
+        if (this.hoveredItemIndex != undefined) this.appendToParentWithPosition();
+        else this.appendToParent();
+      }
     }
   }
 
