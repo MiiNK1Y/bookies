@@ -30,15 +30,15 @@ function goToUrl() {
 
 const nodeHeadClass = computed(() => {
   const showingChildren = props.showingChildren;
-  const selected = state.value.selected;
-  const notSelected = !selected || state.value.selected.Id != props.node.Id;
-  const hoverNotSelected = hovering.value && notSelected;
-  const nodeSelected = selected && state.value.selected.Id == props.node.Id;
+  const selectedItem = state.value.selected;
+  const notSelected = !selectedItem || state.value.selected.Id != props.node.Id;
+  const hoverNonSelected = hovering.value && notSelected;
+  const nodeSelected = selectedItem && state.value.selected.Id == props.node.Id;
   const isLastMoved = state.value.lastMoved === props.node.Id;
 
   return {
     'head__folder-open-padding': showingChildren,
-    'head__hovering': hoverNotSelected,
+    'head__hovering': hoverNonSelected,
     'head__selected': nodeSelected,
     'flash': isLastMoved && !state.value.dragging
   };
