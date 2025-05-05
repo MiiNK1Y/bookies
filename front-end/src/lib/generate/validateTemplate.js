@@ -1,4 +1,4 @@
-export class ValidateGeneratorTemplate() {
+export class ValidateGeneratorTemplate {
   constructor(template) {
     this.template = template;
 
@@ -25,23 +25,23 @@ export class ValidateGeneratorTemplate() {
 
   typeKeyValueIsValid = (value) => {
     value === "$STR_LOREM_IPSUM" ||
-    value === "$STR_RANDOM" ||
-    value === "$ARR_RANDOM" ||
-    value === "$ARR_NEST_WITH_SELF"
+      value === "$STR_RANDOM" ||
+      value === "$ARR_RANDOM" ||
+      value === "$ARR_NEST_WITH_SELF"
   };
 
 
   // $MIN only allows for positive integer numbers.
   minKeyValueIsValid = (value) => {
     (typeof value) === "Number" &&
-    !(value.includes("-"))
+      !(value.includes("-"))
   };
 
 
   // $MAX only allows for positive integer numbers.
   maxKeyValueIsValid = (value) => {
     (typeof value) === "Number" &&
-    !(value.includes("-"))
+      !(value.includes("-"))
   };
 
 
@@ -51,7 +51,7 @@ export class ValidateGeneratorTemplate() {
   */
   collectionKeyValueIsValid = (value) => {
     (typeof value) === "Array" &&
-    value.length >= 1
+      value.length >= 1
   };
 
 
@@ -61,16 +61,16 @@ export class ValidateGeneratorTemplate() {
 
     switch (key) {
       case "$TYPE":
-        if (!this.typeKeyValueIsValid(value)) Throw combinationError;
+        if (!this.typeKeyValueIsValid(value)) throw combinationError;
         break;
       case "$MIN":
-        if (!this.minKeyValueIsValid(value)) Throw combinationError;
+        if (!this.minKeyValueIsValid(value)) throw combinationError;
         break;
       case "$MAX":
-        if (!this.maxKeyValueIsValid(value)) Throw combinationError;
+        if (!this.maxKeyValueIsValid(value)) throw combinationError;
         break;
       case "$COLLECTION":
-        if (!this.collectionKeyValueIsValid(value)) Throw combinationError;
+        if (!this.collectionKeyValueIsValid(value)) throw combinationError;
         break;
       default:
         return;
@@ -81,7 +81,7 @@ export class ValidateGeneratorTemplate() {
   // Check that the given template is an array.
   checkTemplateType() {
     if ((typeof this.template) !== "Array") {
-      Throw new Error("ERROR: The given template need to be in an array.");
+      throw new Error("ERROR: The given template need to be in an array.");
     }
   }
 
@@ -90,7 +90,7 @@ export class ValidateGeneratorTemplate() {
   checkTemplateItemsTypes() {
     for (const item of this.template) {
       if ((typeof item) !== "Object") {
-        Throw new Error("ERROR: All items in a template array need to be " +
+        throw new Error("ERROR: All items in a template array need to be " +
           "defined by an object.");
       }
     }
