@@ -1,6 +1,9 @@
 export class ValidateGeneratorTemplate {
   constructor(template) {
+    console.log("received template:\n", template);
+
     this.template = template;
+    this.valid = false;
 
     this.commandKeys = [
       "$TYPE",
@@ -80,7 +83,7 @@ export class ValidateGeneratorTemplate {
 
   // Check that the given template is an array.
   checkTemplateType() {
-    if ((typeof this.template) !== "Array") {
+    if (!Array.isArray(this.template)) {
       throw new Error("ERROR: The given template need to be in an array.");
     }
   }
@@ -89,7 +92,7 @@ export class ValidateGeneratorTemplate {
   // Check that all items in the given template array is an object.
   checkTemplateItemsTypes() {
     for (const item of this.template) {
-      if ((typeof item) !== "Object") {
+      if ((typeof item) !== "object") {
         throw new Error("ERROR: All items in a template array need to be " +
           "defined by an object.");
       }
@@ -99,12 +102,15 @@ export class ValidateGeneratorTemplate {
 
   checkTemplateCommands() {
     for (const item of this.template) {
-      const itemKeys = Object.keys(item);
-      const itemValues = Object.values(item);
-
-      for (const [key, value] in Object.entries(item)) {
-        this.checkCommandKeyValuePairs(key, value);
+      for (const [key, value] of Object.entries(item)) {
+        if (key.startsWith("$")) this.checkCommandKeyValuePairs(key, value);
       }
     }
+
+    /*
+    * If the entire process goes by without throwing an error,
+    * then the validation is successfull.
+    */
+    this.valid = true;
   }
 }

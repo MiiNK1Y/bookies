@@ -1,4 +1,4 @@
-export class Generate() {
+export class Generate {
   constructor(template, min, max) {
     this.template = template;
     this.min = min;
