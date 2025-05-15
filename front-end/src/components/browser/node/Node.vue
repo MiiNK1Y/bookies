@@ -93,7 +93,7 @@ const children = ref({
 
         <template #icon>
           <img
-            @click.stop="children.show = !children.show"
+            @click.stop="children.show = !children.show ? enableTree : false"
             :src="children.icon"
             draggable="false"
           />
