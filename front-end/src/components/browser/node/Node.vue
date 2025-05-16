@@ -92,6 +92,12 @@ const children = ref({
         @not-dragging="draggingNodeHead = false" >
 
         <template #icon>
+          <!--
+            TODO:
+            Currently, clicking the folder icon when the tree is disabled \
+            does not pass the event to the node itself (since bubbling is stopped).
+            Fix it so that the event is bubbling to the node and the node is selected.
+          -->
           <img
             @click.stop="children.show = !children.show ? enableTree : false"
             :src="children.icon"
