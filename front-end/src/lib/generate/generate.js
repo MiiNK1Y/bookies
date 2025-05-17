@@ -38,10 +38,8 @@ export class Generate {
       "in mi vel odio porta luctus at vitae sem. Nulla ut tellus bibendum, " +
       "suscipit leo et, placerat lectus. Vestibulum non nulla erat.";
 
-    const loremIpsumLength = loremIpsum.length;
-
-    if (charAmount > loremIpsumLength) {
-      throw new Error(`The Lorem Ipsum snippet is only ${loremIpsumLength}` +
+    if (charAmount > loremIpsum.length) {
+      throw new Error(`The Lorem Ipsum snippet is only ${loremIpsum.length}` +
         `characters long, ${charAmount} was requested.`);
     }
 
