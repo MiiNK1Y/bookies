@@ -76,7 +76,14 @@ export class ValidateGeneratorTemplate {
         if (!this.collectionKeyValueIsValid(value)) throw combinationError;
         break;
       default:
-        return;
+        throw new Error(`ERROR: "${key}" is not a valid key command.`);
+    }
+  }
+
+
+  checkCommandKeyValue(value) {
+    if (!this.commandValues.includes(value)) {
+      throw new Error(`ERROR: "${value}" is not a valid value command.`);
     }
   }
 
@@ -104,6 +111,7 @@ export class ValidateGeneratorTemplate {
     for (const item of this.template) {
       for (const [key, value] of Object.entries(item)) {
         if (key.startsWith("$")) this.checkCommandKeyValuePairs(key, value);
+        if (String(value).startsWith("$")) this.checkCommandKeyValue(value);
       }
     }
 
