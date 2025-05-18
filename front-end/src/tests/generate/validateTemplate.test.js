@@ -79,7 +79,8 @@ describe("Validate generator template", () => {
   });
 
   test("Check faulty template value.", () => {
-    expect(new ValidateGeneratorTemplate(templateInvalidCommand))
-      .toThrow(new Error(`ERROR: "$THIS_COMMAND_IS_FAULTY" is not a valid value command.`));
+    expect(() => {
+      new ValidateGeneratorTemplate(templateInvalidCommand);
+    }).toThrow(new Error(`ERROR: "$THIS_COMMAND_IS_FAULTY" is not a valid value command.`));
   });
 });
