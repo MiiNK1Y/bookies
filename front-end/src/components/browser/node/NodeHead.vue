@@ -2,8 +2,9 @@
 import { ref, computed } from 'vue';
 
 import { startDrag, onDragEnd } from '@/components/browser/BrowserMoveTreeItem.js';
-import { state } from '@/stores/bookies.js';
+import { state, bookies } from '@/stores/bookies.js';
 import { debugState } from '@/stores/settings.js';
+import { FlatParent } from '@/lib/bookies/rebuild.js';
 
 
 const props = defineProps({
@@ -25,6 +26,22 @@ function goToUrl() {
   if (props.node.Type === "Bookmark") {
     window.open(props.node.URL, '_blank');
   }
+}
+
+
+// set state of what folder to go to,
+//
+// this should also set some "currently viewing" argument in the url-field:
+// i.e '/browser/bookmarks_&v=some-folder'
+// set the whole bookies as the default view when visiting, then navigate from there.
+//
+// remember to rebuild the partial parent when items are moved in and out.
+function goToFolder() {
+  const flatNode = bookies.flat.find((a) => a.Id === props.node.Id);
+  const thisParent = new FlatParent(flatNode, bookies.flat);
+
+  // Set the rebuilt parent as the currently viewing item in the bookmarks view.
+  state.value.showing = thisParent.parent;
 }
 
 
@@ -53,7 +70,7 @@ const nodeHeadClass = computed(() => {
     @dragstart="startDrag($event, node); $emit('dragging')"
     @dragend="onDragEnd($event); $emit('notDragging');"
     @click="state.selected = node"
-    @dblclick="goToUrl()"
+    @dblclick="node.Type == 'Bookmark' ? goToUrl() : goToFolder()"
     :class="nodeHeadClass"
     class="head__wrapper"
     draggable="true" >

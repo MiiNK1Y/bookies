@@ -1,10 +1,13 @@
 import { describe, expect, test, beforeEach } from '@jest/globals';
 
-import { ValidateGeneratorTemplate } from '../../lib/generate/validateTemplate.js';
+import { Generate } from '../../lib/generate/generate.js';
 
 let template;
+
 let templateInvalidCommand;
+
 let templateSmallBookmark;
+let templateSmallBookmarkResolved;
 beforeEach(() => {
   template = [
     {
@@ -73,23 +76,26 @@ beforeEach(() => {
 
   templateSmallBookmark = [
     {
-      $TYPE: "$ARR_NEST_WITH_SELF",
-      $MIN: 0,
-      $MAX: 10
+      Type: "Bookmark",
+      Id: "$INT_INCREMENT_GLOBAL",
+      Title: {
+        $TYPE: "$STR_LOREM_IPSUM",
+        $MIN: 10,
+        $MAX: 15
+      }
     }
-  ]
+  ];
 });
 
-
-describe("Validate generator template", () => {
-  test("Check small template passing.", () => {
-    const valid = new ValidateGeneratorTemplate(template).valid;
-    expect(valid).toBe(true);
+describe("Check generation of small Bookies array.", () => {
+  test("Check generation of single string object generation", () => {
+    const bookies = new Generate(templateSmallBookmark);
+    expect(bookies).toEqual()
   });
 
-  test("Check faulty template value.", () => {
-    expect(() => {
-      new ValidateGeneratorTemplate(templateInvalidCommand);
-    }).toThrow(new Error(`ERROR: "$THIS_COMMAND_IS_FAULTY" is not a valid value command.`));
+  // NOTE: Note done yet...
+  xtest("Check small template generation.", () => {
+    const bookies = new Generate(template);
+    expect(bookies).toEqual(true);
   });
 });
